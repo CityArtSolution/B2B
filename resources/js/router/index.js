@@ -1,0 +1,509 @@
+// resources/js/router/index.js
+import { createRouter, createWebHistory } from "vue-router";
+
+// import stores
+import { useMaster } from "../stores/MasterStore";
+import { useAuth } from "../stores/AuthStore";
+
+// import layouts
+import defaultLayout from "../layouts/default.vue";
+import authLayout from "../layouts/auth.vue";
+import layoutBlank from "../layouts/blank.vue";
+import blogLayout from "../layouts/blog.vue";
+
+// import pages
+const Home = () => import("../pages/Home.vue");
+const Shop = () => import("../pages/Shop.vue");
+const ShopDetails = () => import("../pages/ShopDetails.vue");
+const ProductDetails = () => import("../pages/ProductDetails.vue");
+const CategoryProduct = () => import("../pages/CategoryProduct.vue");
+const Checkout = () => import("../pages/Checkout.vue");
+
+const Dashboard = () => import("../pages/Dashboard.vue");
+const OrderHistory = () => import("../pages/OrderHistory.vue");
+const OrderDetails = () => import("../pages/OrderDetails.vue");
+const ReturnProduct = () => import("../pages/ReturnProduct.vue");
+const ReturnedOrderHistory = () => import("../pages/ReturnedOrderHistory.vue");
+const ReturnOrderDetails = () => import("../pages/ReturnOrderDetails.vue");
+const Wishlist = () => import("../pages/Wishlist.vue");
+const MyProfile = () => import("../pages/MyProfile.vue");
+const ManageAddress = () => import("../pages/ManageAddress.vue");
+const Support = () => import("../pages/Support.vue");
+const TermsAndConditions = () => import("../pages/TermsAndConditions.vue");
+const PrivacyPolicy = () => import("../pages/PrivacyPolicy.vue");
+const ReturnPolicy = () => import("../pages/ReturnPolicy.vue");
+const AddNewAddress = () => import("../pages/AddNewAddress.vue");
+const EditAddress = () => import("../pages/EditAddress.vue");
+const AboutUs = () => import("../pages/AboutUs.vue");
+const ChangePassword = () => import("../pages/ChangePassword.vue");
+const BuyNow = () => import("../pages/BuyNow.vue");
+const MostPopular = () => import("../pages/MostPopular.vue");
+const ContactUs = () => import("../pages/ContactUs.vue");
+const Login = () => import("../pages/Login.vue");
+const BestDeal = () => import("../pages/BestDeal.vue");
+const Products = () => import("../pages/Products.vue");
+const DigitalProducts = () => import("../pages/DigitalProducts.vue");
+const Category = () => import("../pages/Category.vue");
+const SupportTicket = () => import("../pages/SupportTicket.vue");
+const SupportTicketDetails = () => import("../pages/SupportTicketDetails.vue");
+const FlashSale = () => import("../pages/FlashSale.vue");
+const Blog = () => import("../pages/Blog.vue");
+const BlogDetails = () => import("../pages/BlogDetails.vue");
+const PolicyPages = () => import("../pages/PolicyPages.vue");
+const Massages = () => import("../pages/Messages.vue");
+const DigitalProductOrderHistory = () => import("../pages/DigitalProductOrderHistory.vue");
+
+// 404 page
+const NotFound = () => import("../errors/404.vue");
+
+// all pages router will be here
+const routes = [
+    {
+        path: "/",
+        name: "home",
+        component: Home,
+        meta: {
+            layout: defaultLayout,
+            title: "Home",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/shops",
+        name: "shop",
+        component: Shop,
+        meta: {
+            layout: defaultLayout,
+            title: "Shops",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/products",
+        name: "products",
+        component: Products,
+        meta: {
+            layout: defaultLayout,
+            title: "Products",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/digital-products",
+        name: "digital-products",
+        component: DigitalProducts,
+        meta: {
+            layout: defaultLayout,
+            title: "Digital Products",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/categories",
+        name: "categories",
+        component: Category,
+        meta: {
+            layout: defaultLayout,
+            title: "Categories",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/most-popular",
+        name: "most-popular",
+        component: MostPopular,
+        meta: {
+            layout: defaultLayout,
+            title: "Most Popular Products",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/best-deal",
+        name: "best-deal",
+        component: BestDeal,
+        meta: {
+            layout: defaultLayout,
+            title: "Best Deal Products",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/flash-sale/:id",
+        name: "flash-sale",
+        component: FlashSale,
+        meta: {
+            layout: defaultLayout,
+            title: "Flash Sale Products",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/shops/:id",
+        name: "shop-detail",
+        component: ShopDetails,
+        meta: {
+            layout: defaultLayout,
+            title: "Shop Details",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/products/:id/details",
+        name: "productDetails",
+        component: ProductDetails,
+        meta: {
+            layout: defaultLayout,
+            title: "Product Details",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/categories/:slug",
+        name: "category-product",
+        component: CategoryProduct,
+        meta: {
+            layout: defaultLayout,
+            title: "Category Products",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/checkout",
+        name: "checkout",
+        component: Checkout,
+        meta: {
+            layout: defaultLayout,
+            title: "Checkout",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/buynow",
+        name: "buynow",
+        component: BuyNow,
+        meta: {
+            layout: defaultLayout,
+            title: "Buy Now",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/dashboard",
+        name: "dashboard",
+        component: Dashboard,
+        meta: {
+            layout: authLayout,
+            title: "Dashboard",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/order-history",
+        name: "order-history",
+        component: OrderHistory,
+        meta: {
+            layout: authLayout,
+            title: "Order History",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/digital-product-order-history",
+        name: "digital-product-order-history",
+        component: DigitalProductOrderHistory,
+        meta: {
+            layout: authLayout,
+            title: "Digital Product Order History",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/order-history/:id",
+        name: "order-details",
+        component: OrderDetails,
+        meta: {
+            layout: authLayout,
+            title: "Order Details",
+            requiresAuth: true,
+        },
+    },
+
+    {
+        path: "/return-product/:id",
+        name: "return-product",
+        component: ReturnProduct,
+        meta: {
+            layout: authLayout,
+            title: "Return Products",
+            requiresAuth: true,
+        },
+    },
+
+
+    {
+        path: "/returned-order-history",
+        name: "return-order-history",
+        component: ReturnedOrderHistory,
+        meta: {
+            layout: authLayout,
+            title: "Return Order History",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/returned-order-history/:id",
+        name: "return-order-details",
+        component: ReturnOrderDetails,
+        meta: {
+            layout: authLayout,
+            title: "Return Order Details",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/wishlist",
+        name: "wishlist",
+        component: Wishlist,
+        meta: {
+            layout: authLayout,
+            title: "Wishlist",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/profile",
+        name: "profile",
+        component: MyProfile,
+        meta: {
+            layout: authLayout,
+            title: "My Profile",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/manage-address",
+        name: "manage-address",
+        component: ManageAddress,
+        meta: {
+            layout: authLayout,
+            title: "Manage Address",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/manage-address/new",
+        name: "add-new-address",
+        component: AddNewAddress,
+        meta: {
+            layout: authLayout,
+            title: "Add New Address",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/manage-address/:id/edit",
+        name: "edit-address",
+        component: EditAddress,
+        meta: {
+            layout: authLayout,
+            title: "Edit Address",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/change-password",
+        name: "change-password",
+        component: ChangePassword,
+        meta: {
+            layout: authLayout,
+            title: "Change Password",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/support-tickets",
+        name: "support-ticket",
+        component: SupportTicket,
+        meta: {
+            layout: authLayout,
+            title: "Support Ticket",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/support-ticket/:ticketNumber",
+        name: "support-ticket-details",
+        component: SupportTicketDetails,
+        meta: {
+            layout: authLayout,
+            title: "Support Ticket Details",
+            requiresAuth: true,
+        },
+    },
+
+    {
+        path: "/support",
+        name: "support",
+        component: Support,
+        meta: {
+            layout: defaultLayout,
+            title: "Support",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/terms-and-conditions",
+        name: "terms-and-conditions",
+        component: TermsAndConditions,
+        meta: {
+            layout: defaultLayout,
+            title: "Terms & Conditions",
+            requiresAuth: false,
+        },
+    },
+    {
+        path: "/privacy-policy",
+        name: "privacy-policy",
+        component: PrivacyPolicy,
+        meta: {
+            layout: defaultLayout,
+            title: "Privacy Policy",
+            requiresAuth: false,
+        },
+    },
+    {
+        path: "/return-policy",
+        name: "return-policy",
+        component: ReturnPolicy,
+        meta: {
+            layout: defaultLayout,
+            title: "Return Policy",
+            requiresAuth: false,
+        },
+    },
+    {
+        path: "/about-us",
+        name: "about-us",
+        component: AboutUs,
+        meta: {
+            layout: defaultLayout,
+            title: "About Us",
+            requiresAuth: false,
+        },
+    },
+    {
+        path: "/contact-us",
+        name: "contact-us",
+        component: ContactUs,
+        meta: {
+            layout: defaultLayout,
+            title: "Contact Us",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/login",
+        name: "login",
+        component: Login,
+        meta: {
+            layout: layoutBlank,
+            title: "Login",
+            requiresAuth: false,
+            guestOnly: true,
+        },
+    },
+    {
+        path: "/blogs",
+        name: "blogs",
+        component: Blog,
+        meta: {
+            layout: blogLayout,
+            title: "Blogs",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/blog/:slug",
+        name: "blog-details",
+        component: BlogDetails,
+        meta: {
+            layout: blogLayout,
+            title: "Blog Details",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/page/:slug",
+        name: "policy-page",
+        component: PolicyPages,
+        meta: {
+            layout: defaultLayout,
+            title: "Policy Page",
+            requiresAuth: false,
+        },
+    },
+    {
+        path: "/massages",
+        name: "massages",
+        component: Massages,
+        meta: {
+            layout: authLayout,
+            title: "Massages",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/:pathMatch(.*)*",
+        name: "not-found",
+        component: NotFound,
+        meta: {
+            title: "Page Not Found",
+            layout: layoutBlank,
+            requiresAuth: false,
+        },
+    },
+];
+
+// create router
+const router = createRouter({
+    history: createWebHistory(),
+    routes,
+});
+
+// Global Navigation Guard for Authentication
+router.beforeEach((to, from, next) => {
+    const authStore = useAuth();
+    const master = useMaster();
+    const appName = master.appName;
+
+    // Set dynamic page title
+    document.title = to.meta.title ? `${to.meta.title} - ${appName}` : appName;
+
+    // Check if user is authenticated
+    const isAuthenticated = authStore.token && authStore.user;
+
+    // Check if route requires authentication
+    const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+    
+    // Check if route is guest only (login, register, etc.)
+    const guestOnly = to.matched.some(record => record.meta.guestOnly);
+
+    // Redirect logic
+    if (requiresAuth && !isAuthenticated) {
+        // User is not authenticated but trying to access protected route
+        // Redirect to login with return url
+        next({
+            name: 'login'
+        });
+    } else if (guestOnly && isAuthenticated) {
+        // User is authenticated but trying to access guest-only route (like login)
+        // Redirect to dashboard
+        next({ name: 'dashboard' });
+    } else {
+        // Allow navigation
+        next();
+    }
+});
+
+export default router;
