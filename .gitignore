@@ -42,7 +42,7 @@ yarn-error.log*
 .phpunit.result.cache
 
 # Laravel specific
-/artisan
+
 Homestead.json
 Homestead.yaml
 
