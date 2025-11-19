@@ -22,18 +22,19 @@
                                 {{__('Category Information')}}
                             </h5>
                         </div>
-
-                        <div class="mt-3">
-                            <x-input label="Name (AR)" name="name_ar" :value="$category->translated_name_AR" type="text" placeholder="Enter Name (AR)" required="true"/>
-                        </div>
-                        <div class="mt-3">
-                            <x-input label="Name (EN)" name="name" :value="$category->name" type="text" placeholder="Enter Name (EN)" required="true"/>
-                        </div>
-                        <div class="mt-3">
-                            <x-input label="Name (UR)" name="name_ur" :value="$category->transl('ur')" type="text" placeholder="Enter Name" required="true"/>
-                        </div>
-                        <div class="mt-3">
-                            <x-input label="Name (IN)" name="name_in" :value="$category->transl('In')" type="text" placeholder="Enter Name" required="true"/>
+                        <div class="row">
+                            <div class="col-md-3 mt-3">
+                                <x-input label="Name (AR)" id="name_ar_input" name="name_ar" :value="$category->translated_name_AR" type="text" placeholder="Enter Name (AR)" required="true"/>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <x-input label="Name (EN)" id="product_name" name="name" :value="$category->name" type="text" placeholder="Enter Name (EN)" required="true"/>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <x-input label="Name (UR)" id="name_ur_input" name="name_ur" :value="$category->transl('ur')" type="text" placeholder="Enter Name" required="true"/>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <x-input label="Name (IN)" id="name_in_input" name="name_in" :value="$category->transl('In')" type="text" placeholder="Enter Name" required="true"/>
+                            </div>
                         </div>
                         <div class="mt-3 d-flex align-items-center justify-content-center">
                             <div class="ratio1x1">
@@ -68,6 +69,26 @@
                 </div>
             </div>
         </div>
-
     </form>
+    @push('scripts')
+    <script>
+        $(document).on('input', '#name_ar_input', function () {
+            let value = $(this).val();
+        
+            $.ajax({
+                url: '/admin/translate',
+                method: 'GET',
+                data: {
+                    text: value,
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                $('#product_name').val(response.en);
+                $('#name_ur_input').val(response.ur);
+                $('#name_in_input').val(response.in);
+                }
+            });
+        });
+    </script>
+    @endpush
 @endsection

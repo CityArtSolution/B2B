@@ -11,7 +11,6 @@ use App\Http\Resources\ProductResource;
 use App\Http\Resources\UserResource;
 use App\Models\Coupon;
 use App\Models\Customer;
-use App\Models\ProductBranch;
 use App\Models\Branch;
 use App\Models\Order;
 use App\Models\PosCart;
@@ -227,11 +226,16 @@ class POSController extends Controller
         ]);
     }
 
+
+    
+
     public function addToCart(PosCartRequest $request)
     {
         $product = ProductRepository::find($request->product_id);
 
-        if ($product->quantity < $request->quantity) {
+        $branchQuantity = $product->quantities()->where('branch_id', $request->branchID)->first();
+
+        if (!$branchQuantity || $branchQuantity->qty < $request->quantity) {
             return $this->json(__('Sorry! product cart quantity is limited. No more stock'), [], 422);
         }
 
@@ -282,7 +286,9 @@ class POSController extends Controller
     {
         $product = ProductRepository::find($request->product_id);
 
-        if ($product->quantity < $request->quantity) {
+        $branchQuantity = $product->quantities()->where('branch_id', $request->branchID)->first();
+
+        if (!$branchQuantity || $branchQuantity->qty < $request->quantity) {
             return $this->json(__('Sorry! product cart quantity is limited. No more stock'), [], 422);
         }
 
