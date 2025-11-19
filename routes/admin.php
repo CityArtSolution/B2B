@@ -268,7 +268,7 @@ Route::name('admin.')->group(function () {
         });
 
         // Installment
-        Route::controller(InstallmentController::class)->prefix('admin')->name('admin.')->group(function () {
+        Route::controller(InstallmentController::class)->group(function () {
             Route::get('/installment', 'index')->name('installment.index');
             Route::get('/installment/create', 'create')->name('installment.create');
             Route::post('/installment/store', 'store')->name('installment.store');
