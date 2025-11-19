@@ -283,7 +283,7 @@
                                             id="productColorContainer"></div>
                                     </div>
 
-                                    <!-- Quantity -->
+                                    <!-- Branch -->
                                     <div class="row pt-3">
                                         <div class="mb-3">
                                             <label for="branchSelect">{{ __('Branch') }}</label>
@@ -811,6 +811,14 @@
                 qty = firstBranch.quantity;
 
                 toggleAddToCartButton(qty);
+                if (isModalEdit) {
+                $('#branchSelect option').each(function() {
+                    if ($(this).val() == posCartItem.branch_id) {
+                        $(this).prop('selected', true);
+                    }
+                });
+            } 
+
             } else {
                 branchSelect.append(`
                     <option value="">{{ __('No Branch Available') }}</option>
