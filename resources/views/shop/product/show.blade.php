@@ -98,11 +98,12 @@
                             @endforeach
                         </div>
                     </div>
-
                     <!-- Quantity Selection -->
                     <div class="mb-3">
                         <label class="fw-bold">Quantity:</label>
-                        <span>{{ $product->quantity }}</span>
+                        @foreach($product->quantities as $row)
+                            <br> <span>-- {{ $row->branch->name }} ({{ $row->qty }})</span>
+                        @endforeach
                     </div>
 
                     <a href="/products/{{ $product->id }}/details" target="_blank" class="btn btn-outline-primary">

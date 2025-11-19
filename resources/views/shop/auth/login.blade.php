@@ -112,37 +112,6 @@
                                 class="btn btn-sm btn-outline-primary text-decoration-none">Register As Seller</a>
                         </div>
                     @endif
-
-                    @if (app()->isLocal())
-                        <div class="credentials-section">
-                            <div class="item">
-                                <div class="header">Shop Credentials</div>
-                                <div class="content">
-                                    <div class="credentials">
-                                        <span>Email: shop@readyecommerce.com</span>
-                                        <span>Password: secret</span>
-                                    </div>
-                                    <div class="copyBtn" onclick="loginShop()">
-                                        <i class="fa-regular fa-copy"></i>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="item">
-                                <div class="header">Admin Credentials</div>
-                                <div class="content">
-                                    <div class="credentials">
-                                        <span>Email: root@readyecommerce.com</span>
-                                        <span>Password: secret</span>
-                                    </div>
-                                    <div class="copyBtn" onclick="gotoAdminLogin()">
-                                        <i class="fa-regular fa-copy"></i>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    @endif
                 </form>
             </div>
         </div>

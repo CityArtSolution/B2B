@@ -283,7 +283,7 @@
                                             id="productColorContainer"></div>
                                     </div>
 
-                                    <!-- Quantity -->
+                                    <!-- Branch -->
                                     <div class="row pt-3">
                                         <div class="mb-3">
                                             <label for="branchSelect">{{ __('Branch') }}</label>
@@ -608,12 +608,6 @@
                                             ${product.total_sold} {{ __('Sold-PRO') }}
                                         </span>
                                         <span class="product-divider"></span>
-                                        ${product.quantity > 0 ? `<span class="text-muted pos-product-meta">
-                                                ${product.quantity} {{ __('Left-PRO') }}</span>` :
-                                        `<span class="text-danger fw-bold">
-                                                    Stock Out
-                                                </span>
-                                                `}
                                     </p>
                                 </div>
                             </div>
@@ -623,7 +617,12 @@
                 productList.append(productHtml);
             });
         }
-
+// ${product.quantity > 0 ? `<span class="text-muted pos-product-meta">
+//                                                 ${product.quantity} {{ __('Left-PRO') }}</span>` :
+//                                         `<span class="text-danger fw-bold">
+//                                                     Stock Out
+//                                                 </span>
+//                                                 `}
         // call fetch products
         fetchProducts();
 
@@ -794,17 +793,62 @@
                 posCartItem = posCartBasket.find(item => item.pos_cart_id == posCartID);
             }
 
-            if (product.quantity == 0) {
-                $('#addToCartBtn').text("{{ __('Out of Stock') }}");
-                $('#addToCartBtn').attr('disabled', true);
+            let qty = 0;
+            var branchSelect = $('#branchSelect');
+            branchSelect.empty();
+
+            if (product.quantities && product.quantities.length > 0) {
+                product.quantities.forEach(branchQty => {
+                    branchSelect.append(`
+                        <option value="${branchQty.branch_id}">
+                            ${branchQty.branch_name} (${branchQty.qty} available)
+                        </option>
+                    `);
+                });
+
+                var firstBranch = product.quantities[0];
+                branchSelect.val(firstBranch.branch_id);
+                qty = firstBranch.quantity;
+
+                toggleAddToCartButton(qty);
+                if (isModalEdit) {
+                $('#branchSelect option').each(function() {
+                    if ($(this).val() == posCartItem.branch_id) {
+                        $(this).prop('selected', true);
+                    }
+                });
+            } 
+
             } else {
-                $('#addToCartBtn').attr('disabled', false);
+                branchSelect.append(`
+                    <option value="">{{ __('No Branch Available') }}</option>
+                `);
+                qty = 0;
+                toggleAddToCartButton(qty);
+            }
+
+            $('#branchSelect').on('change', function() {
+                var branchID = $(this).val();
+                var branchData = product.quantities.find(q => q.branch_id == branchID);
+
+                if (branchData) {
+                    qty = branchData.quantity
+                }
+            });
+
+            function toggleAddToCartButton(qty) {
+                if (qty == 0) {
+                    $('#addToCartBtn').text("{{ __('Out of Stock') }}");
+                    $('#addToCartBtn').attr('disabled', true);
+                } else {
+                    $('#addToCartBtn').text("{{ __('Confirm') }}");
+                    $('#addToCartBtn').attr('disabled', false);
+                }
             }
 
             $('#productImage').attr('src', product.thumbnail);
             $('#productTitle').text(product.name);
-            $('#productPrice').text(showCurrency(product.discount_price > 0 ? product.discount_price : product
-                .price));
+            $('#productPrice').text(showCurrency(product.discount_price > 0 ? product.discount_price : product.price));
 
             if (product.discount_price > 0) {
                 $('#productOriginalPrice').text(showCurrency(product.price));
@@ -936,6 +980,7 @@
 
         const addToCart = () => {
             var quantity = $('#quantityNumber').val();
+            var branchID = $('#branchSelect').val();
             // add to cart
             $.ajax({
                 url: "{{ route('shop.pos.addToCart') }}",
@@ -944,6 +989,7 @@
                     _token: '{{ csrf_token() }}',
                     name: $('#name').val() ?? null,
                     product_id: selectedProductID,
+                    branchID: branchID,
                     color: selectedColorID,
                     size: selectedSizeID,
                     quantity: quantity,
@@ -964,6 +1010,7 @@
 
         const updateToCart = () => {
             var quantity = $('#quantityNumber').val();
+            var branchID = $('#branchSelect').val();
             // update cart
             $.ajax({
                 url: "{{ route('shop.pos.updateCart') }}",
@@ -972,6 +1019,7 @@
                     _token: '{{ csrf_token() }}',
                     pos_cart_id: selectedPosCartItemID,
                     product_id: selectedProductID,
+                    branchID: branchID,
                     color: selectedColorID ?? '',
                     size: selectedSizeID ?? '',
                     quantity: quantity,

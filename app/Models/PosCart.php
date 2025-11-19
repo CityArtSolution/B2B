@@ -14,7 +14,7 @@ class PosCart extends Model
 
     public function products(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class, 'pos_cart_products')->withPivot('id', 'quantity', 'color', 'size', 'unit', 'brand')->withTimestamps();
+        return $this->belongsToMany(Product::class, 'pos_cart_products')->withPivot('id', 'branch_id' , 'quantity', 'color', 'size', 'unit', 'brand')->withTimestamps();
     }
 
     public function shop()
