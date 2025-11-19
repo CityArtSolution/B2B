@@ -1292,6 +1292,8 @@
     "Apply Store voucher": "تطبيق قسيمة المتجر",
     "Cart": "السلة",
     "Checkout": "الدفع",
+    "Cash": "نقدي",
+    "Credit": "آجل",
     "Cash on delivery": "الدفع عند الاستلام",
     "Credit or Debit Card": "بطاقة ائتمان أو خصم",
     "Subtotal After Discount": "الإجمالي الفرعي بعد الخصم",
@@ -1538,7 +1540,22 @@
   "Optional - Leave empty for standard delivery": "اختياري - اتركه فارغاً للتسليم القياسي",
   "Selected Shipping": "الشحن المحدد",
   "Cost": "التكلفة",
-  "Estimated Delivery": "التسليم المقدر",
   "Requested Date": "التاريخ المطلوب",
-  "Select Shipping Company": "اختر شركة الشحن"
+  "Select Shipping Company": "اختر شركة الشحن",
+
+  "Installments": "الدفعات",
+  "Add Installment": "إضافة دفعة",
+  "Edit Installment": "تعديل الدفعة",
+  "Installment Name": "اسم الدفعة",
+  "Installment Value": "قيمة الدفعة",
+  "Installments Management": "إدارة الدفعات",
+  "All Installments": "كل الدفعات",
+  "Installments History": "سجل الدفعات",
+
+  "The installment name field is required.": "اسم الدفعة مطلوب.",
+  "This installment name has already been taken.": "اسم الدفعة موجود مسبقًا.",
+  "The installment value field is required.": "قيمة الدفعة مطلوبة.",
+  "The installment value must be a number.": "قيمة الدفعة يجب أن تكون رقمًا.",
+  "The installment value must be at least 0.": "قيمة الدفعة يجب ألا تقل عن 0."
+
 }

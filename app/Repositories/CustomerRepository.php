@@ -27,6 +27,7 @@ class CustomerRepository extends Repository
     {
         return self::create([
             'user_id' => $user->id,
+            'payment_status' => request('payment_status', 'cash'),
         ]);
     }
 }

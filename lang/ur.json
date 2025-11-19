@@ -1226,6 +1226,8 @@
     "Apply Store voucher": "اسٹور واؤچر لگائیں",
     "Cart": "ٹوکری",
     "Checkout": "چیک آؤٹ",
+     "Cash": "نقدی",
+    "Credit": "کریڈٹ"
     "Cash on delivery": "ادائیگی نقدی پر",
     "Credit or Debit Card": "کریڈٹ یا ڈیبٹ کارڈ",
     "Subtotal After Discount": "چھوٹ کے بعد ذیلی مجموعہ",
@@ -1464,5 +1466,18 @@
     "value_customer_text": "ہمارا پہلا مقصد آپ کی خوشی ہے جب بھی آپ ہمارے ساتھ خریداری کریں۔",
     "payment.status": "ادائیگی کی حالت",
     "reject": "نامنظور",
-    "Payment Slip": "ادائیگی کی رسید"
+    "Payment Slip": "ادائیگی کی رسید",
+    
+    "Installments": "اقساط",
+    "Add Installment": "نئی قسط شامل کریں",
+    "Edit Installment": "قسط میں ترمیم کریں",
+    "Installment Name": "قسط کا نام",
+    "Installment Value": "قسط کی رقم",
+    
+    "The installment name field is required.": "قسط کا نام ضروری ہے۔",
+    "This installment name has already been taken.": "یہ قسط کا نام پہلے سے موجود ہے۔",
+    "The installment value field is required.": "قسط کی رقم ضروری ہے۔",
+    "The installment value must be a number.": "قسط کی رقم عدد ہونی چاہیے۔",
+    "The installment value must be at least 0.": "قسط کی رقم کم از کم 0 ہونی چاہیے۔"
+
 }
