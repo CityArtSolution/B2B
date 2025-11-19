@@ -408,11 +408,11 @@
                         </tr>
                         
                         <tr>
-                            <td style="border:1px solid #000; padding:6px;">{{ __('client building_number') }}</td><td style="border:1px solid #000; padding:6px;">{{ $address->flat_no }}</td>
+                            <td style="border:1px solid #000; padding:6px;">{{ __('client building_number') }}</td><td style="border:1px solid #000; padding:6px;">{{ $address->flat_no ?? ''}}</td>
                         </tr>
                         
                         <tr>
-                            <td style="border:1px solid #000; padding:6px;">{{ __('client street_name') }}</td><td style="border:1px solid #000; padding:6px;">{{ $address->area }}</td>
+                            <td style="border:1px solid #000; padding:6px;">{{ __('client street_name') }}</td><td style="border:1px solid #000; padding:6px;">{{ $address->area ?? ''}}</td>
                         </tr>
                         
                         <tr>
@@ -420,15 +420,15 @@
                         </tr>
                         
                         <tr>
-                            <td style="border:1px solid #000; padding:6px;">{{ __('client city') }}</td><td style="border:1px solid #000; padding:6px;">{{ $address->address_line }}</td>
-                        </tr>{{ $address->area }}
-                        
-                        <tr>
-                            <td style="border:1px solid #000; padding:6px;">{{ __('client country') }}</td><td style="border:1px solid #000; padding:6px;">{{ $address->address_line2 }}</td>
+                            <td style="border:1px solid #000; padding:6px;">{{ __('client city') }}</td><td style="border:1px solid #000; padding:6px;">{{ $address->address_line ?? ''}}</td>
                         </tr>
                         
                         <tr>
-                            <td style="border:1px solid #000; padding:6px;">{{ __('client postal_code') }}</td><td style="border:1px solid #000; padding:6px;">{{ $address->post_code }}</td>
+                            <td style="border:1px solid #000; padding:6px;">{{ __('client country') }}</td><td style="border:1px solid #000; padding:6px;">{{ $address->address_line2 ?? '' }}</td>
+                        </tr>
+                        
+                        <tr>
+                            <td style="border:1px solid #000; padding:6px;">{{ __('client postal_code') }}</td><td style="border:1px solid #000; padding:6px;">{{ $address->post_code ?? '' }}</td>
                         </tr>
                         
                         <tr>

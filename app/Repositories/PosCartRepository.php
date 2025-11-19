@@ -13,7 +13,7 @@ use App\Models\OrderVatTax;
 use App\Models\PosCart;
 use App\Models\PosCartProduct;
 use App\Models\Product;
-use App\Models\ProductQuantity;
+use App\Models\ProductBranch;
 
 use Illuminate\Http\Request;
 
@@ -92,6 +92,7 @@ class PosCartRepository extends Repository
     {
         $posCartProduct->update([
             'quantity' => $request->quantity,
+            'branch_id' => $request->branchID,
             'color' => $request->color,
             'size' => $request->size,
             'unit' => $request->unit,
@@ -116,6 +117,7 @@ class PosCartRepository extends Repository
         if ($existCartProduct) {
             $existCartProduct->update([
                 'quantity' => $request->quantity,
+                'branch_id' => $request->branchID,
             ]);
 
             return $existCartProduct;
@@ -124,6 +126,7 @@ class PosCartRepository extends Repository
         // attach new product
         return $postCart->products()->attach($productID, [
             'quantity' => $request->quantity,
+            'branch_id' => $request->branchID,
             'color' => $request->color,
             'size' => $request->size,
             'unit' => $request->unit ?? null,
@@ -284,16 +287,32 @@ class PosCartRepository extends Repository
         ]);
 
         foreach ($posCart->products as $product) {
-            $quantity = $product->quantity - $product->pivot->quantity;
-            $product->update([
-                'quantity' => ($quantity > 0) ? $quantity : 0,
-            ]);
+            //  $product->pivot->quantity;
+            // $quantity = $product->quantity - $product->pivot->quantity;
+            // $product->update([
+            //     'quantity' => ($quantity > 0) ? $quantity : 0,
+            // ]);
 
-            $product_QTY = ProductQuantity::where('product_id' , $product->id)->where('color_id' ,$product->pivot->color)->where('size_id' , $product->pivot->size)->first();
-            $newQ = $product_QTY->quantity - $product->pivot->quantity;
-            $product_QTY->update([
-                'quantity' => $newQ ,
-            ]);
+            $branchId = $product->pivot->branch_id;
+    if (! $branchId) {
+        throw new \Exception("Please select branch for product: {$product->name}");
+    }
+            if ($branchId) {
+                $branchQty = ProductBranch::where('product_id', $product->id)
+                    ->where('branch_id', $branchId)
+                    ->first();
+
+                if ($branchQty) {
+                    $newBranchQty = $branchQty->qty - $product->pivot->quantity;
+                    $branchQty->update([
+                        'qty' => max($newBranchQty, 0)
+                    ]);
+                }
+            }
+
+
+
+
 
             $size = $product->sizes()?->where('id', $product->pivot->size)->first();
             $color = $product->colors()?->where('id', $product->pivot->color)->first();
@@ -303,6 +322,7 @@ class PosCartRepository extends Repository
                 'color' => $color?->name,
                 'size' => $size?->name,
                 'unit' => $product->pivot->unit,
+                'branch_id' => $branchId,
             ]);
         }
 
