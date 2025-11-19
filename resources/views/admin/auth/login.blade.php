@@ -142,36 +142,6 @@
 
                     <button class="btn loginButton" type="submit">Login</button>
 
-                    @if (app()->isLocal())
-                        <div class="credentials-section">
-                            <div class="item">
-                                <div class="header">Admin Credentials</div>
-                                <div class="content">
-                                    <div class="credentials">
-                                        <span>Email: root@readyecommerce.com</span>
-                                        <span>Password: secret</span>
-                                    </div>
-                                    <div class="copyBtn" onclick="loginAdmin()">
-                                        <i class="fa-regular fa-copy"></i>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="item">
-                                <div class="header">Shop Credentials</div>
-                                <div class="content">
-                                    <div class="credentials">
-                                        <span>Email: shop@readyecommerce.com</span>
-                                        <span>Password: secret</span>
-                                    </div>
-                                    <div class="copyBtn" onclick="gotoShopLogin()">
-                                        <i class="fa-regular fa-copy"></i>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    @endif
                 </form>
             </div>
         </div>
@@ -211,8 +181,8 @@
         var password = document.getElementById("password");
 
         function loginAdmin() {
-            email.value = 'root@readyecommerce.com';
-            password.value = 'secret';
+            email.value = '';
+            password.value = '';
 
             if (!sessionStorage.getItem('fromShop')) {
                 Toast.fire({
