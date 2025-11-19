@@ -731,8 +731,8 @@
                 @endhasPermission
 
                 {{-- @hasPermission('admin.installments.index') --}}
-                    <a href="{{ route('admin.installments.index') }}"
-                        class="subMenu {{ request()->routeIs('admin.installments.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.installment.index') }}"
+                        class="subMenu {{ request()->routeIs('admin.installment.*') ? 'active' : '' }}">
                         {{ __('Installments') }}
                     </a>
                 {{-- @endhasPermission --}}
