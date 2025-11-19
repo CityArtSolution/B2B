@@ -286,7 +286,9 @@ class POSController extends Controller
     {
         $product = ProductRepository::find($request->product_id);
 
-        if ($product->quantity < $request->quantity) {
+        $branchQuantity = $product->quantities()->where('branch_id', $request->branchID)->first();
+
+        if (!$branchQuantity || $branchQuantity->qty < $request->quantity) {
             return $this->json(__('Sorry! product cart quantity is limited. No more stock'), [], 422);
         }
 

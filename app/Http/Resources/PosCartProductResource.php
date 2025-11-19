@@ -36,6 +36,7 @@ class PosCartProductResource extends JsonResource
             'order_qty' => (int) $this->pivot->quantity,
             'color' => $color ?? null,
             'size' => $size ?? null,
+            'branch_id' => $this->pivot?->branch_id ?? null,
             'pos_cart_id' => $this->pivot?->id ?? null,
             'unit' => $this->unit?->name ?? null,
         ];
