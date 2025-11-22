@@ -51,6 +51,12 @@
                                             <x-input type="Commercial register" name="Commercial_register" label="Commercial register"
                                                 placeholder="Enter Commercial register" value="{{ $user->Commercial_register }}" required="true" />
                                         </div>
+                                        <div class="col-md-6 mt-3">
+                                            <x-input type="text" name="country" label="client country"
+                                                placeholder="Enter client country" value="{{ $user->country }}" required="true" />
+                                        </div>
+                                    </div>
+                                    <div class="mt-3">
                                         <x-select label="Gender" name="gender">
                                             <option value="male" {{ $user->gender == 'male' ? 'selected' : '' }}>
                                                 {{ __('Male') }}
