@@ -66,6 +66,16 @@
                                             </option>
                                         </x-select>
                                     </div>
+                                    <div class="mt-3">
+                                        <x-select label="{{ __('Payment Status') }}" name="payment_status" required="true">
+                                            <option value="cash" {{ $user->customer->payment_status === 'cash' ? 'selected' : '' }}>
+                                                {{ __('Cash') }}
+                                            </option>
+                                            <option value="credit" {{ $user->customer->payment_status === 'credit' ? 'selected' : '' }}>
+                                                {{ __('Credit') }}
+                                            </option>
+                                        </x-select>
+                                    </div>
                                 </div>
                                 <div class="col-lg-5">
                                     <div class="mt-3 d-flex align-items-center justify-content-center">

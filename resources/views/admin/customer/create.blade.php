@@ -67,6 +67,12 @@
                                             </option>
                                         </x-select>
                                     </div>
+                                    <div class="mt-3">
+                                        <x-select label="{{ __('Payment Status') }}" name="payment_status" required="true">
+                                            <option value="cash">{{ __('Cash') }}</option>
+                                            <option value="credit">{{ __('Credit') }}</option>
+                                        </x-select>
+                                    </div>
                                 </div>
                                 <div class="col-lg-5">
                                     <div class="mt-3 d-flex align-items-center justify-content-center">
