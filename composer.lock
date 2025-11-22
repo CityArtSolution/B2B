@@ -4124,22 +4124,22 @@
         },
         {
             "name": "maennchen/zipstream-php",
-            "version": "3.2.0",
+            "version": "3.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/maennchen/ZipStream-PHP.git",
-                "reference": "9712d8fa4cdf9240380b01eb4be55ad8dcf71416"
+                "reference": "aeadcf5c412332eb426c0f9b4485f6accba2a99f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/maennchen/ZipStream-PHP/zipball/9712d8fa4cdf9240380b01eb4be55ad8dcf71416",
-                "reference": "9712d8fa4cdf9240380b01eb4be55ad8dcf71416",
+                "url": "https://api.github.com/repos/maennchen/ZipStream-PHP/zipball/aeadcf5c412332eb426c0f9b4485f6accba2a99f",
+                "reference": "aeadcf5c412332eb426c0f9b4485f6accba2a99f",
                 "shasum": ""
             },
             "require": {
                 "ext-mbstring": "*",
                 "ext-zlib": "*",
-                "php-64bit": "^8.3"
+                "php-64bit": "^8.2"
             },
             "require-dev": {
                 "brianium/paratest": "^7.7",
@@ -4148,7 +4148,7 @@
                 "guzzlehttp/guzzle": "^7.5",
                 "mikey179/vfsstream": "^1.6",
                 "php-coveralls/php-coveralls": "^2.5",
-                "phpunit/phpunit": "^12.0",
+                "phpunit/phpunit": "^11.0",
                 "vimeo/psalm": "^6.0"
             },
             "suggest": {
@@ -4190,7 +4190,7 @@
             ],
             "support": {
                 "issues": "https://github.com/maennchen/ZipStream-PHP/issues",
-                "source": "https://github.com/maennchen/ZipStream-PHP/tree/3.2.0"
+                "source": "https://github.com/maennchen/ZipStream-PHP/tree/3.1.2"
             },
             "funding": [
                 {
@@ -4198,7 +4198,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-07-17T11:15:13+00:00"
+            "time": "2025-01-27T12:07:53+00:00"
         },
         {
             "name": "markbaker/complex",
@@ -7603,88 +7603,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-11-03T20:16:13+00:00"
-        },
-        {
-            "name": "stichoza/google-translate-php",
-            "version": "v5.3.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Stichoza/google-translate-php.git",
-                "reference": "4d9a267ac063c16967df67dcba30a71fbfb5f550"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Stichoza/google-translate-php/zipball/4d9a267ac063c16967df67dcba30a71fbfb5f550",
-                "reference": "4d9a267ac063c16967df67dcba30a71fbfb5f550",
-                "shasum": ""
-            },
-            "require": {
-                "ext-dom": "*",
-                "ext-json": "*",
-                "ext-mbstring": "*",
-                "guzzlehttp/guzzle": "^7.0",
-                "php": "^8.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^9.5.10"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Stichoza\\GoogleTranslate\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Levan Velijanashvili",
-                    "email": "me@stichoza.com"
-                }
-            ],
-            "description": "Free Google Translate API PHP Package",
-            "homepage": "https://github.com/Stichoza/google-translate-php",
-            "keywords": [
-                "google",
-                "php",
-                "translate",
-                "translating",
-                "translator"
-            ],
-            "support": {
-                "issues": "https://github.com/Stichoza/google-translate-php/issues",
-                "source": "https://github.com/Stichoza/google-translate-php/tree/v5.3.1"
-            },
-            "funding": [
-                {
-                    "url": "https://btc.com/bc1qc25j4x7yahghm8nnn6lypnw59nptylsw32nkfl",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://www.paypal.me/stichoza",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://ko-fi.com/stichoza",
-                    "type": "ko_fi"
-                },
-                {
-                    "url": "https://liberapay.com/stichoza",
-                    "type": "liberapay"
-                },
-                {
-                    "url": "https://opencollective.com/stichoza",
-                    "type": "open_collective"
-                },
-                {
-                    "url": "https://www.patreon.com/stichoza",
-                    "type": "patreon"
-                }
-            ],
-            "time": "2025-11-01T22:45:28+00:00"
+            "time": "2025-07-23T16:08:05+00:00"
         },
         {
             "name": "stripe/stripe-php",
@@ -11289,16 +11208,16 @@
         },
         {
             "name": "laravel/sail",
-            "version": "v1.48.0",
+            "version": "v1.46.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/sail.git",
-                "reference": "1bf3b8870b72a258a3b6b5119435835ece522e8a"
+                "reference": "eb90c4f113c4a9637b8fdd16e24cfc64f2b0ae6e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/sail/zipball/1bf3b8870b72a258a3b6b5119435835ece522e8a",
-                "reference": "1bf3b8870b72a258a3b6b5119435835ece522e8a",
+                "url": "https://api.github.com/repos/laravel/sail/zipball/eb90c4f113c4a9637b8fdd16e24cfc64f2b0ae6e",
+                "reference": "eb90c4f113c4a9637b8fdd16e24cfc64f2b0ae6e",
                 "shasum": ""
             },
             "require": {
@@ -11348,7 +11267,7 @@
                 "issues": "https://github.com/laravel/sail/issues",
                 "source": "https://github.com/laravel/sail"
             },
-            "time": "2025-11-09T14:46:21+00:00"
+            "time": "2025-09-23T13:44:39+00:00"
         },
         {
             "name": "mockery/mockery",

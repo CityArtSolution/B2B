@@ -1230,6 +1230,8 @@
     "Apply Store voucher": "Apply Store voucher",
     "Cart": "Cart",
     "Checkout": "Checkout",
+    "Cash": "Cash",
+    "Credit": "Credit",
     "Cash on delivery": "Cash on delivery",
     "Credit or Debit Card": "Credit or Debit Card",
     "Subtotal After Discount": "Subtotal After Discount",
@@ -1595,7 +1597,19 @@
     "Optional - Leave empty for standard delivery": "Optional - Leave empty for standard delivery",
     "Selected Shipping": "Selected Shipping",
     "Cost": "Cost",
-    "Estimated Delivery": "Estimated Delivery",
     "Requested Date": "Requested Date",
-    "Select Shipping Company": "Select Shipping Company"
+    "Select Shipping Company": "Select Shipping Company",
+    
+    "Installments": "Installments",
+    "Add Installment": "Add Installment",
+    "Edit Installment": "Edit Installment",
+    "Installment Name": "Installment Name",
+    "Installment Value": "Installment Value",
+
+    "The installment name field is required.": "The installment name field is required.",
+    "This installment name has already been taken.": "This installment name has already been taken.",
+    "The installment value field is required.": "The installment value field is required.",
+    "The installment value must be a number.": "The installment value must be a number.",
+    "The installment value must be at least 0.": "The installment value must be at least 0."
+
 }

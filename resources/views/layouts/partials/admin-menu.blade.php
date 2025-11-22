@@ -730,6 +730,13 @@
                     </a>
                 @endhasPermission
 
+                {{-- @hasPermission('admin.installments.index') --}}
+                    <a href="{{ route('admin.installment.index') }}"
+                        class="subMenu {{ request()->routeIs('admin.installment.*') ? 'active' : '' }}">
+                        {{ __('Installments') }}
+                    </a>
+                {{-- @endhasPermission --}}
+                
                 @hasPermission('admin.themeColor.index')
                     <!--<a href="{{ route('admin.themeColor.index') }}"-->
                     <!--    class="subMenu {{ request()->routeIs('admin.themeColor.*') ? 'active' : '' }}">-->

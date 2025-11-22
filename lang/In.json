@@ -1226,6 +1226,8 @@
     "Apply Store voucher": "स्टोर वाउचर लागू करें",
     "Cart": "कार्ट",
     "Checkout": "चेक आउट",
+    "Cash": "नकद",
+    "Credit": "क्रेडिट"
     "Cash on delivery": "Cash on delivery",
     "Credit or Debit Card": "क्रेडिट या डेबिट कार्ड",
     "Subtotal After Discount": "छूट के बाद उप-योग",
@@ -1464,5 +1466,18 @@
 "value_customer_text": "हमारा पहला लक्ष्य आपकी खुशी है जब भी आप हमारे साथ खरीदारी करें।",
 "payment.status": "भुगतान की स्थिति",
 "reject": "अस्वीकृत",
-"Payment Slip": "भुगतान रसीद"
+"Payment Slip": "भुगतान रसीद",
+
+"Installments": "किस्तें",
+"Add Installment": "नई किस्त जोड़ें",
+"Edit Installment": "किस्त संपादित करें",
+"Installment Name": "किस्त का नाम",
+"Installment Value": "किस्त का मूल्य",
+
+"The installment name field is required.": "किस्त का नाम आवश्यक है।",
+"This installment name has already been taken.": "यह किस्त का नाम पहले से मौजूद है।",
+"The installment value field is required.": "किस्त का मूल्य आवश्यक है।",
+"The installment value must be a number.": "किस्त का मूल्य संख्या होना चाहिए।",
+"The installment value must be at least 0.": "किस्त का मूल्य कम से कम 0 होना चाहिए।"
+
 }

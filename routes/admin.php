@@ -53,7 +53,7 @@ use App\Http\Controllers\Admin\SMSGatewaySetupController;
 use App\Http\Controllers\Admin\TicketIssueTypeController;
 use App\Http\Controllers\Admin\SubscriptionPlanController;
 use App\Http\Controllers\Admin\MailConfigurationController;
-use App\Http\Controllers\Admin\CustomerNotificationController;
+use App\Http\Controllers\Admin\{CustomerNotificationController,InstallmentController};
 
 /*
 |--------------------------------------------------------------------------
@@ -267,6 +267,15 @@ Route::name('admin.')->group(function () {
             Route::get('/delivery-charge/{deliveryCharge}/destroy', 'destroy')->name('deliveryCharge.destroy');
         });
 
+        // Installment
+        Route::controller(InstallmentController::class)->group(function () {
+            Route::get('/installment', 'index')->name('installment.index');
+            Route::get('/installment/create', 'create')->name('installment.create');
+            Route::post('/installment/store', 'store')->name('installment.store');
+            Route::get('/installment/{installment}/edit', 'edit')->name('installment.edit');
+            Route::put('/installment/{installment}/update', 'update')->name('installment.update');
+            Route::get('/installment/{installment}/destroy', 'destroy')->name('installment.destroy');
+        });
         // Coupons
         Route::controller(CouponController::class)->group(function () {
             Route::get('/coupons', 'index')->name('coupon.index');
