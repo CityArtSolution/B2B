@@ -49,9 +49,15 @@
 
                                     <div class="mt-3" style="display: flex;align-items: baseline;gap: 19px;">
                                         <div class="col-md-6 mt-3">
-                                            <x-input type="Commercial register" name="Commercial_register" label="Commercial register"
+                                            <x-input type="text" name="Commercial_register" label="Commercial register"
                                                 placeholder="Enter Commercial register" required="true" />
                                         </div>
+                                        <div class="col-md-6 mt-3">
+                                            <x-input type="text" name="country" label="client country"
+                                                placeholder="Enter client country" required="true" />
+                                        </div>
+                                    </div>
+                                    <div class="mt-3">
                                         <x-select label="Gender" name="gender">
                                             <option value="male">
                                                 {{ __('Male') }}

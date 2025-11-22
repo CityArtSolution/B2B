@@ -76,7 +76,9 @@ class DashboardController extends Controller
 
         $flashSale = FlashSaleRepository::getIncoming();
         
-        return view('admin.dashboard', compact('totalShop', 'totalOrder', 'totalCustomer', 'totalProduct', 'orderStatuses', 'orderStatuses2' , 'topCustomers', 'topSellingProducts' , 'lseeSellingProducts' , 'topReviewProducts', 'topShops', 'latestOrders', 'topFavorites', 'pendingWithdraw', 'alreadyWithdraw', 'deniedWithdraw', 'totalCommission', 'totalCategories', 'flashSale', 'totalRider'));
+        $products_addresses = (clone $productObject)->withCount('orders')->with(['orders.customer'])->orderBy('orders_count', 'desc')->limit(8)->get();
+
+        return view('admin.dashboard', compact('totalShop', 'totalOrder' , 'products_addresses' , 'totalCustomer', 'totalProduct', 'orderStatuses', 'orderStatuses2' , 'topCustomers', 'topSellingProducts' , 'lseeSellingProducts' , 'topReviewProducts', 'topShops', 'latestOrders', 'topFavorites', 'pendingWithdraw', 'alreadyWithdraw', 'deniedWithdraw', 'totalCommission', 'totalCategories', 'flashSale', 'totalRider'));
     }
 
     public function orderStatistics()

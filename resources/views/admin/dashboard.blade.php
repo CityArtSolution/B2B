@@ -34,6 +34,35 @@
     
     $cancelled1 = Order::where('order_status', OrderStatus2::CANCELLED->value)->where('is_company', 1)->count();
     
+
+
+$products_data = $products_addresses->map(function ($product) {
+    $countries = [];
+
+    foreach ($product->orders as $order) {
+        $user = $order->customer->user;
+        if(!$user) continue;
+
+        $country = $user->country ?? 'غير محدد';
+
+        if (!isset($countries[$country])) {
+            $countries[$country] = [
+                'count' => 0,
+                'users' => []
+            ];
+        }
+
+        $countries[$country]['count'] += 1;
+        $countries[$country]['users'][] = [
+            'name' => $user->name,
+            'phone' => $user->phone ?? '-',
+            'img' => $user->thumbnail ??'assets/icons/user.svg',
+        ];
+    }
+
+    $product->countries = $countries;
+    return $product;
+});
 @endphp
 @extends('layouts.app')
 
@@ -317,6 +346,7 @@
         </div>
     </div>--}}
 
+
     <!-- statistics Overview -->
     <div class="card mt-3">
         <div class="card-body">
@@ -377,6 +407,64 @@
             </div>
         </div>
     </div>
+
+
+
+
+<style>
+    .accordion-button::after {
+        margin-right: auto !important;
+        margin-left: 0 !important;
+    }
+    
+</style>
+<div id="product-sales-overview" class="container my-4">
+    <h3 class="mb-3">نظرة عامة على مبيعات المنتجات</h3>
+    <div class="accordion" id="productsAccordion">
+        @foreach ($products_data as $index => $product)
+        <div class="accordion-item mb-3 shadow-sm rounded">
+            <h2 class="accordion-header" id="heading{{ $index }}">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"  data-bs-target="#collapse{{ $index }}" aria-expanded="false"  aria-controls="collapse{{ $index }}">
+                    {{ $product->name }} — <span class="badge bg-primary">{{ $product->orders_count }} طلب</span>
+                </button>
+            </h2>
+            <div id="collapse{{ $index }}" class="accordion-collapse collapse" aria-labelledby="heading{{ $index }}" data-bs-parent="#productsAccordion">
+                <div class="accordion-body">
+                    @foreach ($product->countries as $country => $data)
+                    <div class="card mb-2">
+                        <div class="card-header p-2 d-flex justify-content-between align-items-center" 
+                            data-bs-toggle="collapse" 
+                            data-bs-target="#countryCollapse{{ $index }}{{ $loop->index }}" 
+                            aria-expanded="false" 
+                            style="cursor:pointer; position: relative;">
+                            <span>{{ $country }} — <strong>{{ $data['count'] }}</strong></span>
+                            <i class="bi bi-chevron-down" style="position: absolute;left: 13px;"></i>
+                        </div>
+                        <div id="countryCollapse{{ $index }}{{ $loop->index }}" class="collapse">
+                            <div class="card-body p-2">
+                                @foreach ($data['users'] as $user)
+                                <div class="d-flex align-items-center mb-2 p-2 bg-light rounded shadow-sm">
+                                    <img src="{{ $user['img'] }}" alt="{{ $user['name'] ?? 'بدون اسم' }}" 
+                                        class="rounded-circle me-3" style="width:40px; height:40px; object-fit:cover;">
+                                    <div>
+                                        <div class="fw-bold">{{ $user['name'] ?? 'بدون اسم' }}</div>
+                                        <div class="text-muted" style="font-size: 0.9rem;">{{ $user['phone'] ?? '-' }}</div>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+        @endforeach
+    </div>
+
+</div>
+
+
 
     <div class="card mt-3">
         <div class="card-body">
