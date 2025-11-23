@@ -47,18 +47,36 @@ class HomeController extends Controller
                 return $product->where('is_active', true);
             })->withCount('products')->orderByDesc('products_count')->take(10)->get();
 
+        // Get selected branch for authenticated users
+        $selectedBranchId = null;
+        if (auth()->check()) {
+            $selectedBranchId = session('selected_branch');
+        }
+
         $popularProducts = ProductRepository::query()->isActive()
             ->when($shop, function ($query) use ($shop) {
                 return $query->where('shop_id', $shop->id);
-            })->withCount('orders as orders_count')
+            })
+            ->when($selectedBranchId, function ($query) use ($selectedBranchId) {
+                return $query->whereHas('quantities', function ($query) use ($selectedBranchId) {
+                    return $query->where('branch_id', $selectedBranchId)->where('qty', '>', 0);
+                });
+            })
+            ->withCount('orders as orders_count')
             ->withAvg('reviews as average_rating', 'rating')
             ->orderByDesc('average_rating')
             ->orderByDesc('orders_count')
             ->take(6)->get();
 
-        $justForYou = ProductRepository::query()->isActive()->latest('id')->when($shop, function ($query) use ($shop) {
-            return $query->where('shop_id', $shop->id);
-        });
+        $justForYou = ProductRepository::query()->isActive()->latest('id')
+            ->when($shop, function ($query) use ($shop) {
+                return $query->where('shop_id', $shop->id);
+            })
+            ->when($selectedBranchId, function ($query) use ($selectedBranchId) {
+                return $query->whereHas('quantities', function ($query) use ($selectedBranchId) {
+                    return $query->where('branch_id', $selectedBranchId)->where('qty', '>', 0);
+                });
+            });
         $total = $justForYou->count();
         $justForYou = $justForYou->skip($skip)->take($perPage)->get();
 

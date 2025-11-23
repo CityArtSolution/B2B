@@ -15,11 +15,16 @@ export const useAuth = defineStore("authStore", {
         showChangeAddressModal: false,
         orderCancel: false,
         favoriteRemove: false,
+        selectedBranch: null,
+        showBranchModal: false,
     }),
 
     getters: {
         getAddressById: (state) => (id) => {
             return state.addresses.find((address) => address.id == id);
+        },
+        hasSelectedBranch: (state) => {
+            return state.selectedBranch !== null;
         },
     },
 
@@ -104,6 +109,7 @@ export const useAuth = defineStore("authStore", {
                     this.addresses = [];
                     this.token = null;
                     this.favoriteProducts = 0;
+                    this.selectedBranch = null;
                     chatStore.chats = [];
                     chatStore.activeShop = null;
                 })
@@ -112,7 +118,36 @@ export const useAuth = defineStore("authStore", {
                     this.addresses = [];
                     this.token = null;
                     this.favoriteProducts = 0;
+                    this.selectedBranch = null;
                 });
+        },
+
+        showBranchModal() {
+            this.showBranchModal = true;
+        },
+
+        hideBranchModal() {
+            this.showBranchModal = false;
+        },
+
+        setSelectedBranch(branch) {
+            this.selectedBranch = branch;
+        },
+
+        async fetchSelectedBranch() {
+            if (!this.token) return;
+
+            try {
+                const response = await axios.get('/api/selected-branch', {
+                    headers: {
+                        Authorization: this.token,
+                    },
+                });
+                this.selectedBranch = response.data.data.branch;
+            } catch (error) {
+                console.error('Error fetching selected branch:', error);
+                this.selectedBranch = null;
+            }
         },
     },
 

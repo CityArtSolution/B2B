@@ -69,6 +69,12 @@ class ProductController extends Controller
         $colors = $rootShop?->colors()->isActive()->get();
         $brands = $rootShop?->brands()->isActive()->get();
 
+        // Get selected branch for authenticated users
+        $selectedBranchId = null;
+        if (auth()->check()) {
+            $selectedBranchId = session('selected_branch');
+        }
+
         // filter query
         $products = ProductRepository::query()
             ->withSum('orders as orders_count', 'order_products.quantity')
@@ -81,6 +87,11 @@ class ProductController extends Controller
                 return $query->where('shop_id', $shop->id);
             })->when($shopID && ! $shop, function ($query) use ($shopID) {
                 return $query->where('shop_id', $shopID);
+            })
+            ->when($selectedBranchId, function ($query) use ($selectedBranchId) {
+                return $query->whereHas('quantities', function ($query) use ($selectedBranchId) {
+                    return $query->where('branch_id', $selectedBranchId)->where('qty', '>', 0);
+                });
             })
             ->when($search, function ($query) use ($search) {
                 return $query->where(function ($query) use ($search) {
