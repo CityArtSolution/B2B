@@ -169,7 +169,7 @@ onMounted(async () => {
     // Auto-fill in development
     if (master.app_environment === 'local') {
         loginFormData.value.phone = 'user@readyecommerce.com';
-        loginFormData.value.password = 'secret';
+        loginFormData.value.password = '123456789';
     }
 
     // Load social login SDKs

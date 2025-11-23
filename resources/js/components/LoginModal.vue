@@ -230,9 +230,16 @@ const fetchCountries = () => {
 const loginFormSubmit = () => {
     errors.value = {}
     isLoading.value = true
-    axios.post('/login', loginFormData.value).then((response) => {
+    axios.post('/login', loginFormData.value).then(async (response) => {
         AuthStore.setToken(response.data.data.access.token);
         AuthStore.setUser(response.data.data.user);
+
+        // Fetch selected branch and show modal if none selected
+        await AuthStore.fetchSelectedBranch();
+        if (!AuthStore.hasSelectedBranch) {
+            AuthStore.showBranchModal();
+        }
+
         AuthStore.hideLoginModal();
         basketStore.fetchCart()
         isLoading.value = false;
@@ -412,6 +419,13 @@ async function sendCodeToBackend(code, provider = 'google', data = {}) {
         if (response.data?.data?.user) {
             AuthStore.setToken(response.data.data.access.token);
             AuthStore.setUser(response.data.data.user);
+
+            // Fetch selected branch and show modal if none selected
+            await AuthStore.fetchSelectedBranch();
+            if (!AuthStore.hasSelectedBranch) {
+                AuthStore.showBranchModal();
+            }
+
             AuthStore.hideLoginModal();
             toast.success('Login Successful', {
                position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",

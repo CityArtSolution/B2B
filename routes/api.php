@@ -29,6 +29,7 @@ use App\Http\Controllers\API\TicketIssueTypeController;
 use App\Http\Controllers\API\Auth\ForgotPasswordController;
 use App\Http\Controllers\API\ProductLicenseController;
 use App\Http\Controllers\API\SupportTicketMessageController;
+use App\Http\Controllers\API\BranchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -103,6 +104,11 @@ Route::controller(SubCategoryController::class)->group(function () {
 // category products route
 Route::get('/category-products', [ProductController::class, 'index']);
 
+// branch route
+Route::controller(BranchController::class)->group(function () {
+    Route::get('/branches', 'index');
+});
+
 // product route
 Route::controller(ProductController::class)->group(function () {
     Route::get('/products', 'index');
@@ -137,6 +143,12 @@ Route::controller(BlogController::class)->group(function () {
 
 // auth middleware route
 Route::middleware(['auth:sanctum', 'role:customer'])->group(function () {
+
+    // branch route
+    Route::controller(BranchController::class)->group(function () {
+        Route::post('/select-branch', 'selectBranch');
+        Route::get('/selected-branch', 'getSelectedBranch');
+    });
 
     // user route
     Route::post('/logout', [AuthController::class, 'logout']);

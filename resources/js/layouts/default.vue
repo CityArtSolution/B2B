@@ -11,6 +11,14 @@
             <Footer />
             <BasketCard />
         </div>
+
+        <!-- Global Modals -->
+        <BranchSelectionModal
+            :show="authStore.showBranchModal"
+            :required="true"
+            @close="authStore.hideBranchModal()"
+            @branch-selected="handleBranchSelected"
+        />
     </div>
 </template>
 
@@ -20,9 +28,13 @@ import NavbarTop from "../components/NavbarTop.vue"
 import Navbar from "../components/Navbar.vue";
 import Footer from "../components/Footer.vue";
 import BasketCard from '../components/BasketCard.vue';
+import BranchSelectionModal from '../components/BranchSelectionModal.vue';
 
 import { useMaster } from '../stores/MasterStore';
+import { useAuth } from '../stores/AuthStore';
+
 const master = useMaster();
+const authStore = useAuth();
 
 onMounted(() => {
     master.fetchData();
@@ -75,6 +87,11 @@ const setupThemeColors = () => {
     document.documentElement.style.setProperty('--primary-800', master.themeColors.primary800);
     document.documentElement.style.setProperty('--primary-900', master.themeColors.primary900);
     document.documentElement.style.setProperty('--primary-950', master.themeColors.primary950);
+}
+
+const handleBranchSelected = (branch) => {
+    authStore.setSelectedBranch(branch);
+    authStore.hideBranchModal();
 }
 
 </script>
