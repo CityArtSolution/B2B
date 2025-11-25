@@ -18,6 +18,7 @@ use App\Repositories\FlashSaleRepository;
 use App\Repositories\ProductRepository;
 use App\Repositories\ShopRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
 {
@@ -28,6 +29,31 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
+        // Check if user has selected a branch
+        $user = auth()->user();
+        $selectedBranch = session('selected_branch');
+
+        // If no session branch, check cache for API users
+        if (!$selectedBranch && $user) {
+            $selectedBranch = Cache::get('selected_branch_' . $user->id);
+        }
+
+        if (auth()->check() && !$selectedBranch) {
+            return $this->json('home', [
+                'banners' => [],
+                'ads' => [],
+                'categories' => [],
+                'shops' => [],
+                'popular_products' => [],
+                'just_for_you' => [
+                    'total' => 0,
+                    'products' => []
+                ],
+                'incoming_flash_sale' => null,
+                'running_flash_sale' => null
+            ]);
+        }
+
         $page = $request->page ?? 1;
         $perPage = $request->per_page ?? 8;
         $skip = ($page * $perPage) - $perPage;
@@ -58,7 +84,7 @@ class HomeController extends Controller
                 return $query->where('shop_id', $shop->id);
             })
             ->when($selectedBranchId, function ($query) use ($selectedBranchId) {
-                return $query->whereHas('quantities', function ($query) use ($selectedBranchId) {
+                return $query->whereHas('productBranches', function ($query) use ($selectedBranchId) {
                     return $query->where('branch_id', $selectedBranchId)->where('qty', '>', 0);
                 });
             })
@@ -73,7 +99,7 @@ class HomeController extends Controller
                 return $query->where('shop_id', $shop->id);
             })
             ->when($selectedBranchId, function ($query) use ($selectedBranchId) {
-                return $query->whereHas('quantities', function ($query) use ($selectedBranchId) {
+                return $query->whereHas('productBranches', function ($query) use ($selectedBranchId) {
                     return $query->where('branch_id', $selectedBranchId)->where('qty', '>', 0);
                 });
             });

@@ -15,7 +15,21 @@ export const useAuth = defineStore("authStore", {
         showChangeAddressModal: false,
         orderCancel: false,
         favoriteRemove: false,
-        selectedBranch: null,
+        selectedBranch: (() => {
+            // Initialize selectedBranch from sessionStorage
+            if (typeof window !== 'undefined') {
+                const storedBranch = sessionStorage.getItem('selectedBranch');
+                if (storedBranch) {
+                    try {
+                        return JSON.parse(storedBranch);
+                    } catch (e) {
+                        console.warn('Failed to parse selectedBranch from sessionStorage:', e);
+                        sessionStorage.removeItem('selectedBranch');
+                    }
+                }
+            }
+            return null;
+        })(),
         showBranchModal: false,
     }),
 
@@ -34,6 +48,10 @@ export const useAuth = defineStore("authStore", {
         },
         setUser(user) {
             this.user = user;
+            // Fetch selected branch when user is set
+            if (user && this.token) {
+                this.fetchSelectedBranch();
+            }
         },
 
         showLoginModal() {
@@ -110,6 +128,10 @@ export const useAuth = defineStore("authStore", {
                     this.token = null;
                     this.favoriteProducts = 0;
                     this.selectedBranch = null;
+                    // Clear selected branch from sessionStorage
+                    if (typeof window !== 'undefined') {
+                        sessionStorage.removeItem('selectedBranch');
+                    }
                     chatStore.chats = [];
                     chatStore.activeShop = null;
                 })
@@ -119,6 +141,10 @@ export const useAuth = defineStore("authStore", {
                     this.token = null;
                     this.favoriteProducts = 0;
                     this.selectedBranch = null;
+                    // Clear selected branch from sessionStorage
+                    if (typeof window !== 'undefined') {
+                        sessionStorage.removeItem('selectedBranch');
+                    }
                 });
         },
 
@@ -132,9 +158,33 @@ export const useAuth = defineStore("authStore", {
 
         setSelectedBranch(branch) {
             this.selectedBranch = branch;
+            // Store selected branch in sessionStorage
+            if (typeof window !== 'undefined') {
+                if (branch) {
+                    sessionStorage.setItem('selectedBranch', JSON.stringify(branch));
+                } else {
+                    sessionStorage.removeItem('selectedBranch');
+                }
+            }
         },
 
         async fetchSelectedBranch() {
+            // First check sessionStorage for existing selection
+            if (typeof window !== 'undefined') {
+                const storedBranch = sessionStorage.getItem('selectedBranch');
+                if (storedBranch) {
+                    try {
+                        this.selectedBranch = JSON.parse(storedBranch);
+                        console.log('Selected branch loaded from sessionStorage:', this.selectedBranch);
+                        return; // Don't make API call if we have sessionStorage data
+                    } catch (e) {
+                        console.warn('Failed to parse selectedBranch from sessionStorage:', e);
+                        sessionStorage.removeItem('selectedBranch');
+                    }
+                }
+            }
+
+            // Fallback to API call if no sessionStorage data and user is authenticated
             if (!this.token) return;
 
             try {
@@ -144,12 +194,36 @@ export const useAuth = defineStore("authStore", {
                     },
                 });
                 this.selectedBranch = response.data.data.branch;
+                // Store in sessionStorage for future use
+                if (this.selectedBranch && typeof window !== 'undefined') {
+                    sessionStorage.setItem('selectedBranch', JSON.stringify(this.selectedBranch));
+                }
+                console.log('Selected branch fetched from API:', this.selectedBranch);
             } catch (error) {
                 console.error('Error fetching selected branch:', error);
                 this.selectedBranch = null;
+                // Clear sessionStorage on error
+                if (typeof window !== 'undefined') {
+                    sessionStorage.removeItem('selectedBranch');
+                }
             }
         },
     },
 
-    persist: true,
+    persist: {
+        paths: [
+            'user',
+            'addresses',
+            'token',
+            'favoriteProducts',
+            'loginModal',
+            'registerModal',
+            'showAddressModal',
+            'showChangeAddressModal',
+            'orderCancel',
+            'favoriteRemove',
+            'showBranchModal'
+        ],
+        // Note: selectedBranch is excluded from persistence and handled manually in sessionStorage
+    },
 });

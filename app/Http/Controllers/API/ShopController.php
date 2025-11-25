@@ -11,6 +11,7 @@ use App\Models\Shop;
 use App\Repositories\ProductRepository;
 use App\Repositories\ShopRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ShopController extends Controller
 {
@@ -111,6 +112,21 @@ class ShopController extends Controller
      */
     public function popularProducts(Request $request)
     {
+        // Check if user has selected a branch
+        $user = auth()->user();
+        $selectedBranch = session('selected_branch');
+
+        // If no session branch, check cache for API users
+        if (!$selectedBranch && $user) {
+            $selectedBranch = Cache::get('selected_branch_' . $user->id);
+        }
+
+        if (auth()->check() && !$selectedBranch) {
+            return $this->json('popular products', [
+                'products' => []
+            ]);
+        }
+
         $request->validate([
             'product_id' => 'required|exists:products,id',
         ]);
@@ -118,7 +134,14 @@ class ShopController extends Controller
         $product = ProductRepository::find($request->product_id);
         $shop = $product->shop;
 
+        $selectedBranchId = session('selected_branch');
+
         $products = $shop->products()->where('id', '!=', $product->id)->isActive()
+            ->when($selectedBranchId, function ($query) use ($selectedBranchId) {
+                return $query->whereHas('productBranches', function ($query) use ($selectedBranchId) {
+                    return $query->where('branch_id', $selectedBranchId)->where('qty', '>', 0);
+                });
+            })
             ->withCount('orders')
             ->withAvg('reviews as average_rating', 'rating')
             ->orderByDesc('orders_count')->orderByDesc('average_rating')->take(6)->get();

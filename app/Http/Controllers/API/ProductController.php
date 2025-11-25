@@ -26,6 +26,9 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
+        // Check if user has selected a branch (now handled on frontend)
+        $isAuthenticated = auth()->check();
+
         $page = $request->page;
         $perPage = $request->per_page;
         $skip = ($page * $perPage) - $perPage;
@@ -43,6 +46,7 @@ class ProductController extends Controller
         $colorID = $request->color_id;
         $sizeID = $request->size_id;
         $isDigital = $request->is_digital == true ? true : false;
+        $selectedBranchId = $request->branch_id; // Now comes from frontend request
 
         $generaleSetting = generaleSetting('setting');
         $shop = null;
@@ -68,13 +72,7 @@ class ProductController extends Controller
         $sizes = $rootShop?->sizes()->isActive()->get();
         $colors = $rootShop?->colors()->isActive()->get();
         $brands = $rootShop?->brands()->isActive()->get();
-
-        // Get selected branch for authenticated users
-        $selectedBranchId = null;
-        if (auth()->check()) {
-            $selectedBranchId = session('selected_branch');
-        }
-
+      
         // filter query
         $products = ProductRepository::query()
             ->withSum('orders as orders_count', 'order_products.quantity')
@@ -89,7 +87,7 @@ class ProductController extends Controller
                 return $query->where('shop_id', $shopID);
             })
             ->when($selectedBranchId, function ($query) use ($selectedBranchId) {
-                return $query->whereHas('quantities', function ($query) use ($selectedBranchId) {
+                return $query->whereHas('productBranches', function ($query) use ($selectedBranchId) {
                     return $query->where('branch_id', $selectedBranchId)->where('qty', '>', 0);
                 });
             })
@@ -193,6 +191,9 @@ class ProductController extends Controller
      */
     public function show(Request $request)
     {
+        // Check if user has selected a branch (now handled on frontend)
+        // Frontend should include branch_id in request if needed
+
         $request->validate([
             'product_id' => 'required|exists:products,id',
         ]);
@@ -240,9 +241,17 @@ class ProductController extends Controller
      *
      * @return json Response
      */
-    public function favoriteProducts()
+    public function favoriteProducts(Request $request)
     {
-        $products = auth()->user()->customer->favorites;
+        $selectedBranchId = $request->branch_id; // Now comes from frontend request
+
+        $products = auth()->user()->customer->favorites()
+            ->when($selectedBranchId, function ($query) use ($selectedBranchId) {
+                return $query->whereHas('productBranches', function ($query) use ($selectedBranchId) {
+                    return $query->where('branch_id', $selectedBranchId)->where('qty', '>', 0);
+                });
+            })
+            ->get();
 
         return $this->json('favorite products', [
             'products' => ProductResource::collection($products),

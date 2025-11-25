@@ -1,11 +1,11 @@
 <template>
     <div class="rounded-lg border transition-all duration-300 group bg-white overflow-hidden relative"
-        :class="props.product?.quantity > 0 ? 'hover:border-primary' : ''">
+        :class="hasStock ? 'hover:border-primary' : ''">
 
         <div class="flex flex-col">
             <div class="bg-white">
                 <div class="w-full h-36 sm:h-52 overflow-hidden relative"
-                    :class="props.product?.quantity > 0 ? '' : 'opacity-30'">
+                    :class="hasStock ? '' : 'opacity-30'">
                     <div class="cursor-pointer w-full h-full" @click="showProductDetails">
                         <!-- thumbnail -->
                         <img :src="props.product?.thumbnail" class="w-full h-full group-hover:scale-110 transition duration-500 object-contain" loading="lazy" />
@@ -45,11 +45,11 @@
                     <div class="bg-white p-2 flex flex-col items-start gap-2 col-span-2">
 
                         <div class="text-slate-950 text-base font-normal leading-normal truncate w-full"
-                            :class="props.product?.quantity > 0 ? '' : 'opacity-30'">
+                            :class="hasStock ? '' : 'opacity-30'">
                             {{ props.product?.name }}
                         </div>
 
-                        <div class="flex items-center gap-2" :class="props.product?.quantity > 0 ? '' : 'opacity-30'">
+                        <div class="flex items-center gap-2" :class="hasStock ? '' : 'opacity-30'">
                             <!-- price -->
                             <div class="text-primary text-base font-bold leading-normal">
                                 {{ masterStore.showCurrency(props.product?.discount_price > 0 ?
@@ -64,7 +64,7 @@
 
                         <div class="flex justify-between items-center w-full">
                             <div class="flex items-center gap-1"
-                                :class="props.product?.quantity > 0 ? '' : 'opacity-30'">
+                                :class="hasStock ? '' : 'opacity-30'">
                                 <StarIcon class="w-4 h-4 text-yellow-400" />
                                 <!-- rating -->
                                 <div class="text-slate-950 text-sm font-bold leading-tight">
@@ -78,7 +78,7 @@
 
                             <div class="h-3 w-[0px] border border-slate-200"></div>
                             <!-- total sold -->
-                            <div v-if="props.product?.quantity > 0"
+                            <div v-if="hasStock"
                                 class="text-right text-slate-500 text-sm font-normal leading-tight">
                                 {{ props.product?.total_sold }} {{ $t('Sold') }}
                             </div>
@@ -92,7 +92,7 @@
             </div>
 
             <div class="w-full p-2">
-                <div v-if="props.product?.quantity > 0" class="justify-start items-center gap-3 flex w-full">
+                <div v-if="hasStock" class="justify-start items-center gap-3 flex w-full">
                     <button v-if="props.product?.is_digital == false"
                         class="cursor-pointer w-10 h-10 bg-white rounded-[10px] border border-primary-100 justify-center items-center flex"
                         @click="addToBasket(props.product)">
@@ -135,7 +135,7 @@
 import { HeartIcon as HeartIconOutline } from '@heroicons/vue/24/outline';
 import { HeartIcon, StarIcon } from '@heroicons/vue/24/solid';
 import { ArrowDownTrayIcon } from '@heroicons/vue/20/solid';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import BagIcon from '../icons/Bag.vue';
@@ -154,6 +154,20 @@ const toast = useToast();
 
 const props = defineProps({
     product: Object
+});
+
+// Check if product has quantity > 0 for the selected branch
+const hasStock = computed(() => {
+    if (!props.product?.quantities) return false;
+
+    // If no branch is selected, check if any branch has stock
+    if (!authStore.selectedBranch) {
+        return props.product.quantities.some(q => q.qty > 0);
+    }
+
+    // If branch is selected, check quantity for that specific branch
+    const branchQuantity = props.product.quantities.find(q => q.branch_id === authStore.selectedBranch.id);
+    return branchQuantity ? branchQuantity.qty > 0 : false;
 });
 
 const orderData = {
@@ -218,7 +232,7 @@ const favoriteAddOrRemove = () => {
 }
 
 const showProductDetails = () => {
-    if (props.product.quantity > 0) {
+    if (hasStock) {
         router.push({ name: 'productDetails', params: { id: props.product.id } })
     }
 }

@@ -456,6 +456,7 @@ const fetchProducts = async () => {
             page: currentPage.value,
             per_page: perPage,
             sub_category_id: route.query.subcategory,
+            branch_id: authStore.selectedBranch?.id,
             ...filterFormData.value,
         },
         headers: {

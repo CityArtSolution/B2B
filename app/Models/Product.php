@@ -65,14 +65,19 @@ class Product extends Model
     }
     
 
+    public function productBranches(): HasMany
+    {
+        return $this->hasMany(ProductBranch::class, 'product_id');
+    }
+
     public function quantities(): HasMany
     {
-        return $this->hasMany(ProductBranch::class , 'product_id');
+        return $this->hasMany(ProductBranch::class, 'product_id');
     }
 
     public function quantityBranch($branchId)
     {
-        return $this->quantities()->where('branch_id', $branchId)->first();
+        return $this->productBranches()->where('branch_id', $branchId)->first();
     }
     
     public function getTranslatedNameAttribute()
