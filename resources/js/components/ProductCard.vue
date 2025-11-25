@@ -157,7 +157,7 @@ const props = defineProps({
 });
 
 // Check if product has quantity > 0 for the selected branch
-const hasStock = computed(() => {
+const hasStock = computed(async () => {
     if (!props.product?.quantities) return false;
 
     // If no branch is selected, check if any branch has stock
@@ -166,7 +166,7 @@ const hasStock = computed(() => {
     }
 
     // If branch is selected, check quantity for that specific branch
-    const branchQuantity = props.product.quantities.find(q => q.branch_id === authStore.selectedBranch.id);
+    const branchQuantity = await props.product.quantities.find(q => q.branch_id === authStore.selectedBranch.id);
     return branchQuantity ? branchQuantity.qty > 0 : false;
 });
 
