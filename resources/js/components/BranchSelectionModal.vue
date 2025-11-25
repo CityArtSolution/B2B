@@ -164,19 +164,32 @@ const confirmSelection = async () => {
     error.value = null;
 
     try {
-        const response = await axios.post('/select-branch', {
-            branch_id: selectedBranchId.value
-        }, {
-            headers: {
-                Authorization: AuthStore.token
-            }
-        });
-
         const selectedBranch = branches.value.find(b => b.id === selectedBranchId.value);
+
+        // Store selected branch in auth store (sessionStorage)
+        AuthStore.setSelectedBranch(selectedBranch);
+
+        // Debug: Verify sessionStorage storage
+        console.log('Branch stored in sessionStorage:', sessionStorage.getItem('selectedBranch'));
+
+        // Optional: Still notify backend for consistency/logging
+        try {
+            await axios.post('/select-branch', {
+                branch_id: selectedBranchId.value
+            }, {
+                headers: {
+                    Authorization: AuthStore.token
+                }
+            });
+        } catch (apiError) {
+            // Log but don't fail if API call fails - frontend storage is primary now
+            console.warn('Backend branch selection failed, but stored locally:', apiError);
+        }
+
         emit('branch-selected', selectedBranch);
         closeModal();
     } catch (err) {
-        error.value = err.response?.data?.message || 'Failed to select branch';
+        error.value = 'Failed to select branch';
         console.error('Error selecting branch:', err);
     } finally {
         loading.value = false;
@@ -196,6 +209,11 @@ onMounted(() => {
     showModal.value = props.show;
     if (props.show) {
         fetchBranches();
+    }
+
+    // For testing: Check if branch is already selected
+    if (AuthStore.selectedBranch) {
+        selectedBranchId.value = AuthStore.selectedBranch.id;
     }
 });
 </script>

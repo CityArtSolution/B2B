@@ -284,6 +284,7 @@ import { FunnelIcon, XMarkIcon, ArrowLeftIcon, } from "@heroicons/vue/24/outline
 import { StarIcon } from "@heroicons/vue/24/solid";
 import ProductCard from "../components/ProductCard.vue";
 import { useMaster } from "../stores/MasterStore";
+import { useAuth } from "../stores/AuthStore";
 
 import VueSlider from "vue-slider-component";
 import "vue-slider-component/theme/default.css";
@@ -292,6 +293,7 @@ import SkeletonLoader from "../components/SkeletonLoader.vue";
 const priceRange = ref([0, 1000]);
 
 const master = useMaster();
+const authStore = useAuth();
 const isLoading = ref(true);
 
 onMounted(() => {
@@ -359,6 +361,7 @@ const fetchProducts = async () => {
             page: currentPage.value,
             per_page: perPage,
             search: master.search,
+            branch_id: authStore.selectedBranch?.id,
             ...filterFormData.value,
         },
         headers: {

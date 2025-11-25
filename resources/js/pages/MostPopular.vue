@@ -77,7 +77,8 @@ const fetchProducts = async () => {
         params: {
             page: currentPage.value,
             per_page: perPage.value,
-            sort_type: 'popular_product'
+            sort_type: 'popular_product',
+            branch_id: authStore.selectedBranch?.id
         },
         headers: {
             'Accept-Language': master.locale || 'en',

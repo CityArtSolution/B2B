@@ -337,7 +337,8 @@ const fetchProducts = async () => {
             shop_id: route.params.id,
             page: currentPage.value,
             per_page: perPage.value,
-            search: search.value
+            search: search.value,
+            branch_id: authStore.selectedBranch?.id
         },
         headers: {
             'Accept-Language': masterStore.locale || 'en',
