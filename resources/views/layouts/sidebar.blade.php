@@ -17,13 +17,13 @@
         </div>
         @if (app()->environment('local'))
         <style>
-            .branding-logo img {
+            /* .branding-logo img {
                 width: 204px;
                 height: 150px;
                 object-fit: contain;
                 margin: -41px 0;
             }
-        </style>
+        </style> */
         @endif
         <div class="branding-logo-forMobile">
             <a href="{{ $generaleSetting?->logo ?? asset('assets/logo.png') }}"></a>
