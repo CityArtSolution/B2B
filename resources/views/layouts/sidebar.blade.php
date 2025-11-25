@@ -15,6 +15,16 @@
                 <img src="{{ $generaleSetting?->logo ?? asset('assets/logo.png') }}" alt="logo" loading="lazy" />
             </a>
         </div>
+        @if (app()->environment('local'))
+        <style>
+            .branding-logo img {
+                width: 204px;
+                height: 150px;
+                object-fit: contain;
+                margin: -41px 0;
+            }
+        </style>
+        @endif
         <div class="branding-logo-forMobile">
             <a href="{{ $generaleSetting?->logo ?? asset('assets/logo.png') }}"></a>
         </div>

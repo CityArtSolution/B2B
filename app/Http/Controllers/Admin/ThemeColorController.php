@@ -44,10 +44,6 @@ class ThemeColorController extends Controller
             return back()->with('error', __('Please generated color variants'));
         }
 
-        if (app()->environment('local')) {
-            return back()->with('demoMode', __('Sorry! You can not change color in demo mode'));
-        }
-
         ThemeColorRepository::updateColorPalette($request);
 
         return back()->with('success', __('Theme color updated successfully'));

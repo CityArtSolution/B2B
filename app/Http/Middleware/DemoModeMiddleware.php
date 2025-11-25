@@ -15,17 +15,6 @@ class DemoModeMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (app()->environment('local')) {
-            if ($request->is('api/*')) {
-                return response()->json([
-                    'message' => __('You can not perform this action in demo mode'),
-                ], Response::HTTP_FORBIDDEN);
-
-            }
-
-            return back()->with('demoMode', __('You can not perform this action in demo mode'));
-        }
-
         return $next($request);
     }
 }
