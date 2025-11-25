@@ -198,6 +198,8 @@ class ProductController extends Controller
             'product_id' => 'required|exists:products,id',
         ]);
 
+        $selectedBranchId = $request->branch_id; // Get selected branch from request
+
         $product = ProductRepository::find($request->product_id);
         ProductRepository::recentView($product);
 
@@ -210,7 +212,21 @@ class ProductController extends Controller
 
         $shop = $product->shop;
 
-        $popularProducts = $shop->products()->isActive()->where('id', '!=', $product->id)->withCount('orders')->withAvg('reviews as average_rating', 'rating')->orderByDesc('average_rating')->orderByDesc('orders_count')->take(6)->get();
+        $popularProducts = ProductRepository::query()
+            ->where('shop_id', $shop->id)
+            ->where('id', '!=', $product->id)
+            ->isActive()
+            ->withSum('orders as orders_count', 'order_products.quantity')
+            ->withAvg('reviews as average_rating', 'rating')
+            ->when($selectedBranchId, function ($query) use ($selectedBranchId) {
+                return $query->whereHas('productBranches', function ($query) use ($selectedBranchId) {
+                    return $query->where('branch_id', $selectedBranchId)->where('qty', '>', 0);
+                });
+            })
+            ->orderByDesc('average_rating')
+            ->orderByDesc('orders_count')
+            ->take(6)
+            ->get();
 
         return $this->json('product details', [
             'product' => ProductDetailsResource::make($product),
