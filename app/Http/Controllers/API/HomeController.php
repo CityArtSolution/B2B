@@ -74,10 +74,7 @@ class HomeController extends Controller
             })->withCount('products')->orderByDesc('products_count')->take(10)->get();
 
         // Get selected branch for authenticated users
-        $selectedBranchId = null;
-        if (auth()->check()) {
-            $selectedBranchId = session('selected_branch');
-        }
+        $selectedBranchId = $request->branch_id ?? session('selected_branch');
 
         $popularProducts = ProductRepository::query()->isActive()
             ->when($shop, function ($query) use ($shop) {

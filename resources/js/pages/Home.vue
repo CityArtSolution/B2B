@@ -67,7 +67,16 @@ const ads = ref([]);
 
 const getData = () => {
     isLoading.value = true;
-    axios.get("/home?page=1&per_page=12", {
+    const params = new URLSearchParams({
+        page: '1',
+        per_page: '12',
+    });
+
+    if (authStore.selectedBranch?.id) {
+        params.append('branch_id', authStore.selectedBranch.id);
+    }
+
+    axios.get(`/home?${params.toString()}`, {
         headers: {
             Authorization: authStore.token,
         },
