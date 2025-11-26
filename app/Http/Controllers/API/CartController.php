@@ -57,7 +57,18 @@ class CartController extends Controller
             }
         }
 
-        if (($product->quantity < $quantity) || ($product->quantity <= $cart?->quantity)) {
+        // Check quantity based on selected branch
+        $selectedBranchId = $request->branch_id ?? session('selected_branch');
+        $availableQuantity = $product->quantity; // Default to total quantity
+
+        if ($selectedBranchId) {
+            $branchQuantity = $product->quantityBranch($selectedBranchId);
+            if ($branchQuantity) {
+                $availableQuantity = $branchQuantity->qty;
+            }
+        }
+
+        if (($availableQuantity < $quantity) || ($availableQuantity <= $cart?->quantity)) {
             return $this->json('Sorry! product cart quantity is limited. No more stock', [], 422);
         }
 
@@ -103,13 +114,22 @@ class CartController extends Controller
 
         $flashSaleProduct = $flashSale?->products()->where('id', $product->id)->first();
 
-        $productQty = $product->quantity;
+        // Check quantity based on selected branch
+        $selectedBranchId = $request->branch_id ?? session('selected_branch');
+        $productQty = $product->quantity; // Default to total quantity
+
+        if ($selectedBranchId) {
+            $branchQuantity = $product->quantityBranch($selectedBranchId);
+            if ($branchQuantity) {
+                $productQty = $branchQuantity->qty;
+            }
+        }
 
         if ($flashSaleProduct) {
             $flashSaleQty = $flashSaleProduct->pivot->quantity - $flashSaleProduct->pivot->sale_quantity;
 
             if ($flashSaleQty > 0) {
-                $productQty = $flashSaleQty;
+                $productQty = min($productQty, $flashSaleQty);
             }
         }
 

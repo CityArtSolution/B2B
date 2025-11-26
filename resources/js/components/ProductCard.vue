@@ -176,7 +176,8 @@ const orderData = {
     quantity: 1,
     size: null,
     color: null,
-    unit: null
+    unit: null,
+    branch_id: authStore.selectedBranch?.id
 };
 
 const addToBasket = (product) => {
