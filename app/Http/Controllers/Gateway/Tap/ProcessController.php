@@ -64,7 +64,7 @@ class ProcessController extends Controller
 
         $endpoint = $paymentGateway->mode === 'live'
             ? 'https://api.tap.company/v2/charges'
-            : 'https://sandbox.tap.company/v2/charges';
+            : 'https://api.tap.company/v2/charges';
 
         try {
             $response = Http::withHeaders([
