@@ -16,7 +16,7 @@ class ProductResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $this->load(['reviews', 'orders', 'sizes', 'colors', 'unit', 'brand', 'shop', 'flashSales']);
+        $this->load(['reviews', 'orders', 'quantities' , 'sizes', 'colors', 'unit', 'brand', 'shop', 'flashSales']);
 
         $lang = request()->header('accept-language') ?? 'en';
 
