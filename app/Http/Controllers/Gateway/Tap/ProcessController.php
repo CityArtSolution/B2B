@@ -48,7 +48,6 @@ class ProcessController extends Controller
             $successUrl = route('payment.success', $payment->id);
             $cancelUrl  = route('payment.cancel', $payment->id);
         }
- $rempsecret_key = 'REDACTEDHQhPLZjpsF7wSfeKcqBkDXUm';
 
         // -------------------------
         // TAP API – CREATE PAYMENT
@@ -79,7 +78,7 @@ class ProcessController extends Controller
             ];
 
             $response = Http::withHeaders([
-                'Authorization' => "Bearer ".$rempsecret_key,
+                'Authorization' => "Bearer ".$config->secret_key,
                 'Content-Type'  => 'application/json'
             ])->post("https://api.tap.company/v2/charges", $payload);
 
