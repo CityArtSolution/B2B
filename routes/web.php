@@ -13,6 +13,7 @@ use App\Http\Controllers\Gateway\PayTabs\ProcessController;
 use App\Http\Controllers\Gateway\Bkash\ExecutePaymentController;
 use App\Http\Controllers\API\ProductLicenseController;
 use App\Http\Controllers\Gateway\PayPal\ProcessController as PayPalProcessController;
+use App\Http\Controllers\Gateway\Tap\ProcessController as TapProcessController;
 
 /*
 |--------------------------------------------------------------------------
@@ -89,6 +90,7 @@ Route::match(['get', 'post'], '/paytabs/{payment}/callback', [ProcessController:
 Route::match(['get', 'post'], '/subscription/payment/{payment}/success', [SubscriptionController::class, 'paymentSuccess'])->name('subscription.payment.success');
 Route::match(['get', 'post'], '/subscription/payment/{payment}/cancel', [SubscriptionController::class, 'paymentCancel'])->name('subscription.payment.cancel');
 
+Route::get('/tap/payment/callback/{payment}', [TapProcessController::class, 'callback'])->name('tap.payment.execute');
 
 // check user is online or not
 Route::post('/update/last/seen', [CheckOnlineUserController::class, 'checkOnlineStatus']);
