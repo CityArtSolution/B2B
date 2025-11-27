@@ -19,6 +19,7 @@ export const useAuth = defineStore("authStore", {
             // Initialize selectedBranch from sessionStorage
             if (typeof window !== 'undefined') {
                 const storedBranch = sessionStorage.getItem('selectedBranch');
+                console.log(3);
                 if (storedBranch) {
                     try {
                         return JSON.parse(storedBranch);
@@ -28,8 +29,12 @@ export const useAuth = defineStore("authStore", {
                     }
                 }
             }
+            console.log(1);
+            
             return null;
         })(),
+        
+        
         showBranchModal: false,
     }),
 
@@ -148,23 +153,25 @@ export const useAuth = defineStore("authStore", {
                 });
         },
 
-        showBranchModal() {
+        openBranchModal() {            
             this.showBranchModal = true;
         },
 
-        hideBranchModal() {
+        closeBranchModal() {
             this.showBranchModal = false;
         },
 
-        setSelectedBranch(branch) {
+        async setSelectedBranch(branch) {
             this.selectedBranch = branch;
             // Store selected branch in sessionStorage
             if (typeof window !== 'undefined') {
                 if (branch) {
-                    sessionStorage.setItem('selectedBranch', JSON.stringify(branch));
+                  await sessionStorage.setItem('selectedBranch', JSON.stringify(branch));
                 } else {
-                    sessionStorage.removeItem('selectedBranch');
+                   await sessionStorage.removeItem('selectedBranch');
                 }
+                // Reload the page to reflect branch changes across the app
+                window.location.reload();
             }
         },
 

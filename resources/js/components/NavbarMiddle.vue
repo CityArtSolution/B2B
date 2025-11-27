@@ -19,6 +19,16 @@
 
         <div class="hidden md:flex items-center justify-end md:gap-4 lg:gap-8">
             <div class="flex items-center md:gap-1 lg:gap-3">
+                <!-- Branch Selection Button -->
+                <button class="p-2.5 cursor-pointer" @click="showBranchModal()" :title="$t('Select Branch')">
+                    <div class="w-6 h-6 relative">
+                        <MapPinIcon class="w-6 h-6 text-primary" />
+                        <span v-if="AuthStore.selectedBranch"
+                            class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full flex items-center justify-center">
+                        </span>
+                    </div>
+                </button>
+
                 <div class="p-2.5 cursor-pointer" @click="showWishlist()">
                     <div class="w-6 h-6 relative">
                         <img :src="'/assets/icons/heart.svg'" class="w-6 h-6 text-primary" />
@@ -52,6 +62,11 @@
 
         <!--******=== Mobile View Navbar ===********-->
         <div class="md:hidden flex items-center gap-4 relative">
+
+            <!-- Branch Selection Button -->
+            <button class="h-10 w-10 flex items-center justify-center bg-slate-100 rounded-[40px]" @click="showBranchModal()" :title="$t('Select Branch')">
+                <MapPinIcon class="w-5 h-5 text-slate-950" />
+            </button>
 
             <!-- Search Icon -->
             <div class="h-10 w-10 flex items-center justify-center bg-slate-100 rounded-[40px]" @click="toggleSearch">
@@ -247,7 +262,7 @@
 
 <script setup>
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
-import { Bars3Icon, ChevronRightIcon, UserIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { Bars3Icon, ChevronRightIcon, UserIcon, XMarkIcon, MapPinIcon } from '@heroicons/vue/24/outline'
 import { MagnifyingGlassIcon } from '@heroicons/vue/24/solid'
 import { ref, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -270,6 +285,10 @@ const showSearch = ref(false);
 
 const toggleSearch = () => {
     showSearch.value = !showSearch.value
+}
+
+const showBranchModal = () => {
+    AuthStore.openBranchModal();
 }
 
 const showMyCart = () => {

@@ -237,7 +237,7 @@ const loginFormSubmit = () => {
         // Fetch selected branch and show modal if none selected
         await AuthStore.fetchSelectedBranch();
         if (!AuthStore.hasSelectedBranch) {
-            AuthStore.showBranchModal();
+            AuthStore.openBranchModal();
         }
 
         AuthStore.hideLoginModal();
@@ -423,7 +423,7 @@ async function sendCodeToBackend(code, provider = 'google', data = {}) {
             // Fetch selected branch and show modal if none selected
             await AuthStore.fetchSelectedBranch();
             if (!AuthStore.hasSelectedBranch) {
-                AuthStore.showBranchModal();
+                AuthStore.openBranchModal();
             }
 
             AuthStore.hideLoginModal();
