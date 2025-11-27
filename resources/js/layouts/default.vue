@@ -16,7 +16,7 @@
         <BranchSelectionModal
             :show="authStore.showBranchModal"
             :required="true"
-            @close="authStore.hideBranchModal()"
+            @close="authStore.closeBranchModal()"
             @branch-selected="handleBranchSelected"
         />
     </div>
@@ -41,6 +41,18 @@ onMounted(() => {
     window.scrollTo(0, 0);
     setupThemeColors();
     setDirection();
+
+    // Auto-open branch modal if selectedBranch exists in sessionStorage
+    console.log('selectedBranch on load:', authStore.selectedBranch);
+    console.log('hasSelectedBranch:', authStore.hasSelectedBranch);
+    console.log("here",authStore.selectedBranch);
+    console.log(!authStore.selectedBranch);
+    if (!authStore.selectedBranch) {
+        console.log('Opening branch modal automatically');
+        authStore.openBranchModal();
+    } else {
+        console.log('Not opening branch modal - no selectedBranch');
+    }
 });
 
 watch(() => master.themeColors, () => {
@@ -91,7 +103,7 @@ const setupThemeColors = () => {
 
 const handleBranchSelected = (branch) => {
     authStore.setSelectedBranch(branch);
-    authStore.hideBranchModal();
+    authStore.closeBranchModal();
 }
 
 </script>
