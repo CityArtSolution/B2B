@@ -15,8 +15,9 @@ class SMSGatewaySetupController extends Controller
         $telesign = SMSConfig::where('provider', 'telesign')->first();
         $messageBird = SMSConfig::where('provider', 'message_bird')->first();
         $telnyx = SMSConfig::where('provider', 'telnyx')->first();
+        $taqnyat = SMSConfig::where('provider', 'taqnyat')->first();
 
-        return view('sms-gateway.index', compact('twilio', 'nexmo', 'telesign', 'messageBird', 'telnyx'));
+        return view('sms-gateway.index', compact( 'taqnyat' , 'twilio', 'nexmo', 'telesign', 'messageBird', 'telnyx'));
     }
 
     public function update(Request $request)
@@ -26,6 +27,10 @@ class SMSGatewaySetupController extends Controller
         if ($request->has('provider')) {
             $successMessage = __('SMS Configuration Updated Successfully');
             switch ($request->provider) {
+                case 'taqnyat':
+                    $this->taqnyatConfig($request);
+                    $successMessage = __('Taqnyat account activated successfully');
+                    break;
                 case 'twilio':
                     $this->twilioConfig($request);
                     $successMessage = __('Twilio account activated successfully');
@@ -156,4 +161,26 @@ class SMSGatewaySetupController extends Controller
             ]
         );
     }
+
+    private function taqnyatConfig($request)
+    {
+        $request->validate([
+            'api_key' => 'required',
+            'sender' => 'required',
+        ]);
+
+        $data = [
+            'api_key' => $request->api_key,
+            'sender' => $request->sender,
+        ];
+
+        SMSConfig::updateOrCreate(
+            ['provider' => 'taqnyat'],
+            [
+                'data' => json_encode($data),
+                'status' => $request->status,
+            ]
+        );
+    }
+
 }
