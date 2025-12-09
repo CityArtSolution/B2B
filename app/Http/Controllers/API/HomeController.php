@@ -85,6 +85,11 @@ class HomeController extends Controller
                     return $query->where('branch_id', $selectedBranchId)->where('qty', '>', 0);
                 });
             })
+            ->withSum(['productBranches as branch_qty' => function ($q) use ($selectedBranchId) {
+                if ($selectedBranchId) {
+                    $q->where('branch_id', $selectedBranchId);
+                }
+            }], 'qty')
             ->withCount('orders as orders_count')
             ->withAvg('reviews as average_rating', 'rating')
             ->orderByDesc('average_rating')
@@ -99,7 +104,12 @@ class HomeController extends Controller
                 return $query->whereHas('productBranches', function ($query) use ($selectedBranchId) {
                     return $query->where('branch_id', $selectedBranchId)->where('qty', '>', 0);
                 });
-            });
+            })
+            ->withSum(['productBranches as branch_qty' => function ($q) use ($selectedBranchId) {
+                if ($selectedBranchId) {
+                    $q->where('branch_id', $selectedBranchId);
+                }
+            }], 'qty');
         $total = $justForYou->count();
         $justForYou = $justForYou->skip($skip)->take($perPage)->get();
 
