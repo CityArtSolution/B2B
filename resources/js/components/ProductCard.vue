@@ -62,7 +62,7 @@
                             </div>
                         </div>
                         <div class="text-slate-500 text-sm leading-tight" :class="hasStock ? '' : 'opacity-30'">
-                            {{ props.product.quantities }}
+                            {{ $t('Quantity') }}: {{ productQty }}
                         </div>
 
 

@@ -80,6 +80,7 @@ class HomeController extends Controller
             ->when($shop, function ($query) use ($shop) {
                 return $query->where('shop_id', $shop->id);
             })
+            ->with(['productBranches.branch'])
             ->when($selectedBranchId, function ($query) use ($selectedBranchId) {
                 return $query->whereHas('productBranches', function ($query) use ($selectedBranchId) {
                     return $query->where('branch_id', $selectedBranchId)->where('qty', '>', 0);
@@ -101,6 +102,7 @@ class HomeController extends Controller
             ->when($shop, function ($query) use ($shop) {
                 return $query->where('shop_id', $shop->id);
             })
+            ->with(['productBranches.branch'])
             ->when($selectedBranchId, function ($query) use ($selectedBranchId) {
                 return $query->whereHas('productBranches', function ($query) use ($selectedBranchId) {
                     return $query->where('branch_id', $selectedBranchId)->where('qty', '>', 0);
