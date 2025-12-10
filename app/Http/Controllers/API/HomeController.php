@@ -90,6 +90,7 @@ class HomeController extends Controller
                     $q->where('branch_id', $selectedBranchId);
                 }
             }], 'qty')
+            ->having('branch_qty', '>', 0)
             ->withCount('orders as orders_count')
             ->withAvg('reviews as average_rating', 'rating')
             ->orderByDesc('average_rating')
@@ -109,7 +110,7 @@ class HomeController extends Controller
                 if ($selectedBranchId) {
                     $q->where('branch_id', $selectedBranchId);
                 }
-            }], 'qty');
+            }], 'qty')->having('branch_qty', '>', 0);
         $total = $justForYou->count();
         $justForYou = $justForYou->skip($skip)->take($perPage)->get();
 

@@ -61,7 +61,7 @@ class ProductResource extends JsonResource
             'is_digital' => (bool) $this->is_digital,
             'name' => $name,
             'thumbnail' => $this->thumbnail,
-            'branch_qty' => $this->branch_qty ?? 0,
+            'branch_qty' => $this->branch_qty ? intval($this->branch_qty) : 0,
             'price' => (float) number_format($price, 2, '.', ''),
             'discount_price' => (float) number_format($discountPrice, 2, '.', ''),
             'discount_percentage' => (float) number_format($discountPercentage, 2, '.', ''),
