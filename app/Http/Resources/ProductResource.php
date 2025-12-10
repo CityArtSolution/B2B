@@ -68,13 +68,11 @@ class ProductResource extends JsonResource
             'rating' => (float) $this->averageRating ?? 0.0,
             'total_reviews' => (string) Number::abbreviate($this->reviews?->count(), maxPrecision: 2),
             'total_sold' => (string) number_format($totalSold, 0, '.', ','),
-            'quantities' => $this->quantities->map(function($q) {
-                return [
-                    'branch_id' => $q->branch_id,
-                    'branch_name' => $q->branch->name ?? null,
-                    'qty' => $q->qty,
-                ];
-            }),
+            'quantities' => $this->productBranches->map(fn($branch) => [
+                'branch_id' => $branch->branch_id,
+                'branch_name' => $branch->branch->name ?? null,
+                'qty' => $branch->qty
+            ]),
             'is_favorite' => (bool) $favorite,
             'sizes' => SizeResource::collection($this->sizes),
             'colors' => ColorResource::collection($this->colors),
