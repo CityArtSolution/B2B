@@ -61,10 +61,9 @@
                                 {{ masterStore.showCurrency(props.product?.price) }}
                             </div>
                         </div>
-                        
-<div>
-   {{ $t('Quantity') }}: {{ productQty }}
-</div>
+                        <div class="text-slate-500 text-sm leading-tight" :class="hasStock ? '' : 'opacity-30'">
+                            {{ $t('Quantity') }}: {{ productQty }}
+                        </div>
 
 
                         <div class="flex justify-between items-center w-full">
@@ -167,12 +166,12 @@ const hasStock = computed(() => {
 
     // If no branch is selected, check if any branch has stock
     if (!authStore.selectedBranch) {
-        return props.product.quantities.some(q => q.qty > 0);
+        return props.product.branch_qty.some(q => q.qty > 0);
     }
 
     // If branch is selected, check quantity for that specific branch
-    // const branchQuantity = await props.product.quantities.find(q => q.branch_id === authStore.selectedBranch.id);
-    const branchQuantity = props.product.quantities.find(
+    // const branchQuantity = await props.product.branch_qty.find(q => q.branch_id === authStore.selectedBranch.id);
+    const branchQuantity = props.product.branch_qty.find(
         q => q.branch_id === authStore.selectedBranch.id
     );
     return branchQuantity ? branchQuantity.qty > 0 : false;
@@ -181,10 +180,10 @@ const productQty = computed(() => {
     if (!props.product?.quantities) return 0;
 
     if (!authStore.selectedBranch) {
-        return props.product.quantities.reduce((sum, q) => sum + q.qty, 0);
+        return props.product.branch_qty.reduce((sum, q) => sum + q.qty, 0);
     }
 
-    const branchQuantity = props.product.quantities.find(
+    const branchQuantity = props.product.branch_qty.find(
         q => q.branch_id === authStore.selectedBranch.id
     );
 
