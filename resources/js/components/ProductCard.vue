@@ -162,7 +162,7 @@ const props = defineProps({
 
 // Check if product has quantity > 0 for the selected branch
 const hasStock = computed(() => {
-    if (!props.product?.quantities) return false;
+    if (!props.product?.branch_qty) return false;
 
     // If no branch is selected, check if any branch has stock
     if (!authStore.selectedBranch) {
@@ -177,7 +177,7 @@ const hasStock = computed(() => {
     return branchQuantity ? branchQuantity.qty > 0 : false;
 });
 const productQty = computed(() => {
-    if (!props.product?.quantities) return 0;
+    if (!props.product?.branch_qty) return 0;
 
     if (!authStore.selectedBranch) {
         return props.product.branch_qty.reduce((sum, q) => sum + q.qty, 0);
