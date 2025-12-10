@@ -61,9 +61,10 @@
                                 {{ masterStore.showCurrency(props.product?.price) }}
                             </div>
                         </div>
-                        <div class="text-slate-500 text-sm leading-tight" :class="hasStock ? '' : 'opacity-30'">
-                            {{ $t('Quantity') }}: {{ productQty }}
-                        </div>
+                        
+<div>
+   {{ $t('Quantity') }}: {{ productQty }}
+</div>
 
 
                         <div class="flex justify-between items-center w-full">
