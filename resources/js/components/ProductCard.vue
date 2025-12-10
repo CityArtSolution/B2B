@@ -160,30 +160,33 @@ const props = defineProps({
     product: Object
 });
 
+
+const qtyList = computed(() => props.product?.branch_qty ?? []);
+
 // Check if product has quantity > 0 for the selected branch
 const hasStock = computed(() => {
-    if (!props.product?.branch_qty) return false;
+     if (qtyList.value.length === 0) return false;
 
     // If no branch is selected, check if any branch has stock
     if (!authStore.selectedBranch) {
-        return props.product.branch_qty.some(q => q.qty > 0);
+         return qtyList.value.some(q => q.qty > 0);
     }
 
     // If branch is selected, check quantity for that specific branch
     // const branchQuantity = await props.product.branch_qty.find(q => q.branch_id === authStore.selectedBranch.id);
-    const branchQuantity = props.product.branch_qty.find(
+    const branchQuantity = qtyList.value.find(
         q => q.branch_id === authStore.selectedBranch.id
     );
     return branchQuantity ? branchQuantity.qty > 0 : false;
 });
 const productQty = computed(() => {
-    if (!props.product?.branch_qty) return 0;
+    if (qtyList.value.length === 0) return 0;
 
     if (!authStore.selectedBranch) {
-        return props.product.branch_qty.reduce((sum, q) => sum + q.qty, 0);
+        return qtyList.value.reduce((sum, q) => sum + q.qty, 0);
     }
 
-    const branchQuantity = props.product.branch_qty.find(
+    const branchQuantity = qtyList.value.find(
         q => q.branch_id === authStore.selectedBranch.id
     );
 
@@ -253,7 +256,7 @@ const favoriteAddOrRemove = () => {
 }
 
 const showProductDetails = () => {
-    if (hasStock) {
+    if (hasStock.value) {
         router.push({ name: 'productDetails', params: { id: props.product.id } })
     }
 }
