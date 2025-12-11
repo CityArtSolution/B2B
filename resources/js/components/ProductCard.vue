@@ -174,9 +174,11 @@ const hasStock = computed(() => {
 
     // If branch is selected, check quantity for that specific branch
     // const branchQuantity = await props.product.branch_qty.find(q => q.branch_id === authStore.selectedBranch.id);
-    const branchQuantity = qtyList.value.find(
-        q => q.branch_id === authStore.selectedBranch.id
-    );
+    
+    const branchQuantity = Array.isArray(qtyList.value)
+        ? qtyList.value.find(q => q.branch_id === authStore.selectedBranch.id)
+        : null;
+
     return branchQuantity ? branchQuantity.qty > 0 : false;
 });
 const productQty = computed(() => {
@@ -186,9 +188,9 @@ const productQty = computed(() => {
         return qtyList.value.reduce((sum, q) => sum + q.qty, 0);
     }
 
-    const branchQuantity = qtyList.value.find(
-        q => q.branch_id === authStore.selectedBranch.id
-    );
+    const branchQuantity = Array.isArray(qtyList.value)
+        ? qtyList.value.find(q => q.branch_id === authStore.selectedBranch.id)
+        : null;
 
     return branchQuantity ? branchQuantity.qty : 0;
 });
