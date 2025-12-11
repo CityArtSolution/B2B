@@ -80,17 +80,8 @@ class HomeController extends Controller
             ->when($shop, function ($query) use ($shop) {
                 return $query->where('shop_id', $shop->id);
             })
-            ->with(['productBranches.branch'])
-            ->when($selectedBranchId, function ($query) use ($selectedBranchId) {
-                return $query->whereHas('productBranches', function ($query) use ($selectedBranchId) {
-                    return $query->where('branch_id', $selectedBranchId)->where('qty', '>', 0);
-                });
-            })
-            ->withSum(['productBranches as branch_qty' => function ($q) use ($selectedBranchId) {
-                if ($selectedBranchId) {
-                    $q->where('branch_id', $selectedBranchId);
-                }
-            }], 'qty')
+            ->when($selectedBranchId, fn($query) => $query->whereHas('productBranches', fn($q) => $q->where('branch_id', $selectedBranchId)->where('qty', '>', 0)))
+            ->withSum(['productBranches as branch_qty' => fn($q) => $selectedBranchId ? $q->where('branch_id', $selectedBranchId) : null], 'qty')
             ->having('branch_qty', '>', 0)
             ->withCount('orders as orders_count')
             ->withAvg('reviews as average_rating', 'rating')
@@ -102,17 +93,9 @@ class HomeController extends Controller
             ->when($shop, function ($query) use ($shop) {
                 return $query->where('shop_id', $shop->id);
             })
-            ->with(['productBranches.branch'])
-            ->when($selectedBranchId, function ($query) use ($selectedBranchId) {
-                return $query->whereHas('productBranches', function ($query) use ($selectedBranchId) {
-                    return $query->where('branch_id', $selectedBranchId)->where('qty', '>', 0);
-                });
-            })
-            ->withSum(['productBranches as branch_qty' => function ($q) use ($selectedBranchId) {
-                if ($selectedBranchId) {
-                    $q->where('branch_id', $selectedBranchId);
-                }
-            }], 'qty')->having('branch_qty', '>', 0);
+            ->when($selectedBranchId, fn($query) => $query->whereHas('productBranches', fn($q) => $q->where('branch_id', $selectedBranchId)->where('qty', '>', 0)))
+            ->withSum(['productBranches as branch_qty' => fn($q) => $selectedBranchId ? $q->where('branch_id', $selectedBranchId) : null], 'qty')
+            ->having('branch_qty', '>', 0);
         $total = $justForYou->count();
         $justForYou = $justForYou->skip($skip)->take($perPage)->get();
 

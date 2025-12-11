@@ -180,6 +180,7 @@ const hasStock = computed(() => {
         : null;
 
     return branchQuantity ? branchQuantity.qty > 0 : false;
+    
 });
 const productQty = computed(() => {
     if (qtyList.value.length === 0) return 0;
