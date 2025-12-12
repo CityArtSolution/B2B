@@ -2,23 +2,25 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Enums\Roles;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\BannerResource;
-use App\Http\Resources\CategoryResource;
-use App\Http\Resources\FlashSaleResource;
-use App\Http\Resources\ProductResource;
-use App\Http\Resources\ShopResource;
 use App\Models\Ad;
-use App\Models\GeneraleSetting;
+use App\Enums\Roles;
 use App\Models\User;
-use App\Repositories\BannerRepository;
-use App\Repositories\CategoryRepository;
-use App\Repositories\FlashSaleRepository;
-use App\Repositories\ProductRepository;
-use App\Repositories\ShopRepository;
 use Illuminate\Http\Request;
+use App\Models\ProductBranch;
+use App\Models\GeneraleSetting;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\ShopResource;
+use App\Repositories\ShopRepository;
 use Illuminate\Support\Facades\Cache;
+use App\Http\Resources\BannerResource;
+use App\Repositories\BannerRepository;
+use App\Http\Resources\ProductResource;
+use App\Repositories\ProductRepository;
+use App\Http\Resources\CategoryResource;
+use App\Repositories\CategoryRepository;
+use App\Http\Resources\FlashSaleResource;
+use App\Repositories\FlashSaleRepository;
 
 class HomeController extends Controller
 {
@@ -75,6 +77,14 @@ class HomeController extends Controller
 
         // Get selected branch for authenticated users
         $selectedBranchId = $request->branch_id ?? session('selected_branch');
+
+        Log::info('BRANCH CHECK', [
+            'selectedBranchId' => $selectedBranchId,
+            'sessionBranch' => session('selected_branch'),
+            'requestBranch' => $request->branch_id,
+            'authUser' => auth()->id(),
+            'branchQtySample' => ProductBranch::where('branch_id', $selectedBranchId)->take(5)->pluck('qty')
+        ]);
 
         $popularProducts = ProductRepository::query()->isActive()
             ->when($shop, function ($query) use ($shop) {
