@@ -164,33 +164,30 @@ const props = defineProps({
 const qtyList = computed(() => props.product?.branch_qty ?? []);
 
 // Check if product has quantity > 0 for the selected branch
-//const hasStock = computed(() => {
-  //   if (qtyList.value.length === 0) return false;
+const hasStock = computed(() => {
+     if (qtyList.value.length === 0) return false;
 
     // If no branch is selected, check if any branch has stock
-    //if (!authStore.selectedBranch) {
-      //   return qtyList.value.some(q => q.qty > 0);
-    //}
+    if (!authStore.selectedBranch) {
+         return qtyList.value.some(q => q.qty > 0);
+    }
 
     // If branch is selected, check quantity for that specific branch
     // const branchQuantity = await props.product.branch_qty.find(q => q.branch_id === authStore.selectedBranch.id);
     
-    //const branchQuantity = Array.isArray(qtyList.value)
-      //  ? qtyList.value.find(q => q.branch_id === authStore.selectedBranch.id)
-        //: null;
+    const branchQuantity = Array.isArray(qtyList.value)
+        ? qtyList.value.find(q => q.branch_id === authStore.selectedBranch.id)
+        : null;
 
-    //return branchQuantity ? branchQuantity.qty > 0 : false;
+    return branchQuantity ? branchQuantity.qty > 0 : false;
     
-//});
-
-const hasStock = computed(() => {
-    return qtyList.value.length > 0 && qtyList.value.some(q => q.qty > 0);
 });
+
 
 const productQty = computed(() => {
     if (qtyList.value.length === 0) return 0;
 
-   // if (!authStore.selectedBranch) {
+   //if (!authStore.selectedBranch) {
      //   return qtyList.value.reduce((sum, q) => sum + q.qty, 0);
     //}
 
@@ -199,8 +196,8 @@ const productQty = computed(() => {
         //: null;
 
     if (authStore.selectedBranch?.id) {
-        const branchQuantity = qtyList.value.find(q => q.branch_id === authStore.selectedBranch.id);
-        return branchQuantity ? branchQuantity.qty : 0;
+        const branchQuantity = qtyList.value.find(q => Number(q.branch_id) === Number(authStore.selectedBranch.id));
+        return branchQuantity ? Number(branchQuantity.qty) : 0;
     }
     return qtyList.value.reduce((sum, q) => sum + q.qty, 0);
     //return branchQuantity ? branchQuantity.qty : 0;
