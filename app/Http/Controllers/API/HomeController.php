@@ -78,14 +78,6 @@ class HomeController extends Controller
         // Get selected branch for authenticated users
         $selectedBranchId = $request->branch_id ?? session('selected_branch');
 
-        Log::info('BRANCH CHECK', [
-            'selectedBranchId' => $selectedBranchId,
-            'sessionBranch' => session('selected_branch'),
-            'requestBranch' => $request->branch_id,
-            'authUser' => auth()->id(),
-            'branchQtySample' => ProductBranch::where('branch_id', $selectedBranchId)->take(5)->pluck('qty')
-        ]);
-
         $popularProducts = ProductRepository::query()->isActive()
             ->when($shop, function ($query) use ($shop) {
                 return $query->where('shop_id', $shop->id);

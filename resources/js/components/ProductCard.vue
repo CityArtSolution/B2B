@@ -169,17 +169,17 @@ const hasStock = computed(() => {
 
     // If no branch is selected, check if any branch has stock
     if (!authStore.selectedBranch) {
-         return qtyList.value.some(q => q.qty > 0);
+         return qtyList.value.some(q => Number(q.qty) > 0);
     }
 
     // If branch is selected, check quantity for that specific branch
     // const branchQuantity = await props.product.branch_qty.find(q => q.branch_id === authStore.selectedBranch.id);
     
     const branchQuantity = Array.isArray(qtyList.value)
-        ? qtyList.value.find(q => q.branch_id === authStore.selectedBranch.id)
+        ? qtyList.value.find(q => Number(q.branch_id) === Number(authStore.selectedBranch.id))
         : null;
 
-    return branchQuantity ? branchQuantity.qty > 0 : false;
+    return branchQuantity ? Number(branchQuantity.qty) > 0 : false;
     
 });
 
