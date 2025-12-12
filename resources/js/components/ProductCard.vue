@@ -164,51 +164,62 @@ const props = defineProps({
 const qtyList = computed(() => props.product?.branch_qty ?? []);
 
 // Check if product has quantity > 0 for the selected branch
-const hasStock = computed(() => {
-     if (qtyList.value.length === 0) return false;
+//const hasStock = computed(() => {
+  //   if (qtyList.value.length === 0) return false;
 
     // If no branch is selected, check if any branch has stock
-    if (!authStore.selectedBranch) {
-         return qtyList.value.some(q => q.qty > 0);
-    }
+    //if (!authStore.selectedBranch) {
+      //   return qtyList.value.some(q => q.qty > 0);
+    //}
 
     // If branch is selected, check quantity for that specific branch
     // const branchQuantity = await props.product.branch_qty.find(q => q.branch_id === authStore.selectedBranch.id);
     
-    const branchQuantity = Array.isArray(qtyList.value)
-        ? qtyList.value.find(q => q.branch_id === authStore.selectedBranch.id)
-        : null;
+    //const branchQuantity = Array.isArray(qtyList.value)
+      //  ? qtyList.value.find(q => q.branch_id === authStore.selectedBranch.id)
+        //: null;
 
-    return branchQuantity ? branchQuantity.qty > 0 : false;
+    //return branchQuantity ? branchQuantity.qty > 0 : false;
     
+//});
+
+const hasStock = computed(() => {
+    return qtyList.value.length > 0 && qtyList.value.some(q => q.qty > 0);
 });
+
 const productQty = computed(() => {
     if (qtyList.value.length === 0) return 0;
 
-    if (!authStore.selectedBranch) {
-        return qtyList.value.reduce((sum, q) => sum + q.qty, 0);
+   // if (!authStore.selectedBranch) {
+     //   return qtyList.value.reduce((sum, q) => sum + q.qty, 0);
+    //}
+
+    //const branchQuantity = Array.isArray(qtyList.value)
+      //  ? qtyList.value.find(q => q.branch_id === authStore.selectedBranch.id)
+        //: null;
+
+    if (authStore.selectedBranch?.id) {
+        const branchQuantity = qtyList.value.find(q => q.branch_id === authStore.selectedBranch.id);
+        return branchQuantity ? branchQuantity.qty : 0;
     }
-
-    const branchQuantity = Array.isArray(qtyList.value)
-        ? qtyList.value.find(q => q.branch_id === authStore.selectedBranch.id)
-        : null;
-
-    return branchQuantity ? branchQuantity.qty : 0;
+    return qtyList.value.reduce((sum, q) => sum + q.qty, 0);
+    //return branchQuantity ? branchQuantity.qty : 0;
 });
 
-const orderData = {
-    is_buy_now: false,
-    product_id: props.product?.id,
-    quantity: 1,
-    size: null,
-    color: null,
-    unit: null,
-    branch_id: authStore.selectedBranch?.id
-};
+
+const orderData = computed(() => ({
+  is_buy_now: false,
+  product_id: props.product?.id,
+  quantity: 1,
+  size: null,
+  color: null,
+  unit: null,
+  branch_id: authStore.selectedBranch?.id
+}));
 
 const addToBasket = (product) => {
     // add product to basket
-    basketStore.addToCart(orderData, product);
+    basketStore.addToCart(orderData.value, product);
 };
 
 const buyNow = async () => {
