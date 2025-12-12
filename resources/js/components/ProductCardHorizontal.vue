@@ -45,14 +45,15 @@
 
                         <div class="h-3 w-[0px] border border-slate-200"></div>
 
-                         <div class="text-right text-sm font-normal leading-tight" 
-                            :class="hasStock ? 'text-slate-500' : 'text-red-500'">
-                            <template v-if="hasStock">
-                                {{ productQty }} {{ $t('Quantity') }} | {{ props.product?.total_sold }} {{ $t('Sold') }}
-                            </template>
-                            <template v-else>
-                                {{ $t('Stock Out') }}
-                            </template>
+                        <div v-if="hasStock"
+                            class="text-right text-slate-500 text-sm font-normal leading-tight">
+                            {{ props.product?.total_sold }} {{ $t('Sold') }}
+                        </div>
+                       // <div v-if="hasStock" class="text-slate-500 text-sm">
+                         //   {{ productQty }} {{ $t('Quantity') }}
+                        //</div>
+                        <div v-else class="text-right text-red-500 text-sm font-normal leading-tight">
+                            {{ $t('Stock Out') }}
                         </div>
                     </div>
                 </div>
