@@ -49,6 +49,9 @@
                             class="text-right text-slate-500 text-sm font-normal leading-tight">
                             {{ props.product?.total_sold }} {{ $t('Sold') }}
                         </div>
+                        <div v-if="hasStock" class="text-slate-500 text-sm">
+                            {{ productQty }} {{ $t('Quantity') }}
+                        </div>
                         <div v-else class="text-right text-red-500 text-sm font-normal leading-tight">
                             {{ $t('Stock Out') }}
                         </div>
@@ -101,17 +104,34 @@ const props = defineProps({
 });
 
 // Check if product has quantity > 0 for the selected branch
-const hasStock = computed(() => {
-    if (!props.product?.quantities) return false;
+const qtyList = computed(() => props.product?.branch_qty ?? []);
 
-    // If no branch is selected, check if any branch has stock
+const hasStock = computed(() => {
+    if (qtyList.value.length === 0) return false;
+
     if (!authStore.selectedBranch) {
-        return props.product.quantities.some(q => q.qty > 0);
+        return qtyList.value.some(q => Number(q.qty) > 0);
     }
 
-    // If branch is selected, check quantity for that specific branch
-    const branchQuantity = props.product.quantities.find(q => q.branch_id === authStore.selectedBranch.id);
-    return branchQuantity ? branchQuantity.qty > 0 : false;
+    const branchQuantity = qtyList.value.find(
+        q => Number(q.branch_id) === Number(authStore.selectedBranch?.id)
+    );
+
+    return branchQuantity ? Number(branchQuantity.qty) > 0 : false;
+});
+
+const productQty = computed(() => {
+    if (qtyList.value.length === 0) return 0;
+
+    if (!authStore.selectedBranch) {
+        return qtyList.value.reduce((sum, q) => sum + Number(q.qty), 0);
+    }
+
+    const branchQuantity = qtyList.value.find(
+        q => Number(q.branch_id) === Number(authStore.selectedBranch?.id)
+    );
+
+    return branchQuantity ? Number(branchQuantity.qty) : 0;
 });
 
 const orderData = {

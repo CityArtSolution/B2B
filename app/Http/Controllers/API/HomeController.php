@@ -151,10 +151,14 @@ class HomeController extends Controller
          */
         $user = auth()->user();
 
-        $products = $user->recentlyViewedProducts()->when($shop, function ($query) use ($shop) {
-            return $query->where('shop_id', $shop->id);
-        })->where('is_active', true)->orderBy('pivot_updated_at', 'desc')->take(10)->get();
-
+        $products = $user->recentlyViewedProducts()
+        ->when($shop, fn($query) => $query->where('shop_id', $shop->id))
+        ->where('is_active', true)
+        ->with(['productBranches'])
+        ->orderBy('pivot_updated_at', 'desc')
+        ->take(10)
+        ->get();
+        
         return $this->json('recently viewed products', [
             'products' => ProductResource::collection($products),
         ]);
