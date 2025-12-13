@@ -46,12 +46,21 @@ class CartController extends Controller
         $quantity = $request->quantity ?? 1;
 
         $customer = auth()->user()->customer;
-        $cart = $customer->carts()->where('product_id', $product->id)->first();
+
+        $selectedBranchId = $request->branch_id ?? session('selected_branch');
+
+        $cart = $customer->carts()
+            ->where('product_id', $product->id)
+            ->when($selectedBranchId, fn ($q) => $q->where('branch_id', $selectedBranchId))
+            ->first();
 
         if ($isBuyNow) {
 
-            $buyNowCart = $customer->carts()->where('is_buy_now', true)->first();
-
+            $buyNowCart = $customer->carts()
+                ->where('is_buy_now', true)
+                ->when($selectedBranchId, fn ($q) => $q->where('branch_id', $selectedBranchId))
+                ->first();
+                
             if ($buyNowCart && $buyNowCart->product_id != $request->product_id) {
                 $buyNowCart->delete();
             }
@@ -59,16 +68,17 @@ class CartController extends Controller
 
         // Check quantity based on selected branch
         $selectedBranchId = $request->branch_id ?? session('selected_branch');
-        $availableQuantity = $product->quantity; // Default to total quantity
-
         if ($selectedBranchId) {
-            $branchQuantity = $product->quantityBranch($selectedBranchId);
-            if ($branchQuantity) {
-                $availableQuantity = $branchQuantity->qty;
-            }
+        $availableQuantity = $product->productBranches()
+            ->where('branch_id', $selectedBranchId)
+            ->value('qty') ?? 0;
+        } else {
+            $availableQuantity = $product->productBranches()->sum('qty');
         }
 
-        if (($availableQuantity < $quantity) || ($availableQuantity <= $cart?->quantity)) {
+        $cartQty = $cart?->quantity ?? 0;
+
+        if ($availableQuantity < ($quantity + $cartQty)) {
             return $this->json('Sorry! product cart quantity is limited. No more stock', [], 422);
         }
 

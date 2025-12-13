@@ -230,7 +230,8 @@ const buyNow = async () => {
         quantity: 1,
         size: null,
         color: null,
-        unit: null
+        unit: null,
+        branch_id: authStore.selectedBranch.id
     }, props.product);
 
     basketStore.buyNowShopId = props.product?.shop.id;
