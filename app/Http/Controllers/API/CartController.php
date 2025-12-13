@@ -47,20 +47,14 @@ class CartController extends Controller
 
         $customer = auth()->user()->customer;
 
-        $selectedBranchId = $request->branch_id ?? session('selected_branch');
-
         $cart = $customer->carts()
-            ->where('product_id', $product->id)
-            ->when($selectedBranchId, fn ($q) => $q->where('branch_id', $selectedBranchId))
-            ->first();
+        ->where('product_id', $product->id)
+        ->first();
 
         if ($isBuyNow) {
 
-            $buyNowCart = $customer->carts()
-                ->where('is_buy_now', true)
-                ->when($selectedBranchId, fn ($q) => $q->where('branch_id', $selectedBranchId))
-                ->first();
-                
+            $buyNowCart = $customer->carts()->where('is_buy_now', true)->first();
+
             if ($buyNowCart && $buyNowCart->product_id != $request->product_id) {
                 $buyNowCart->delete();
             }
