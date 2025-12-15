@@ -121,7 +121,10 @@ body { background:var(--bg);}
         <div class="modal-body">
             <div class="mb-3">
                 <label>{{ __('Branch Name') }}</label>
-                <input type="text" name="name" class="form-control">
+                <input type="text" id="mainInput" name="name_ar" class="form-control">
+                <input type="hidden" id="name_en" name="name_en" class="form-control">
+                <input type="hidden" id="name_ur" name="name_ur" class="form-control">
+                <input type="hidden" id="name_in" name="name_in" class="form-control">
             </div>
             
             <div class="mb-3">
@@ -166,7 +169,10 @@ body { background:var(--bg);}
         <div class="modal-body">
           <div class="mb-3">
             <label>{{ __('Branch Name') }}</label>
-            <input type="text" name="name" class="form-control">
+            <input type="text" id="main_edit" name="name_ar" class="form-control">
+            <input type="text" id="e_name_en" name="name_en" class="form-control">
+            <input type="text" id="e_name_ur" name="name_ur" class="form-control">
+            <input type="text" id="e_name_in" name="name_in" class="form-control">
           </div>
 
           <div class="mb-3">
@@ -231,11 +237,11 @@ function createPulseIcon() {
 // build markers and sidebar list
 const markers = [];
 const listEl = document.getElementById('branchList');
-
+let lang = '{{ app()->getLocale() }}';
 branches.forEach((b, idx) => {
   const lat = parseFloat(b.lat);
   const lng = parseFloat(b.lng);
-  const title = b.name;
+  const title = b.name[lang] || b.name['ar'] || 'فرع بدون اسم';
   const address = b.address || '';
     if (!b.lat || !b.lng || isNaN(parseFloat(b.lat)) || isNaN(parseFloat(b.lng))) {
         console.warn("فرع بدون إحداثيات → تم تجاهله:", b);
@@ -368,8 +374,12 @@ function editBranch(id){
     .then(res => res.json())
     .then(data => {
         let form = document.getElementById('editBranchForm');
+        console.log(data);
         form.id.value = data.id;
-        form.name.value = data.name;
+        form.name_ar.value = data.name['ar'];
+        form.name_en.value = data.name['en'];
+        form.name_ur.value = data.name['ur'];
+        form.name_in.value = data.name['in'];
         form.address.value = data.address;
         form.lat.value = data.lat;
         form.lng.value = data.lng;
@@ -409,6 +419,46 @@ function deleteBranch(id){
 setTimeout(() => {
   map.invalidateSize();
 }, 300);
+
+</script>
+<script>
+  document.getElementById('mainInput').addEventListener('input', function() {
+    var text = this.value;
+    fetch(`/admin/translate?text=${encodeURIComponent(text)}`, {
+        method: 'GET',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('name_en').value = data.en;
+      document.getElementById('name_ur').value = data.ur;
+      document.getElementById('name_in').value = data.in;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+  });
+
+  document.getElementById('main_edit').addEventListener('input', function() {
+    var text = this.value;
+    fetch(`/admin/translate?text=${encodeURIComponent(text)}`, {
+        method: 'GET',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('e_name_en').value = data.en;
+      document.getElementById('e_name_ur').value = data.ur;
+      document.getElementById('e_name_in').value = data.in;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+  });
 
 </script>
 

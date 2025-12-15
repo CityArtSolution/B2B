@@ -17,13 +17,20 @@ class BranchController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name_ar' => 'required|string|max:255',
             'address' => 'nullable|string|max:500',
             'lat' => 'required|numeric',
             'lng' => 'required|numeric',
         ]);
+        $name = [
+            'ar' => $request->name_ar,
+            'en' => $request->name_en,
+            'ur' => $request->name_ur,
+            'in' => $request->name_in,
+        ];
+        
         $branch = Branch::create([
-            'name' => $request->name,
+            'name' => $name,
             'address' => $request->address,
             'lat' => $request->lat,
             'lng' => $request->lng,
@@ -43,9 +50,14 @@ class BranchController extends Controller
     {
         $id = $request->id ;
         $branch = Branch::findOrFail($id);
-
+        $name = [
+            'ar' => $request->name_ar,
+            'en' => $request->name_en,
+            'ur' => $request->name_ur,
+            'in' => $request->name_in,
+        ];
         $branch->update([
-            'name' => $request->name,
+            'name' => $name,
             'address' => $request->address,
             'lat' => $request->lat,
             'lng' => $request->lng,

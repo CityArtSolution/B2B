@@ -194,8 +194,8 @@ const loginFormData = ref({
 
 onMounted(async () => {
     if (master.app_environment == 'local') {
-        loginFormData.value.phone = 'user@readyecommerce.com';
-        loginFormData.value.password = 'secret';
+        loginFormData.value.phone = '';
+        loginFormData.value.password = '123456789';
     }
 
     fetchCountries();

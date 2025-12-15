@@ -1,38 +1,25 @@
 <template>
     <div class="main-container flex items-center justify-between md:gap-3 lg:gap-4 border-t border-b border-slate-100 flex-wrap md:flex-nowrap relative">
 
+<div class="xl:w-[220px] flex">
+    <!-- Logo -->
+    <router-link to="/" class="flex items-center gap-2 py-3">
+        <div class="hidden lg:inline-block text-xl font-bold text-slate-900"
+             :class="master.langDirection === 'rtl' ? 'text-right' : 'text-left'">
+            {{ master.locale === 'ar' ? 'الرئيسية' : master.locale === 'In' ? 'होम' : master.locale === 'ur' ?  'ہوم' : 'Home' }}
+        </div>
+    </router-link>
+</div>
+
+  
         <div class="xl:w-[220px] flex">
             <!--==== Categories dropdown menu ====-->
-            <Popover v-slot="{ open }">
-                <div class="border-r border-slate-100 p-1">
-                    <PopoverButton class="h-10 lg:h-11 flex items-center gap-2 outline-none rounded-lg transition-all"
-                        :class="open ? 'bg-primary-100 text-primary' : 'text-slate-600'">
-                        <div class="w-12 md:w-auto xl:w-12 flex items-center justify-center">
-                            <MenuIcon :colorClass="open ? 'text-primary' : ''" />
-                        </div>
-                        <div class="hidden xs:block text-sm lg:w-20 xl:w-36 lg:text-base font-normal leading-normal" :class="master.langDirection === 'rtl' ? 'text-right' : 'text-left'">
-                            {{ $t('Categories') }}
-                        </div>
-                    </PopoverButton>
-                </div>
-
-                <transition enter-active-class="transition ease-out duration-200"
-                    enter-from-class="opacity-0 translate-y-1" enter-to-class="opacity-100 translate-y-0"
-                    leave-active-class="transition ease-in duration-150" leave-from-class="opacity-100 translate-y-0"
-                    leave-to-class="opacity-0 translate-y-1">
-
-                    <PopoverPanel class="absolute pb-6 left-0 right-0 z-10 mt-0 flex main-container">
-                        <PopoverButton as="div" class="w-screen p-6 bg-white shadow-md grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-10 gap-4 rounded-br-xl rounded-bl-xl">
-                            <div v-for="category in master.categories" :key="category.id" class="">
-                                <MenuCategory :category="category" @update:click="hiddenPopover" />
-                            </div>
-                        </PopoverButton>
-                    </PopoverPanel>
-                </transition>
-            </Popover>
-
+            <div v-for="category in master.categories" :key="category.id" class="">
+                <MenuCategory :category="category" @update:click="hiddenPopover" />
+            </div>
         </div>
 
+        
         <!-- Main menu -->
         <div class="hidden md:inline-flex justify-start items-center gap-2.5 lg:gap-3 xl:gap-5  2xl:gap-6 grow overflow-x-auto">
 

@@ -24,7 +24,7 @@
                                 <th style="min-width: 150px">{{ __('Name') }}</th>
                                 <th style="min-width: 100px">{{ __('Phone') }}</th>
                                 <th>{{ __('Commercial register') }}</th>
-                                <th class="text-center">{{ __('Gender') }}</th>
+                                <th class="text-center">{{ __('Tax number') }}</th>
                                 <!--<th class="text-center">{{ __('Date of Birth') }}</th>-->
                                 <th class="text-center">{{ __('Action') }}</th>
                             </tr>
@@ -48,7 +48,7 @@
                                 </td>
 
                                 <td class="text-center">
-                                    {{ $customer->gender ?? '--' }}
+                                    {{ $customer->Tax_number ?? '--' }}
                                 </td>
 
                                 <!--<td class="text-center">-->

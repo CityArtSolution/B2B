@@ -432,11 +432,11 @@
                         </tr>
                         
                         <tr>
-                            <td style="border:1px solid #000; padding:6px;">{{ __('client additional_number') }}</td><td style="border:1px solid #000; padding:6px;"></td>
+                            <td style="border:1px solid #000; padding:6px;">{{ __('client additional_number') }}</td><td style="border:1px solid #000; padding:6px;">{{ $user->Additional_Number ?? '' }}</td>
                         </tr>
                         
                         <tr>
-                            <td style="border:1px solid #000; padding:6px;">{{ __('client tax_number') }}</td><td style="border:1px solid #000; padding:6px;"></td>
+                            <td style="border:1px solid #000; padding:6px;">{{ __('client tax_number') }}</td><td style="border:1px solid #000; padding:6px;">{{ $user->Tax_number ?? '' }}</td>
                         </tr>
                     </table>
                 </td>
@@ -505,17 +505,17 @@
                                                 {{ $name }}
                                             </span>
                                             <p class="pt-1 text-gray product-des">
-                                                {{ $plainShortDescription }}
+                                                {{ $plainShortDescription ?? ''}}
                                             </p>
                                         </td>
                                     </tr>
                                 </table>
                             </td>
-                            <td class="text-center">{{ $product->unit->name }}</td>
-                            <td class="text-center">{{ $product->pivot->size ?? '--' }}</td>
-                            <td class="text-center">{{ $product->pivot->quantity }}</td>
-                            <td class="text-center fw-400">{{ showCurrency($price) }}</td>
-                            <td class="text-right">{{ showCurrency($price * $product->pivot->quantity) }}</td>
+                            <td class="text-center">{{ $product->unit->name ?? '' }}</td>
+                            <td class="text-center">{{ $product->pivot->size ?? '' }}</td>
+                            <td class="text-center">{{ $product->pivot->quantity ?? ''  }}</td>
+                            <td class="text-center fw-400">{{ showCurrency($price) ?? ''  }}</td>
+                            <td class="text-right">{{ showCurrency($price * $product->pivot->quantity) ?? ''  }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -529,7 +529,7 @@
                         {{ __('Sub Total') }}
                     </p>
                     <p class="w-50 text-right fw-500">
-                        {{ showCurrency($order->total_amount) }}
+                        {{ showCurrency($order->total_amount) ?? '' }}
                     </p>
                 </div>
                 @if ($order->coupon_discount > 0)
@@ -538,7 +538,7 @@
                             {{ __('Discount') }}
                         </p>
                         <p class="w-50 text-right fw-500">
-                            {{ showCurrency($order->coupon_discount) }}
+                            {{ showCurrency($order->coupon_discount) ?? ''  }}
                         </p>
                     </div>
                 @endif
@@ -547,7 +547,7 @@
                         {{ __('Delivery Charge') }}
                     </p>
                     <p class="w-50 text-right fw-500">
-                        {{ showCurrency($order->delivery_charge) }}
+                        {{ showCurrency($order->delivery_charge) ?? ''  }}
                     </p>
                 </div>
 
@@ -584,27 +584,27 @@
             <table style="width:100%; border-collapse: collapse; font-size: 14px;">                
                 <tr>
                     <td style="border:1px solid #000; padding:6px;"> ﺍﻻﺟﻤﺎﻟﻲ ﻗﺒﻞ ﺿﺮﻳﺒﺔ ﺍﻟﻘﻴﻤﺔ ﺍﻟﻤﻀﺎﻓﺔ</td>
-                    <td style="border:1px solid #000; padding:6px;text-align: left;">{{ showCurrency($order->total_amount) }}</td>
+                    <td style="border:1px solid #000; padding:6px;text-align: left;">{{ showCurrency($order->total_amount) ?? '' }}</td>
                 </tr>
                 @if ($order->coupon_discount > 0)
                 <tr>
                     <td style="border:1px solid #000; padding:6px;">{{ __('Discount') }}</td>
-                    <td style="border:1px solid #000; padding:6px;text-align: left;">{{ showCurrency($order->coupon_discount) }}</td>
+                    <td style="border:1px solid #000; padding:6px;text-align: left;">{{ showCurrency($order->coupon_discount) ?? ''}}</td>
                 </tr>
                 @endif
                 <tr>
                     <td style="border:1px solid #000; padding:6px;">{{ __('Delivery Charge') }}</td>
-                    <td style="border:1px solid #000; padding:6px;text-align: left;">{{ showCurrency($order->delivery_charge) }}</td>
+                    <td style="border:1px solid #000; padding:6px;text-align: left;">{{ showCurrency($order->delivery_charge) ?? ''}}</td>
                 </tr>
                 @if ($order->tax_amount > 0)
                 <tr>
                     <td style="border:1px solid #000; padding:6px;">ضريبة القيمة المضافة 15%</td>
-                    <td style="border:1px solid #000; padding:6px;text-align: left;"> {{ showCurrency($order->tax_amount) }}</td>
+                    <td style="border:1px solid #000; padding:6px;text-align: left;"> {{ showCurrency($order->tax_amount) ?? ''}}</td>
                 </tr>
                 @endif
                 <tr>
                     <td style="border:1px solid #000; padding:6px;">{{ __('Total Amount') }}</td>
-                    <td style="border:1px solid #000; padding:6px;text-align: left;">{{ showCurrency($order->payable_amount) }}</td>
+                    <td style="border:1px solid #000; padding:6px;text-align: left;">{{ showCurrency($order->payable_amount) ?? ''}}</td>
                 </tr>
             </table>
         @endif

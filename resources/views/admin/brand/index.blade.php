@@ -138,9 +138,11 @@
                     </div>
                     <div class="modal-body" style="text-align: left">
                         <div class="mb-3">
-                            <label for="name" class="form-label">{{ __('Name') }} *</label>
-                            <input type="text" class="form-control" id="editName" name="name"
-                                placeholder="Enter Name" value="" required />
+                            <label class="form-label">{{ __('Name') }} *</label>
+                            <input type="text" name="name_ar" id="editName"  class="form-control" placeholder="Enter Name" value="" required>
+                            <input type="hidden" id="name_en" name="name_en" class="form-control">
+                            <input type="hidden" id="name_ur" name="name_ur" class="form-control">
+                            <input type="hidden" id="name_in" name="name_in" class="form-control">
                             @error('name')
                                 <p class="text text-danger m-0">{{ $message }}</p>
                             @enderror

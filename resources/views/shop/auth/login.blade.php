@@ -39,14 +39,6 @@
         <!-- Login Card -->
         <div class="card loginCard">
             <div class="card-body">
-                @if (app()->isLocal())
-                    <div class="d-flex justify-content-between align-items-center gap-2">
-                        <span class="powerBy">Powered by <a class="text-primary text-decoration-none fw-bold"
-                                href="https://razinsoft.com/" target="_blank">RazinSoft</a>
-                            ©{{ date('Y') }}</span>
-                        <span class="version fw-bold">v{{ config('app.version') }}</span>
-                    </div>
-                @endif
 
                 <div class="text-center mt-4">
                     <img src="{{ $generaleSetting?->logo ?? asset('assets/logo.png') }}" alt="" height="80"

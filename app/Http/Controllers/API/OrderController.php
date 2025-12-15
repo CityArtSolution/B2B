@@ -122,9 +122,10 @@ class OrderController extends Controller
         if ($paymentMethod->name != 'CASH') {
             $paymentUrl = route('order.payment', ['payment' => $payment, 'gateway' => $request->payment_method]);
         }
-
+        $orderId = $payment->orders()->pluck('id');
         return $this->json('Order created successfully', [
             'order_payment_url' => $paymentUrl,
+            'orderId' => $orderId,
         ]);
     }
 

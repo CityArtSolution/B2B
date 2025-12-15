@@ -15,23 +15,21 @@
                                 <div class="col-lg-7">
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <div class="mt-3">
-                                                <x-input label="First Name" name="name" type="text"
-                                                    placeholder="Enter Name" required="true" />
+                                                <div class="mt-3">
+                                                    <x-input label="First Name" name="name" type="text"
+                                                        placeholder="Enter Name" required="true" />
+                                                </div>
                                             </div>
-                                        </div>
                                         <div class="col-md-6">
                                             <div class="mt-3">
-                                                <x-input label="Last Name" name="last_name" type="text"
-                                                    placeholder="Enter Name" />
+                                                <x-input label="Phone Number" name="phone" type="number"
+                                                placeholder="Enter phone number" required="true"/>
                                             </div>
                                         </div>
+                                        
                                     </div>
 
-                                    <div class="mt-3">
-                                        <x-input label="Phone Number" name="phone" type="number"
-                                            placeholder="Enter phone number" required="true"/>
-                                    </div>
+
                                     <!--<div class="mt-3">-->
                                     <!--    <x-input type="email" name="email" label="Email" placeholder="Enter Email Address" />-->
                                     <!--</div>-->
@@ -57,15 +55,15 @@
                                                 placeholder="Enter client country" required="true" />
                                         </div>
                                     </div>
-                                    <div class="mt-3">
-                                        <x-select label="Gender" name="gender">
-                                            <option value="male">
-                                                {{ __('Male') }}
-                                            </option>
-                                            <option value="female">
-                                                {{ __('Female') }}
-                                            </option>
-                                        </x-select>
+                                    <div class="mt-3" style="display: flex;align-items: baseline;gap: 19px;">
+                                        <div class="col-md-6 mt-3">
+                                            <x-input type="text" name="Additional_Number" label="Additional Number"
+                                                placeholder="Enter Additional Number" required="true" />
+                                        </div>
+                                        <div class="col-md-6 mt-3">
+                                            <x-input type="text" name="Tax_number" label="Tax number"
+                                                placeholder="Enter Tax number" required="true" />
+                                        </div>
                                     </div>
                                     <div class="mt-3">
                                         <x-select label="{{ __('Payment Status') }}" name="payment_status" required="true">

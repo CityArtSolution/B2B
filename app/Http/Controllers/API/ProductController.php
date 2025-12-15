@@ -47,7 +47,8 @@ class ProductController extends Controller
         $sizeID = $request->size_id;
         $isDigital = $request->is_digital == true ? true : false;
         $selectedBranchId = $request->branch_id; // Now comes from frontend request
-
+        $product_code = $request->product_code;
+        $discountedProduct = $request->discountedProduct == true ? true : false;
         $generaleSetting = generaleSetting('setting');
         $shop = null;
         if ($generaleSetting?->shop_type == 'single') {
@@ -89,6 +90,14 @@ class ProductController extends Controller
             ->when($selectedBranchId, function ($query) use ($selectedBranchId) {
                 return $query->whereHas('productBranches', function ($query) use ($selectedBranchId) {
                     return $query->where('branch_id', $selectedBranchId)->where('qty', '>', 0);
+                });
+            })
+            ->when($product_code, function ($query) use ($product_code) {
+                return $query->where('code', $product_code);
+            })
+            ->when($discountedProduct, function ($query) {
+                $query->where('discount_price', '>', 0)->whereNotNull('discount_price')->orWhereHas('flashSales', function ($q) {
+                    $q->isActive();
                 });
             })
             ->when($search, function ($query) use ($search) {

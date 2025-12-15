@@ -95,7 +95,7 @@
                                 </span>
                             </div>
 
-                            <div>
+                            <!-- <div>
                                 <label for="gender" class="form-label bg-transparent">{{ $t('Gender') }}</label>
                                 <select name="gender" id="gender" v-model="formData.gender"
                                     class="form-input bg-transparent h-[52px]"
@@ -108,7 +108,7 @@
                                 <span v-if="errors && errors?.gender" class="text-red-500 text-sm">
                                     {{ errors?.gender[0] }}
                                 </span>
-                            </div>
+                            </div> -->
 
                             <div>
                                 <label for="date" class="form-label">{{ $t('Date of Birth') }}</label>
@@ -118,7 +118,7 @@
                                     {{ errors?.date_of_birth[0] }}
                                 </span>
                             </div>
-
+<!-- 
                             <div>
                                 <label for="email" class="form-label justify-between">
                                     {{ $t('Email Address') }}
@@ -141,7 +141,7 @@
                                 <span v-if="errors && errors?.email" class="text-red-500 text-sm">
                                     {{ errors?.email[0] }}
                                 </span>
-                            </div>
+                            </div> -->
                         </div>
 
                         <button v-if="!isLoading" type="submit"

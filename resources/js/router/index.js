@@ -38,6 +38,7 @@ const AboutUs = () => import("../pages/AboutUs.vue");
 const ChangePassword = () => import("../pages/ChangePassword.vue");
 const BuyNow = () => import("../pages/BuyNow.vue");
 const MostPopular = () => import("../pages/MostPopular.vue");
+const DiscountedProducts = () => import("../pages/DiscountedProducts.vue");
 const ContactUs = () => import("../pages/ContactUs.vue");
 const Login = () => import("../pages/Login.vue");
 const BestDeal = () => import("../pages/BestDeal.vue");
@@ -109,12 +110,22 @@ const routes = [
         },
     },
     {
-        path: "/most-popular",
+        path: "/the-newest",
         name: "most-popular",
         component: MostPopular,
         meta: {
             layout: defaultLayout,
-            title: "Most Popular Products",
+            title: "Newest Products",
+            requiresAuth: true,
+        },
+    },
+    {
+        path: "/discounted-products",
+        name: "Discounted Products",
+        component: DiscountedProducts,
+        meta: {
+            layout: defaultLayout,
+            title: "Discounted Products",
             requiresAuth: true,
         },
     },

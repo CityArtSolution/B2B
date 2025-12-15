@@ -309,7 +309,10 @@ const processOrderConfirm = () => {
                 openPaymentPopupWindow(paymentUrl);
                 return;
             } else {
+                let orderId = response.data.data.orderId;
+                console.log(orderId);
                 basketStore.showOrderConfirmModal = true
+                // window.location.href = `/shop/download-invoice/${orderId}`
             }
         }).catch((error) => {
             toast.error(error.response.data.message, {

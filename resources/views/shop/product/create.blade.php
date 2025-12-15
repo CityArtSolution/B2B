@@ -17,31 +17,31 @@
                     <hr class="text-muted">
                 </div>
                 <div  class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <x-input label="Product Name (AR)" name="name_ar" id="name_ar_input" type="text"
                             placeholder="Enter Product Name" />
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <x-input label="Product Name (EN)" name="name" id="product_name" type="text"
                             placeholder="Enter Product Name" required="true" />
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3" style="display: none">
                         <x-input label="Name (UR)" name="name_ur" type="text" id="name_ur_input" placeholder="Enter Name" required="true"/>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3" style="display: none">
                         <x-input label="Name (IN)" name="name_in" type="text" id="name_in_input" placeholder="Enter Name" required="true"/>
                     </div>
                 </div>
                 
                 <div class="row mt-3">
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <label>
                             {{ __('Short Description (AR)') }}
                         </label>
                         <textarea name="short_description_ar" id="short_description_ar" class="form-control @error('short_description_ar') is-invalid @enderror" rows="2" placeholder="Enter short description">{{ old('short_description_ar') }}</textarea>
                     </div>
                         
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <label>
                             {{ __('Short Description (EN)') }}
                             <span class="text-danger">*</span>
@@ -52,14 +52,14 @@
                         @enderror
                     </div>
                     
-                    <div class="col-md-3">
+                    <div class="col-md-3" style="display: none">
                         <label>
                             {{ __('Short Description (UR)') }}
                         </label>
                         <textarea name="short_description_ur" id="short_description_ur" class="form-control @error('short_description_ur') is-invalid @enderror" rows="2" placeholder="Enter short description">{{ old('short_description_ur') }}</textarea>
                     </div>
                     
-                    <div class="col-md-3">
+                    <div class="col-md-3" style="display: none">
                         <label>
                             {{ __('Short Description (IN)') }}
                         </label>

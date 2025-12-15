@@ -12,4 +12,7 @@ class Branch extends Model
     protected $fillable = [
         'name', 'address', 'lat', 'lng'
     ];
+    protected $casts = [
+        'name' => 'array',
+    ];
 }

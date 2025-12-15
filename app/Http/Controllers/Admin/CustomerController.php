@@ -52,10 +52,6 @@ class CustomerController extends Controller
     public function update(User $user, UserRequest $request)
     {
         UserRepository::updateByRequest($request, $user);
-        $user->customer->update([
-            'payment_status' => $request->payment_status,
-        ]);
-
         return to_route('admin.customer.index')->withSuccess(__('Updated successfully'));
     }
 

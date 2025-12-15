@@ -23,16 +23,16 @@
                             </h5>
                         </div>
                         <div class="row">
-                            <div class="col-md-3 mt-3">
+                            <div class="col-md-6 mt-3">
                                 <x-input label="Name (AR)" id="name_ar_input" name="name_ar" :value="$category->translated_name_AR" type="text" placeholder="Enter Name (AR)" required="true"/>
                             </div>
-                            <div class="col-md-3 mt-3">
+                            <div class="col-md-6 mt-3">
                                 <x-input label="Name (EN)" id="product_name" name="name" :value="$category->name" type="text" placeholder="Enter Name (EN)" required="true"/>
                             </div>
-                            <div class="col-md-3 mt-3">
+                            <div class="col-md-3 mt-3" style="display: none">
                                 <x-input label="Name (UR)" id="name_ur_input" name="name_ur" :value="$category->transl('ur')" type="text" placeholder="Enter Name" required="true"/>
                             </div>
-                            <div class="col-md-3 mt-3">
+                            <div class="col-md-3 mt-3" style="display: none">
                                 <x-input label="Name (IN)" id="name_in_input" name="name_in" :value="$category->transl('In')" type="text" placeholder="Enter Name" required="true"/>
                             </div>
                         </div>

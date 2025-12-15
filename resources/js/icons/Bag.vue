@@ -1,20 +1,6 @@
 <template>
     <div :class="colorClass">
-        <svg :width="width" :height="height" :viewBox="'0 0 ' + width + ' ' + height" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <path
-                d="M6.25 6.39167V5.58334C6.25 3.70834 7.75833 1.86667 9.63333 1.69167C11.8667 1.47501 13.75 3.23334 13.75 5.42501V6.57501"
-                stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"
-                stroke-linejoin="round" />
-            <path
-                d="M7.5001 18.3333H12.5001C15.8501 18.3333 16.4501 16.9916 16.6251 15.3583L17.2501 10.3583C17.4751 8.32496 16.8918 6.66663 13.3334 6.66663H6.66677C3.10843 6.66663 2.5251 8.32496 2.7501 10.3583L3.3751 15.3583C3.5501 16.9916 4.1501 18.3333 7.5001 18.3333Z"
-                stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"
-                stroke-linejoin="round" />
-            <path d="M12.9128 10H12.9203" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" />
-            <path d="M7.07884 10H7.08632" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" />
-        </svg>
+        <svg width="23px" height="24px"  viewBox="0 0 24.00 24.00" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000" transform="rotate(0)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.048"></g><g id="SVGRepo_iconCarrier"> <path d="M6.29977 5H21L19 12H7.37671M20 16H8L6 3H3M9 20C9 20.5523 8.55228 21 8 21C7.44772 21 7 20.5523 7 20C7 19.4477 7.44772 19 8 19C8.55228 19 9 19.4477 9 20ZM20 20C20 20.5523 19.5523 21 19 21C18.4477 21 18 20.5523 18 20C18 19.4477 18.4477 19 19 19C19.5523 19 20 19.4477 20 20Z" stroke="#78a656" stroke-width="1.392" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
     </div>
 </template>
 

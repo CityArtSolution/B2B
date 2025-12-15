@@ -109,7 +109,19 @@
                                                     <XMarkIcon class="w-5 h-5 text-slate-700" />
                                                 </button>
                                             </div>
+                                            <!-- Product Code -->
+                                            <div>
+                                                <div class="text-slate-950 text-base font-medium leading-normal">
+                                                    {{ $t("Product Code") }}
+                                                </div>
 
+                                                <input 
+                                                    type="text"
+                                                    v-model="filterFormData.product_code"
+                                                    class="w-full mt-1 p-3 rounded bg-transparent border border-gray-100 outline-none"
+                                                    :placeholder="$t('Enter Product Code')"
+                                                />
+                                            </div>
                                             <!-- Customer Review -->
                                             <div>
                                                 <div class="text-slate-950 text-base font-medium leading-normal">
@@ -289,6 +301,10 @@ import { useAuth } from "../stores/AuthStore";
 import VueSlider from "vue-slider-component";
 import "vue-slider-component/theme/default.css";
 import SkeletonLoader from "../components/SkeletonLoader.vue";
+import { useI18n } from "vue-i18n";
+import { computed } from "vue";
+
+const { t } = useI18n();
 
 const priceRange = ref([0, 1000]);
 
@@ -332,6 +348,7 @@ const filterFormData = ref({
     min_price: null,
     max_price: null,
     category_id: "",
+    product_code: "", 
 });
 
 const filter = ref({
@@ -425,28 +442,28 @@ const fetchCategories = async () => {
     }
 };
 
-const filterSortBy = [
+const filterSortBy = computed(() =>  [
     {
-        name: "Default Sorting",
+        name: t("default_sorting"),
         value: "default",
     },
     {
-        name: "High to Low",
+        name: t("high_to_low"),
         value: "high_to_low",
     },
     {
-        name: "Low to High",
+        name: t("low_to_high"),
         value: "low_to_high",
     },
     {
-        name: "Most Selling",
+        name: t("most_selling"),
         value: "top_selling",
     },
     {
-        name: "New Product",
+        name: t("new_product"),
         value: "newest",
     },
-];
+]);
 </script>
 
 <style>

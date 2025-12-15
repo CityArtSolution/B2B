@@ -35,7 +35,8 @@ class UserResource extends JsonResource
             'country' => $this->country,
             'phone_code' => $this->phone_code,
             'account_verified' => (bool) $accountVerified,
-            'last_online' => $lastOnline
+            'last_online' => $lastOnline,
+            'payment_status' => $this->payment_status,
         ];
     }
 }

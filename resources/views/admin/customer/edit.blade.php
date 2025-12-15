@@ -19,28 +19,24 @@
                                         <div class="col-md-6">
                                             <div class="mt-3">
                                                 <x-input label="First Name" name="name" type="text"
-                                                    placeholder="Enter Name" required="true" :value="$user->name" />
+                                                placeholder="Enter Name" required="true" :value="$user->name" />
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="mt-3">
-                                                <x-input label="Last Name" name="last_name" type="text"
-                                                    placeholder="Enter Name" :value="$user->last_name" />
+                                                @php
+                                                    $phone = $user->phone;
+                                                    $phone = str_replace('(', '', $phone);
+                                                    $phone = str_replace(')', '', $phone);
+                                                    $phone = str_replace('-', '', $phone);
+                                                    $phone = str_replace('+', '', $phone);
+                                                @endphp
+                                                <x-input label="Phone Number" name="phone" type="number"
+                                                    placeholder="Enter phone number" required="true" :value="$phone"/>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div class="mt-3">
-                                        @php
-                                            $phone = $user->phone;
-                                            $phone = str_replace('(', '', $phone);
-                                            $phone = str_replace(')', '', $phone);
-                                            $phone = str_replace('-', '', $phone);
-                                            $phone = str_replace('+', '', $phone);
-                                        @endphp
-                                        <x-input label="Phone Number" name="phone" type="number"
-                                            placeholder="Enter phone number" required="true" :value="$phone"/>
-                                    </div>
+                                    
                                     <!--<div class="mt-3">-->
                                     <!--    <x-input type="email" name="email" label="Email"-->
                                     <!--        placeholder="Enter Email Address" :value="$user->email" />-->
@@ -48,7 +44,7 @@
                                     
                                     <div class="mt-3" style="display: flex;align-items: baseline;gap: 19px;">
                                         <div class="col-md-6 mt-3">
-                                            <x-input type="Commercial register" name="Commercial_register" label="Commercial register"
+                                            <x-input type="text" name="Commercial_register" label="Commercial register"
                                                 placeholder="Enter Commercial register" value="{{ $user->Commercial_register }}" required="true" />
                                         </div>
                                         <div class="col-md-6 mt-3">
@@ -56,22 +52,26 @@
                                                 placeholder="Enter client country" value="{{ $user->country }}" required="true" />
                                         </div>
                                     </div>
-                                    <div class="mt-3">
-                                        <x-select label="Gender" name="gender">
-                                            <option value="male" {{ $user->gender == 'male' ? 'selected' : '' }}>
-                                                {{ __('Male') }}
-                                            </option>
-                                            <option value="female" {{ $user->gender == 'female' ? 'selected' : '' }}>
-                                                {{ __('Female') }}
-                                            </option>
-                                        </x-select>
+
+
+                                    <div class="mt-3" style="display: flex;align-items: baseline;gap: 19px;">
+                                        <div class="col-md-6 mt-3">
+                                            <x-input type="text" name="Additional_Number" label="Additional Number"
+                                                placeholder="Enter Additional Number" value="{{ $user->Additional_Number ?? '' }}" required="true" />
+                                        </div>
+                                        <div class="col-md-6 mt-3">
+                                            <x-input type="text" name="Tax_number" label="Tax number"
+                                                placeholder="Enter Tax number" value="{{ $user->Tax_number ?? '' }}" required="true" />
+                                        </div>
                                     </div>
+
+
                                     <div class="mt-3">
                                         <x-select label="{{ __('Payment Status') }}" name="payment_status" required="true">
-                                            <option value="cash" {{ $user->customer->payment_status === 'cash' ? 'selected' : '' }}>
+                                            <option value="cash" {{ $user->payment_status === 'cash' ? 'selected' : '' }}>
                                                 {{ __('Cash') }}
                                             </option>
-                                            <option value="credit" {{ $user->customer->payment_status === 'credit' ? 'selected' : '' }}>
+                                            <option value="credit" {{ $user->payment_status === 'credit' ? 'selected' : '' }}>
                                                 {{ __('Credit') }}
                                             </option>
                                         </x-select>

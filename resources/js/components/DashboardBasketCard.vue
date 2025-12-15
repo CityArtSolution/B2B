@@ -89,7 +89,7 @@
 </template>
 
 <script setup>
-import { faBagShopping } from '@fortawesome/free-solid-svg-icons';
+import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue';
 import { ArchiveBoxIcon, ArrowRightIcon, XMarkIcon } from '@heroicons/vue/24/outline';

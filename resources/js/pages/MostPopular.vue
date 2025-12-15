@@ -2,7 +2,7 @@
     <div class="main-container pt-8 pb-12">
 
         <div v-if="!isLoading" class="text-slate-800 text-lg lg:text-3xl font-bold">
-            {{ $t('Most Popular') }}
+            {{ $t('The latest') }}
         </div>
         <!-- loading -->
         <SkeletonLoader v-else class="w-48 sm:w-60 md:w-72 lg:w-96 h-12 rounded-lg" />
@@ -77,7 +77,7 @@ const fetchProducts = async () => {
         params: {
             page: currentPage.value,
             per_page: perPage.value,
-            sort_type: 'popular_product',
+            sort_type: 'newest',
             branch_id: authStore.selectedBranch?.id
         },
         headers: {

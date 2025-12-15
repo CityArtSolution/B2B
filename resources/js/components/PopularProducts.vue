@@ -5,7 +5,7 @@
         <div v-if="!isLoading" class="flex justify-between items-center gap-4">
             <div class=" text-slate-800 text-lg md:text-3xl font-bold leading-9">{{ $t('Popular Products') }}</div>
 
-            <router-link to="/most-popular" class="flex items-center gap-1">
+            <router-link to="/the-newest" class="flex items-center gap-1">
                 <div class="text-slate-600 text-base font-normal leading-normal">{{ $t('View All') }}</div>
                 <ArrowRightIcon class="w-5 h-5 text-slate-600" />
             </router-link>

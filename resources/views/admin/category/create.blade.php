@@ -21,16 +21,16 @@
                             </h5>
                         </div>
                         <div class="row">
-                            <div class="col-md-3 mt-3">
+                            <div class="col-md-6 mt-3">
                                 <x-input label="Name (AR)" name="name_ar" id="name_ar_input" type="text" placeholder="Enter Name" required="true"/>
                             </div>
-                            <div class="col-md-3 mt-3">
+                            <div class="col-md-6 mt-3">
                                 <x-input label="Name (EN)" name="name" id="product_name" type="text" placeholder="Enter Name" required="true"/>
                             </div>
-                            <div class="col-md-3 mt-3">
+                            <div class="col-md-3 mt-3" style="display: none">
                                 <x-input label="Name (UR)" name="name_ur" id="name_ur_input" type="text" placeholder="Enter Name" required="true"/>
                             </div>
-                            <div class="col-md-3 mt-3">
+                            <div class="col-md-3 mt-3" style="display: none">
                                 <x-input label="Name (IN)" name="name_in" id="name_in_input" type="text" placeholder="Enter Name" required="true"/>
                             </div>
                         </div>

@@ -1,11 +1,11 @@
 <template>
     <div class="group relative">
         <button type="button"
-            class="p-4 group bg-white rounded-xl border justify-start items-center gap-2.5 inline-flex flex-col hover:border-primary transition-all duration-300 w-full border-b-2"
+            class="group bg-white rounded-xl border justify-start items-center gap-2.5 inline-flex flex-col hover:border-primary transition-all duration-300 w-full border-b-2" style="padding: 6px;"
             :class="(props.category?.id == route.params?.slug) ? 'border-primary' : 'border-slate-100'"
             @click="onClick">
             <img :src="props.category?.thumbnail"
-                class="w-16 h-16 object-cover transition duration-500 group-hover:scale-110 rounded-lg" loading="lazy" />
+                class="w-16 h-16 object-cover transition duration-500 group-hover:scale-110 rounded-lg" loading="lazy" style="height: 43px;width: 94px;"/>
             <div class="text-slate-600 text-sm font-medium leading-tight flex gap-1 items-center">
                 {{ props.category?.name }}
                 <span v-if="props.category?.sub_categories?.length > 0">

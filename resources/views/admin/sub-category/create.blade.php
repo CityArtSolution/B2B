@@ -41,17 +41,17 @@
                             @enderror
                         </div>
                         <div class="row">
-                            <div class="col-md-3 mt-3">
+                            <div class="col-md-6 mt-3">
                                 <x-input label="Name (AR)" id="name_ar_input" name="name_ar" type="text" placeholder="Name (AR)" />
                             </div>
-                            <div class="col-md-3 mt-3">
+                            <div class="col-md-6 mt-3">
                                 <x-input label="Name (EN)" id="product_name" name="name" type="text" placeholder="Name (EN)" required="true" />
                             </div>
-                            <div class="col-md-3 mt-3">
-                                <x-input label="Name (UR)" id="name_ur_input" name="name_ur" type="text" placeholder="Enter Name" required="true"/>
+                            <div class="col-md-3 mt-3" style="display: none">
+                                <x-input label="Name (UR)"  id="name_ur_input" name="name_ur" type="text" placeholder="Enter Name" required="true"/>
                             </div>
-                            <div class="col-md-3 mt-3">
-                                <x-input label="Name (IN)" id="name_in_input" name="name_in" type="text" placeholder="Enter Name" required="true"/>
+                            <div class="col-md-3 mt-3" style="display: none">
+                                <x-input label="Name (IN)"  id="name_in_input" name="name_in" type="text" placeholder="Enter Name" required="true"/>
                             </div>
                         </div>
                         <div class="mt-3 d-flex align-items-center justify-content-center">

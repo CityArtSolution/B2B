@@ -2,13 +2,14 @@
     <div class="main-container pt-8 pb-12">
 
         <div v-if="!isLoading" class="text-slate-800 text-lg lg:text-3xl font-bold">
-            {{ $t('best seller') }}
+            {{ $t('Offers') }}
         </div>
         <!-- loading -->
         <SkeletonLoader v-else class="w-48 sm:w-60 md:w-72 lg:w-96 h-12 rounded-lg" />
 
         <!-- Products -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-6 items-start mt-6">
+        <div
+            class="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6  gap-3 sm:gap-6 items-start mt-6">
             <div v-if="!isLoading" v-for="product in products" :key="product.id" class="w-full">
                 <ProductCard :product="product" />
             </div>
@@ -31,7 +32,7 @@
             </div>
             <div>
                 <vue-awesome-paginate :total-items="totalProducts" :items-per-page="perPage" type="button"
-                    :hide-prev-next-when-ends="true" :max-pages-shown="5" v-model="currentPage"
+                    :max-pages-shown="5" v-model="currentPage" :hide-prev-next-when-ends="true"
                     @click="onClickHandler" />
             </div>
         </div>
@@ -47,6 +48,7 @@ import SkeletonLoader from '../components/SkeletonLoader.vue';
 import { useAuth } from '../stores/AuthStore';
 
 const authStore = useAuth();
+
 const master = useMaster();
 const currentPage = ref(1);
 const perPage = ref(12);
@@ -75,8 +77,9 @@ const fetchProducts = async () => {
         params: {
             page: currentPage.value,
             per_page: perPage.value,
-            sort_type: 'top_selling',
-            branch_id: authStore.selectedBranch?.id
+            sort_type: 'newest',
+            branch_id: authStore.selectedBranch?.id,
+            discountedProduct: true
         },
         headers: {
             'Accept-Language': master.locale || 'en',
@@ -88,6 +91,8 @@ const fetchProducts = async () => {
         setTimeout(() => {
             isLoading.value = false;
         }, 300);
+    }).catch((error) => {
+        isLoading.value = false;
     })
 };
 

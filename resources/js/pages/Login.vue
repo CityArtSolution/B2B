@@ -162,13 +162,13 @@ const defaultLogo = ref('/assets/logo.png');
 onMounted(async () => {
     // Redirect if already logged in
     if (authStore.token && authStore.user) {
-        router.push('/dashboard');
+        router.push('/');
         return;
     }
 
     // Auto-fill in development
     if (master.app_environment === 'local') {
-        loginFormData.value.phone = 'user@readyecommerce.com';
+        loginFormData.value.phone = '';
         loginFormData.value.password = '123456789';
     }
 
@@ -198,7 +198,7 @@ const loginFormSubmit = () => {
             });
             
             // Redirect to dashboard or previous page
-            const redirectTo = router.currentRoute.value.query.redirect || '/dashboard';
+            const redirectTo = router.currentRoute.value.query.redirect || '/';
             router.push(redirectTo);
         })
         .catch((error) => {
@@ -342,7 +342,7 @@ async function sendCodeToBackend(code, provider = 'google', data = {}) {
                 position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
             });
             
-            const redirectTo = router.currentRoute.value.query.redirect || '/dashboard';
+            const redirectTo = router.currentRoute.value.query.redirect || '/';
             router.push(redirectTo);
         }
     } catch (error) {

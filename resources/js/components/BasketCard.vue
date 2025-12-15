@@ -5,7 +5,7 @@
             :class="master.langDirection == 'rtl' ? 'left-0 border-r rounded-r-[10px]' : 'right-0 border-l rounded-l-[10px]'"
             @click="showCardCanvas()">
             <div class="pt-2 pb-0.5 flex flex-col items-center gap-1 justify-center">
-                <font-awesome-icon :icon="faBagShopping" class="w-6 h-6 text-primary" />
+                <font-awesome-icon :icon="faCartShopping" class="w-6 h-6 text-primary" />
                 <div class="text-center text-slate-600 text-xs font-normal">{{ BasketStore.total }} {{ $t('items') }}
                 </div>
             </div>
@@ -45,7 +45,7 @@
                                         <div class="p-6 border-b border-slate-200 flex justify-between">
 
                                             <DialogTitle class="flex gap-3 items-center">
-                                                <font-awesome-icon :icon="faBagShopping" class="w-8 h-8 text-primary" />
+                                                <font-awesome-icon :icon="faCartShopping" class="w-8 h-8 text-primary" />
                                                 <div class="text-slate-950 text-lg md:text-3xl font-bold leading-9">
                                                     {{ $t('My Cart') }}
                                                 </div>
@@ -108,7 +108,7 @@
 </template>
 
 <script setup>
-import { faBagShopping } from '@fortawesome/free-solid-svg-icons';
+import { faCartShopping  } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue';
 import { ArchiveBoxIcon, ArrowRightIcon, XMarkIcon } from '@heroicons/vue/24/outline';

@@ -94,7 +94,7 @@
             <div class="w-full p-2">
                 <div v-if="hasStock" class="justify-start items-center gap-3 flex w-full">
                     <button v-if="props.product?.is_digital == false"
-                        class="cursor-pointer w-10 h-10 bg-white rounded-[10px] border border-primary-100 justify-center items-center flex"
+                        class="cursor-pointer w-10 h-10 bg-white rounded-[10px] border border-primary-100 justify-center items-center flex" style="width: 50%;"
                         @click="addToBasket(props.product)">
                         <div class="w-5 h-5">
                             <BagIcon />

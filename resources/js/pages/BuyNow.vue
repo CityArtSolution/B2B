@@ -65,7 +65,7 @@
 
                     <div class="mt-4 flex flex-wrap gap-4">
 
-                        <label v-if="master.cashOnDelivery && basketStore.buyNowProduct?.products[0]?.is_digital != true" for="cash" class="flex items-center gap-4 xl:min-w-80">
+                        <label v-if="master.cashOnDelivery && basketStore.buyNowProduct?.products[0]?.is_digital != true && AuthStore.user?.payment_status === 'credit'" for="cash" class="flex items-center gap-4 xl:min-w-80">
                             <input v-model="paymentType" id="cash" name="payment" type="radio" class="radioBtn2"
                                 value="cash" :checked="basketStore.buyNowProduct?.products[0]?.is_digital == false" />
                             <div class="p-2 bg-white rounded-xl border border-slate-200">

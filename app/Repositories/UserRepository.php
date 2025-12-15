@@ -93,7 +93,7 @@ class UserRepository extends Repository
             'phone' => $request['phone'],
             'auth_type' => $provider,
             'auth_id' => $request['id'],
-            'gender' => $request['gender'],
+            'gender' => $request['gender'] ,
             'is_active' => true,
             'password' => Hash::make('password'),
             'media_id' => $media ? $media->id : null,
@@ -140,6 +140,9 @@ class UserRepository extends Repository
             'phone_code' => $request->phone_code,
             'is_active' => true,
             'Commercial_register' => $request->Commercial_register,
+            'Additional_Number' => $request->Additional_Number,
+            'Tax_number' => $request->Tax_number,
+            'payment_status' => $request->payment_status,
         ]);
     }
 
@@ -216,6 +219,8 @@ class UserRepository extends Repository
             'phone_code' => $request->phone_code ?? $user->phone_code,
             'Commercial_register' => $request->Commercial_register ?? null,
             'Tax_number' => $request->Tax_number ?? null,
+            'Additional_Number' => $request->Additional_Number,
+            'payment_status' => $request->payment_status,
         ]);
 
         return $user;
