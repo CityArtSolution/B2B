@@ -61,8 +61,13 @@ class OrderRepository extends Repository
             $payment->orders()->attach($order->id);
 
             foreach ($cartProducts as $cart) {
-                $cart->product->decrement('quantity', $cart->quantity);
+                // $cart->product->decrement('quantity', $cart->quantity);
 
+                $branchProduct = $cart->product->productBranches()->first();
+
+                if ($branchProduct) {
+                    $branchProduct->decrement('qty', $cart->quantity);
+                }
                 $product = $cart->product;
                 $price = $product->discount_price > 0 ? $product->discount_price : $product->price;
 

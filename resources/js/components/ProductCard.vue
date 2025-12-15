@@ -61,6 +61,10 @@
                                 {{ masterStore.showCurrency(props.product?.price) }}
                             </div>
                         </div>
+                        <div class="text-slate-500 text-sm leading-tight" :class="hasStock ? '' : 'opacity-30'">
+                            {{ $t('Quantity') }}: {{ productQty }}
+                        </div>
+
 
                         <div class="flex justify-between items-center w-full">
                             <div class="flex items-center gap-1"
@@ -156,33 +160,63 @@ const props = defineProps({
     product: Object
 });
 
+
+const qtyList = computed(() => props.product?.branch_qty ?? []);
+
 // Check if product has quantity > 0 for the selected branch
-const hasStock = computed(async () => {
-    if (!props.product?.quantities) return false;
+const hasStock = computed(() => {
+     if (qtyList.value.length === 0) return false;
 
     // If no branch is selected, check if any branch has stock
     if (!authStore.selectedBranch) {
-        return props.product.quantities.some(q => q.qty > 0);
+         return qtyList.value.some(q => Number(q.qty) > 0);
     }
 
     // If branch is selected, check quantity for that specific branch
-    const branchQuantity = await props.product.quantities.find(q => q.branch_id === authStore.selectedBranch.id);
-    return branchQuantity ? branchQuantity.qty > 0 : false;
+    // const branchQuantity = await props.product.branch_qty.find(q => q.branch_id === authStore.selectedBranch.id);
+    
+    const branchQuantity = Array.isArray(qtyList.value)
+        ? qtyList.value.find(q => Number(q.branch_id) === Number(authStore.selectedBranch.id))
+        : null;
+
+    return branchQuantity ? Number(branchQuantity.qty) > 0 : false;
+    
 });
 
-const orderData = {
-    is_buy_now: false,
-    product_id: props.product?.id,
-    quantity: 1,
-    size: null,
-    color: null,
-    unit: null,
-    branch_id: authStore.selectedBranch?.id
-};
+
+const productQty = computed(() => {
+    if (qtyList.value.length === 0) return 0;
+
+   //if (!authStore.selectedBranch) {
+     //   return qtyList.value.reduce((sum, q) => sum + q.qty, 0);
+    //}
+
+    //const branchQuantity = Array.isArray(qtyList.value)
+      //  ? qtyList.value.find(q => q.branch_id === authStore.selectedBranch.id)
+        //: null;
+
+    if (authStore.selectedBranch?.id) {
+        const branchQuantity = qtyList.value.find(q => Number(q.branch_id) === Number(authStore.selectedBranch.id));
+        return branchQuantity ? Number(branchQuantity.qty) : 0;
+    }
+    return qtyList.value.reduce((sum, q) => sum + q.qty, 0);
+    //return branchQuantity ? branchQuantity.qty : 0;
+});
+
+
+const orderData = computed(() => ({
+  is_buy_now: false,
+  product_id: props.product?.id,
+  quantity: 1,
+  size: null,
+  color: null,
+  unit: null,
+  branch_id: authStore.selectedBranch?.id
+}));
 
 const addToBasket = (product) => {
     // add product to basket
-    basketStore.addToCart(orderData, product);
+    basketStore.addToCart(orderData.value, product);
 };
 
 const buyNow = async () => {
@@ -196,7 +230,8 @@ const buyNow = async () => {
         quantity: 1,
         size: null,
         color: null,
-        unit: null
+        unit: null,
+        branch_id: authStore.selectedBranch.id
     }, props.product);
 
     basketStore.buyNowShopId = props.product?.shop.id;
@@ -233,7 +268,7 @@ const favoriteAddOrRemove = () => {
 }
 
 const showProductDetails = () => {
-    if (hasStock) {
+    if (hasStock.value) {
         router.push({ name: 'productDetails', params: { id: props.product.id } })
     }
 }

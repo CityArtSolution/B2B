@@ -2,23 +2,25 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Enums\Roles;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\BannerResource;
-use App\Http\Resources\CategoryResource;
-use App\Http\Resources\FlashSaleResource;
-use App\Http\Resources\ProductResource;
-use App\Http\Resources\ShopResource;
 use App\Models\Ad;
-use App\Models\GeneraleSetting;
+use App\Enums\Roles;
 use App\Models\User;
-use App\Repositories\BannerRepository;
-use App\Repositories\CategoryRepository;
-use App\Repositories\FlashSaleRepository;
-use App\Repositories\ProductRepository;
-use App\Repositories\ShopRepository;
 use Illuminate\Http\Request;
+use App\Models\ProductBranch;
+use App\Models\GeneraleSetting;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\ShopResource;
+use App\Repositories\ShopRepository;
 use Illuminate\Support\Facades\Cache;
+use App\Http\Resources\BannerResource;
+use App\Repositories\BannerRepository;
+use App\Http\Resources\ProductResource;
+use App\Repositories\ProductRepository;
+use App\Http\Resources\CategoryResource;
+use App\Repositories\CategoryRepository;
+use App\Http\Resources\FlashSaleResource;
+use App\Repositories\FlashSaleRepository;
 
 class HomeController extends Controller
 {
@@ -80,11 +82,9 @@ class HomeController extends Controller
             ->when($shop, function ($query) use ($shop) {
                 return $query->where('shop_id', $shop->id);
             })
-            ->when($selectedBranchId, function ($query) use ($selectedBranchId) {
-                return $query->whereHas('productBranches', function ($query) use ($selectedBranchId) {
-                    return $query->where('branch_id', $selectedBranchId)->where('qty', '>', 0);
-                });
-            })
+            ->when($selectedBranchId, fn($query) => $query->whereHas('productBranches', fn($q) => $q->where('branch_id', $selectedBranchId)->where('qty', '>', 0)))
+            ->withSum(['productBranches as branch_qty' => fn($q) => $selectedBranchId ? $q->where('branch_id', $selectedBranchId) : null], 'qty')
+            ->having('branch_qty', '>', 0)
             ->withCount('orders as orders_count')
             ->withAvg('reviews as average_rating', 'rating')
             ->orderByDesc('average_rating')
@@ -95,11 +95,9 @@ class HomeController extends Controller
             ->when($shop, function ($query) use ($shop) {
                 return $query->where('shop_id', $shop->id);
             })
-            ->when($selectedBranchId, function ($query) use ($selectedBranchId) {
-                return $query->whereHas('productBranches', function ($query) use ($selectedBranchId) {
-                    return $query->where('branch_id', $selectedBranchId)->where('qty', '>', 0);
-                });
-            });
+            ->when($selectedBranchId, fn($query) => $query->whereHas('productBranches', fn($q) => $q->where('branch_id', $selectedBranchId)->where('qty', '>', 0)))
+            ->withSum(['productBranches as branch_qty' => fn($q) => $selectedBranchId ? $q->where('branch_id', $selectedBranchId) : null], 'qty')
+            ->having('branch_qty', '>', 0);
         $total = $justForYou->count();
         $justForYou = $justForYou->skip($skip)->take($perPage)->get();
 
@@ -153,10 +151,14 @@ class HomeController extends Controller
          */
         $user = auth()->user();
 
-        $products = $user->recentlyViewedProducts()->when($shop, function ($query) use ($shop) {
-            return $query->where('shop_id', $shop->id);
-        })->where('is_active', true)->orderBy('pivot_updated_at', 'desc')->take(10)->get();
-
+        $products = $user->recentlyViewedProducts()
+        ->when($shop, fn($query) => $query->where('shop_id', $shop->id))
+        ->where('is_active', true)
+        ->with(['productBranches'])
+        ->orderBy('pivot_updated_at', 'desc')
+        ->take(10)
+        ->get();
+        
         return $this->json('recently viewed products', [
             'products' => ProductResource::collection($products),
         ]);
