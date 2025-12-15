@@ -67,7 +67,8 @@
 
                         <label v-if="master.cashOnDelivery && basketStore.buyNowProduct?.products[0]?.is_digital != true && AuthStore.user?.payment_status === 'credit'" for="cash" class="flex items-center gap-4 xl:min-w-80">
                             <input v-model="paymentType" id="cash" name="payment" type="radio" class="radioBtn2"
-                                value="cash" :checked="basketStore.buyNowProduct?.products[0]?.is_digital == false" />
+                                value="cash" /> 
+                                <!-- :checked="basketStore.buyNowProduct?.products[0]?.is_digital == false"  -->
                             <div class="p-2 bg-white rounded-xl border border-slate-200">
                                 <img :src="'assets/icons/money-2.svg'" alt="" class="w-7 h-7">
                             </div>
@@ -77,7 +78,7 @@
 
                         <label v-if="master.onlinePayment" for="card" class="flex items-center gap-4 xl:min-w-80">
                             <input v-model="paymentType" id="card" name="payment" type="radio" class="radioBtn2"
-                                value="card" />
+                                value="card" checked/>
                             <div class="p-2 bg-white rounded-xl border border-slate-200">
                                 <img :src="'assets/icons/card.svg'" alt="" class="w-7 h-7">
                             </div>
