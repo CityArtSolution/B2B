@@ -49,7 +49,7 @@ Route::name('shop.')->group(function () {
         Route::post(('/register'), 'store')->name('register.submit');
     });
 
-//    Route::middleware(['authShop', 'checkPermission'])->group(function () {
+    Route::middleware(['authShop', 'checkPermission'])->group(function () {
 
         // Dashboard
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
@@ -277,5 +277,5 @@ Route::name('shop.')->group(function () {
             Route::get('/refund-history', 'refundIndex')->name('refundOrder.index');
         });
 
-//    });
+    });
 });

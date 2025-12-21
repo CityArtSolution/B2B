@@ -66,7 +66,7 @@ const routes = [
         meta: {
             layout: defaultLayout,
             title: "Home",
-            requiresAuth: true,
+            requiresAuth: false,
         },
     },
     {
@@ -76,7 +76,7 @@ const routes = [
         meta: {
             layout: defaultLayout,
             title: "Shops",
-            requiresAuth: true,
+            requiresAuth: false,
         },
     },
     {
@@ -86,7 +86,7 @@ const routes = [
         meta: {
             layout: defaultLayout,
             title: "Products",
-            requiresAuth: true,
+            requiresAuth: false,
         },
     },
     {
@@ -96,7 +96,7 @@ const routes = [
         meta: {
             layout: defaultLayout,
             title: "Digital Products",
-            requiresAuth: true,
+            requiresAuth: false,
         },
     },
     {
@@ -106,7 +106,7 @@ const routes = [
         meta: {
             layout: defaultLayout,
             title: "Categories",
-            requiresAuth: true,
+            requiresAuth: false,
         },
     },
     {
@@ -116,7 +116,7 @@ const routes = [
         meta: {
             layout: defaultLayout,
             title: "Newest Products",
-            requiresAuth: true,
+            requiresAuth: false,
         },
     },
     {
@@ -126,7 +126,7 @@ const routes = [
         meta: {
             layout: defaultLayout,
             title: "Discounted Products",
-            requiresAuth: true,
+            requiresAuth: false,
         },
     },
     {
@@ -136,7 +136,7 @@ const routes = [
         meta: {
             layout: defaultLayout,
             title: "Best Deal Products",
-            requiresAuth: true,
+            requiresAuth: false,
         },
     },
     {
@@ -146,7 +146,7 @@ const routes = [
         meta: {
             layout: defaultLayout,
             title: "Flash Sale Products",
-            requiresAuth: true,
+            requiresAuth: false,
         },
     },
     {
@@ -156,7 +156,7 @@ const routes = [
         meta: {
             layout: defaultLayout,
             title: "Shop Details",
-            requiresAuth: true,
+            requiresAuth: false,
         },
     },
     {
@@ -166,7 +166,7 @@ const routes = [
         meta: {
             layout: defaultLayout,
             title: "Product Details",
-            requiresAuth: true,
+            requiresAuth: false,
         },
     },
     {
@@ -176,7 +176,7 @@ const routes = [
         meta: {
             layout: defaultLayout,
             title: "Category Products",
-            requiresAuth: true,
+            requiresAuth: false,
         },
     },
     {
@@ -186,7 +186,7 @@ const routes = [
         meta: {
             layout: defaultLayout,
             title: "Checkout",
-            requiresAuth: true,
+            requiresAuth: false,
         },
     },
     {
@@ -196,7 +196,7 @@ const routes = [
         meta: {
             layout: defaultLayout,
             title: "Buy Now",
-            requiresAuth: true,
+            requiresAuth: false,
         },
     },
     {
@@ -216,7 +216,7 @@ const routes = [
         meta: {
             layout: authLayout,
             title: "Order History",
-            requiresAuth: true,
+            requiresAuth: false,
         },
     },
     {
@@ -226,7 +226,7 @@ const routes = [
         meta: {
             layout: authLayout,
             title: "Digital Product Order History",
-            requiresAuth: true,
+            requiresAuth: false,
         },
     },
     {
@@ -236,7 +236,7 @@ const routes = [
         meta: {
             layout: authLayout,
             title: "Order Details",
-            requiresAuth: true,
+            requiresAuth: false,
         },
     },
 
@@ -247,7 +247,7 @@ const routes = [
         meta: {
             layout: authLayout,
             title: "Return Products",
-            requiresAuth: true,
+            requiresAuth: false,
         },
     },
 
@@ -259,7 +259,7 @@ const routes = [
         meta: {
             layout: authLayout,
             title: "Return Order History",
-            requiresAuth: true,
+            requiresAuth: false,
         },
     },
     {
@@ -269,7 +269,7 @@ const routes = [
         meta: {
             layout: authLayout,
             title: "Return Order Details",
-            requiresAuth: true,
+            requiresAuth: false,
         },
     },
     {
@@ -279,7 +279,7 @@ const routes = [
         meta: {
             layout: authLayout,
             title: "Wishlist",
-            requiresAuth: true,
+            requiresAuth: false,
         },
     },
     {
@@ -410,7 +410,7 @@ const routes = [
         meta: {
             layout: defaultLayout,
             title: "Contact Us",
-            requiresAuth: true,
+            requiresAuth: false,
         },
     },
     {
@@ -431,7 +431,7 @@ const routes = [
         meta: {
             layout: blogLayout,
             title: "Blogs",
-            requiresAuth: true,
+            requiresAuth: false,
         },
     },
     {
@@ -441,7 +441,7 @@ const routes = [
         meta: {
             layout: blogLayout,
             title: "Blog Details",
-            requiresAuth: true,
+            requiresAuth: false,
         },
     },
     {
