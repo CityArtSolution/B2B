@@ -339,8 +339,15 @@ class OrderRepository extends Repository
 
             $qty = $product->pivot->quantity;
 
-            $product->decrement('quantity', $qty);
+            // $product->decrement('quantity', $qty);
 
+            $branchProduct = $product->productBranches()
+                ->where('branch_id', $product->pivot->branch_id ?? null)
+                ->first();
+
+            if ($branchProduct) {
+                $branchProduct->decrement('qty', $qty);
+            }
             $newOrder->products()->attach($product->id, [
                 'quantity' => $product->pivot->quantity,
                 'color' => $product->pivot->color ?? null,
