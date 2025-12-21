@@ -240,6 +240,51 @@
                                 </div>
                             </div>
                             {{-- Message Bird Config End --}}
+                            {{-- Taqnyat Config Start --}}
+                            <div class="col-md-6 mb-3">
+                                <div class="card shadow-sm">
+                                    <div class="card-header bg-white">
+                                        <img src="{{ asset('assets/sms-gateway/Taqnyat.png') }}" alt="Taqnyat" height="70px">
+                                    </div>
+                                    <form action="{{ route('admin.sms-gateway.update') }}" method="POST">
+                                        <div class="card-body">
+                                            @method('put')
+                                            @csrf
+                                            <div class="row">
+                                                <input type="hidden" name="provider" value="taqnyat">
+                                                <div class="col-md-12 mb-3">
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" {{ $taqnyat?->status == 1 ? 'checked' : '' }} value="1" type="radio" name="status" id="taqnyatActive">
+                                                        <label class="form-check-label" for="taqnyatActive">Active</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" {{ $taqnyat?->status == 0 ? 'checked' : '' }} value="0" type="radio" name="status" id="taqnyatInactive">
+                                                        <label class="form-check-label" for="taqnyatInactive">Inactive</label>
+                                                    </div>
+                                                </div>
+
+                                                @php
+                                                    $taqnyat = json_decode($taqnyat?->data);
+                                                @endphp
+
+                                                <div class="col-md-12 mb-3">
+                                                    <x-input value="{{ $taqnyat?->bearer_token }}" name="bearer_token" type="text" placeholder="Bearer Token" />
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <x-input value="{{ $taqnyat?->sender }}" name="sender" type="text" placeholder="Sender Name" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @hasPermission('admin.sms-gateway.update')
+                                        <div class="card-footer bg-white">
+                                            <button type="submit" class="btn btn-primary">{{ __('Update') }}</button>
+                                        </div>
+                                        @endhasPermission
+                                    </form>
+                                </div>
+                            </div>
+                            {{-- Taqnyat Config End --}}
+
                         </div>
                     </div>
                 </div>
