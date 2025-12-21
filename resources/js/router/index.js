@@ -496,7 +496,7 @@ router.beforeEach((to, from, next) => {
 
     // Check if route requires authentication
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-    
+
     // Check if route is guest only (login, register, etc.)
     const guestOnly = to.matched.some(record => record.meta.guestOnly);
 

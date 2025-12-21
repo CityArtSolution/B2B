@@ -220,9 +220,9 @@ const addToBasket = (product) => {
 };
 
 const buyNow = async () => {
-    if (authStore.token === null) {
-        return authStore.loginModal = true;
-    }
+    // if (authStore.token === null) {
+    //     return authStore.loginModal = true;
+    // }
 
   await basketStore.addToCart({
         product_id: props.product?.id,
@@ -231,7 +231,7 @@ const buyNow = async () => {
         size: null,
         color: null,
         unit: null,
-        branch_id: authStore.selectedBranch.id
+        branch_id: authStore.selectedBranch?.id ?? null
     }, props.product);
 
     basketStore.buyNowShopId = props.product?.shop.id;
@@ -241,9 +241,9 @@ const buyNow = async () => {
 const isFavorite = ref(props.product?.is_favorite);
 
 const favoriteAddOrRemove = () => {
-    if (authStore.token === null) {
-        return authStore.loginModal = true;
-    }
+    // if (authStore.token === null) {
+    //     return authStore.loginModal = true;
+    // }
     axios.post('/favorite-add-or-remove', {
         product_id: props.product.id
     }, {
