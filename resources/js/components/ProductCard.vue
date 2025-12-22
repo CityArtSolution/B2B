@@ -218,32 +218,54 @@ const addToBasket = (product) => {
     // add product to basket
     basketStore.addToCart(orderData.value, product);
 };
-
 const buyNow = async () => {
-    if (authStore.token === null) {
-        return authStore.loginModal = true;
-    }
-
-  await basketStore.addToCart({
+    await basketStore.addToCart({
         product_id: props.product?.id,
         is_buy_now: true,
         quantity: 1,
         size: null,
         color: null,
         unit: null,
-        branch_id: authStore.selectedBranch.id
+        branch_id: authStore.selectedBranch?.id ?? null
     }, props.product);
 
     basketStore.buyNowShopId = props.product?.shop.id;
     router.push({ name: 'buynow' })
 };
 
+//
+// const buyNow = async () => {
+//     if (authStore.token === null) {
+//         return authStore.loginModal = true;
+//     }
+//
+//   await basketStore.addToCart({
+//         product_id: props.product?.id,
+//         is_buy_now: true,
+//         quantity: 1,
+//         size: null,
+//         color: null,
+//         unit: null,
+//         branch_id: authStore.selectedBranch.id
+//     }, props.product);
+//
+//     basketStore.buyNowShopId = props.product?.shop.id;
+//     router.push({ name: 'buynow' })
+// };
+
 const isFavorite = ref(props.product?.is_favorite);
 
 const favoriteAddOrRemove = () => {
     if (authStore.token === null) {
-        return authStore.loginModal = true;
+        // مؤقت: قلب الحالة محليًا فقط
+        props.product.is_favorite = !props.product.is_favorite;
+
+        toast.info('Saved temporarily', {
+            position: masterStore.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
+        });
+        return;
     }
+
     axios.post('/favorite-add-or-remove', {
         product_id: props.product.id
     }, {
@@ -251,21 +273,36 @@ const favoriteAddOrRemove = () => {
             Authorization: authStore.token
         }
     }).then((response) => {
-        props.product.is_favorite = !props.product.is_favorite
-        isFavorite.value = response.data.data.product.is_favorite
-        if (isFavorite.value === false) {
-            toast.warning('Product removed from favorite', {
-               position: masterStore.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
-            });
-        } else {
-            toast.success('Product added to favorite', {
-               position: masterStore.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
-            });
-        }
-        authStore.favoriteRemove = true
-        authStore.fetchFavoriteProducts();
+        props.product.is_favorite = response.data.data.product.is_favorite;
     });
-}
+};
+
+// const favoriteAddOrRemove = () => {
+//     if (authStore.token === null) {
+//         return authStore.loginModal = true;
+//     }
+//     axios.post('/favorite-add-or-remove', {
+//         product_id: props.product.id
+//     }, {
+//         headers: {
+//             Authorization: authStore.token
+//         }
+//     }).then((response) => {
+//         props.product.is_favorite = !props.product.is_favorite
+//         isFavorite.value = response.data.data.product.is_favorite
+//         if (isFavorite.value === false) {
+//             toast.warning('Product removed from favorite', {
+//                position: masterStore.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
+//             });
+//         } else {
+//             toast.success('Product added to favorite', {
+//                position: masterStore.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
+//             });
+//         }
+//         authStore.favoriteRemove = true
+//         authStore.fetchFavoriteProducts();
+//     });
+// }
 
 const showProductDetails = () => {
     if (hasStock.value) {
