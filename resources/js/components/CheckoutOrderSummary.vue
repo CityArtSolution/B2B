@@ -164,6 +164,9 @@ const router = new useRouter();
 const basketStore = useBasketStore();
 const master = useMaster();
 const authStore = useAuth();
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const toast = useToast();
 
@@ -175,6 +178,10 @@ const showVerifyOtpModal = ref(false);
 const props = defineProps({
     note: String,
     paymentMethod: String,
+    shippingType: String,
+    shippingCompany: [Number, null],
+    maxInvoiceLimit: Number,
+    maxInvoiceNow: Number,
 });
 
 onMounted(() => {
@@ -211,21 +218,48 @@ const processOrderConfirm = () => {
         });
         return;
     }
+    
+    if (!props.isDigitalProduct) {
+        if (!props.shippingType) {
+            toast.error(t("Please select shipping method"));
+            return;
+        }
+    
+        if (props.shippingType == 'courier' && !props.shippingCompany) {
+            toast.error(t("Please select shipping company"));
+            return;
+        }
+    }
+    
     if (props.paymentMethod == null || props.paymentMethod == 'card') {
         toast.error("Please select payment method", {
             position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
         });
         return;
     }
+    
+    if(props.paymentMethod == 'New_client' || props.paymentMethod == 'Previous_client') {
+        if (props.maxInvoiceLimit <= props.maxInvoiceNow + basketStore.total_amount) {
+            toast.error(t('max_invoice_reached'), {
+                position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
+            });
+            return;
+        }
+    }
+
 
     if (basketStore.checkoutProducts.length > 0) {
         isProcessing.value = true;
         axios.post('/place-order', {
-            shop_ids: basketStore.selectedShopIds,
+            shop_ids: [1],
             address_id: basketStore.address.id,
             payment_method: props.paymentMethod,
             coupon_code: coupon.value,
-            note: props.note
+            note: props.note,
+            shipping_type: props.isDigitalProduct ? null : props.shippingType,
+            shipping_company_id: props.shippingType == 'courier'
+                ? props.shippingCompany
+                : null,
         }, {
             headers: {
                 Authorization: authStore.token,
@@ -353,7 +387,7 @@ const openPaymentPopupWindow = (url) => {
 
 const fetchCouponApply = () => {
     axios.post("/cart/checkout",
-        { shop_ids: basketStore.selectedShopIds, coupon_code: coupon.value },
+        { shop_ids: [1], coupon_code: coupon.value },
         {
             headers: {
                 Authorization: authStore.token,

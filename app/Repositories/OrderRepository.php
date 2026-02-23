@@ -11,6 +11,8 @@ use App\Events\OrderMailEvent;
 use App\Http\Requests\OrderRequest;
 use App\Models\AdminCoupon;
 use App\Models\GeneraleSetting;
+use App\Repositories\DriverRepository;
+use App\Models\Driver;
 use App\Models\Order;
 use App\Models\OrderVatTax;
 use App\Models\Payment;
@@ -44,6 +46,7 @@ class OrderRepository extends Repository
 
         $payment = Payment::create([
             'amount' => $totalPayableAmount,
+            'currency' => 'SAR',
             'payment_method' => $request->payment_method,
         ]);
 
@@ -57,17 +60,27 @@ class OrderRepository extends Repository
 
             $order = self::createNewOrder($request, $shop, $paymentMethod, $getCartAmounts);
 
+            if ($request->shipping_type ){
+                if($request->shipping_type  == 'courier'){
+                    $driver = Driver::where('user_id', $request->shipping_company_id)->first();
+                    DriverRepository::assignOrder($order, $driver);
+                }
+            }
+
             $totalPayableAmount += $getCartAmounts['payableAmount'];
             $payment->orders()->attach($order->id);
 
             foreach ($cartProducts as $cart) {
                 // $cart->product->decrement('quantity', $cart->quantity);
 
-                $branchProduct = $cart->product->productBranches()->first();
+                $branchProduct = $cart->product->quantityBranch($cart->branch_id);
 
                 if ($branchProduct) {
                     $branchProduct->decrement('qty', $cart->quantity);
                 }
+                
+                
+                
                 $product = $cart->product;
                 $price = $product->discount_price > 0 ? $product->discount_price : $product->price;
 
@@ -105,6 +118,7 @@ class OrderRepository extends Repository
 
                 $order->products()->attach($product->id, [
                     'quantity' => $cart->quantity,
+                    'branch_id' => $cart->branch_id,
                     'color' => $color?->name,
                     'size' => $size?->name,
                     'unit' => $cart->unit,
@@ -186,11 +200,11 @@ class OrderRepository extends Repository
     private static function createNewOrder($request, $shop, $paymentMethod, $getCartAmounts)
     {
         $lastOrderId = self::query()->max('id');
-
+        $deliverymethod = $request->shipping_type;
         $order = self::create([
             'shop_id' => $shop->id,
             'order_code' => str_pad($lastOrderId + 1, 6, '0', STR_PAD_LEFT),
-            'prefix' => $shop->prefix ?? 'RC',
+            'prefix' => $shop->prefix ?? 'RN',
             'customer_id' => auth()->user()->customer->id,
             'coupon_id' => $getCartAmounts['coupon'],
             'delivery_charge' => $getCartAmounts['deliveryCharge'],
@@ -201,6 +215,7 @@ class OrderRepository extends Repository
             'payment_method' => $paymentMethod->value,
             'order_status' => OrderStatus::PENDING->value,
             'address_id' => $request->address_id,
+            'shipping_type' => $deliverymethod,
             'instruction' => $request->note,
             'payment_status' => PaymentStatus::PENDING->value,
         ]);
@@ -320,7 +335,7 @@ class OrderRepository extends Repository
         $newOrder = self::create([
             'shop_id' => $order->shop_id,
             'order_code' => str_pad($lastOrderId + 1, 6, '0', STR_PAD_LEFT),
-            'prefix' => 'RC',
+            'prefix' => 'RN',
             'customer_id' => $order->customer_id,
             'coupon_id' => $order->coupon_id ?? null,
             'delivery_charge' => $order->delivery_charge,
@@ -350,6 +365,7 @@ class OrderRepository extends Repository
             }
             $newOrder->products()->attach($product->id, [
                 'quantity' => $product->pivot->quantity,
+                'branch_id' => $product->pivot->branch_id,
                 'color' => $product->pivot->color ?? null,
                 'size' => $product->pivot->size ?? null,
                 'unit' => $product->pivot->unit ?? null,
@@ -530,7 +546,7 @@ class OrderRepository extends Repository
         $paymentMethod = $order->payment_method->value;
 
         $isDelivery = false;
-        if ($paymentMethod != PaymentMethod::CASH->value && $orderStatus == OrderStatus::DELIVERED->value) {
+        if ($paymentMethod != PaymentMethod::NEW_CLIENT->value && $paymentMethod != PaymentMethod::PREVIOUS_CLIENT->value && $orderStatus == OrderStatus::DELIVERED->value) {
             $isDelivery = true;
         }
 
@@ -538,7 +554,7 @@ class OrderRepository extends Repository
 
             $driverOrder->update(['is_completed' => true]);
 
-            if ($paymentMethod == PaymentMethod::CASH->value) {
+            if ($paymentMethod == PaymentMethod::NEW_CLIENT->value && $paymentMethod == PaymentMethod::PREVIOUS_CLIENT->value) {
                 $driverOrder->update(['cash_collect' => true]);
 
                 $totalCashCollected = $driverOrder->driver->total_cash_collected + $order->payable_amount;

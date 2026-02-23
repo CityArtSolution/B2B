@@ -22,8 +22,11 @@ class RiderOrderDetailsResource extends JsonResource
             'amount' => (float) number_format($this->payable_amount, 2, '.', ''),
             'order_status' => $this->order_status->value,
             'payment_status' => $this->payment_status->value,
-            'payment_method' => $this->payment_method->value == PaymentMethod::CASH->value ? 'Cash' : 'Online',
-            'estimated_delivery_date' => Carbon::parse($this->created_at)->addDays(5)->format('d M, Y'),
+            'payment_method' => match ($this->payment_method) {
+                PaymentMethod::NEW_CLIENT      => 'New_Client',
+                PaymentMethod::PREVIOUS_CLIENT => 'Previous_Client',
+                default                        => 'Online',
+            },            'estimated_delivery_date' => Carbon::parse($this->created_at)->addDays(5)->format('d M, Y'),
             'pickup_date' => $this->pickup_date ? Carbon::parse($this->pickup_date)->format('d M, Y') : null,
             'user' => [
                 'name' => $this->customer->user->name,

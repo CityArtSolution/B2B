@@ -28,7 +28,7 @@ class OrderFactory extends Factory
             'coupon_id' => Coupon::all()->random()->id,
             'coupon_discount' => $this->faker->randomFloat(2, 10, 100),
             'order_code' => rand(0000, 9999),
-            'prefix' => 'RC',
+            'prefix' => 'RN',
             'discount' => $this->faker->randomFloat(2, 10, 100),
             'pick_date' => $this->faker->dateTimeBetween('-1 years', now())->format('Y-m-d H:i:s'),
             'delivery_date' => $this->faker->dateTimeBetween('-1 years', now())->format('Y-m-d H:i:s'),

@@ -65,6 +65,7 @@ class ProductDetailsResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $name,
+            'code' => $this->code,
             'is_digital' => (bool) $this->is_digital,
             'short_description' => $shortDescription,
             'price' => (float) number_format($price, 2, '.', ''),

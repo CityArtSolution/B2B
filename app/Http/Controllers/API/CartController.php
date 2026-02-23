@@ -77,7 +77,7 @@ class CartController extends Controller
         }
 
         // store or update cart
-        CartRepository::storeOrUpdateByRequest($request, $product);
+        CartRepository::storeOrUpdateByRequest($request, $product, $selectedBranchId);
 
         $carts = $customer->carts()->where('is_buy_now', $isBuyNow)->get();
 
@@ -119,7 +119,8 @@ class CartController extends Controller
         $flashSaleProduct = $flashSale?->products()->where('id', $product->id)->first();
 
         // Check quantity based on selected branch
-        $selectedBranchId = $request->branch_id ?? session('selected_branch');
+        // $selectedBranchId = $request->branch_id ?? session('selected_branch');
+        $selectedBranchId = $cart->branch_id;
         $productQty = $product->quantity; // Default to total quantity
 
         if ($selectedBranchId) {

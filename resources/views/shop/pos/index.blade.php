@@ -29,7 +29,7 @@
                                     {{ __('Select Branch') }}
                                 </option>
                                 @foreach ($branches as $branch)
-                                    <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                                    <option value="{{ $branch->id }}">{{ $branch->name[app()->getLocale()] }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -200,9 +200,9 @@
                     {{ __('Payment Method') }}
                 </h5>
                 <div class="d-flex mb-4">
-                    <button class="border px-4 py-3 rounded-3 me-3 paymentMethod active" id="cash"
-                        onclick="selectPaymentMethod('cash')">
-                        <img src="{{ asset('assets/gateway/cash.png') }}">
+                    <button class="border  rounded-3 me-3 paymentMethod active" id="New_client"
+                        onclick="selectPaymentMethod('New_client')">
+                        <img src="{{ asset('assets/gateway/New_client.png') }}" style="width: 80px;">
                     </button>
                     {{-- <button class="border px-4 py-3 rounded-3 me-3 paymentMethod" id="visa"
                         onclick="selectPaymentMethod('visa')">
@@ -480,6 +480,7 @@
     <script src="{{ asset('assets/scripts/jquery.simplePagination.js') }}"></script>
     <script>
         var offcanvasElement = document.getElementById('checkoutOffcanvas');
+        window.appLocale = "{{ app()->getLocale() }}";
 
         offcanvasElement.addEventListener('show.bs.offcanvas', function() {
             $('body').addClass('modal-open');
@@ -587,7 +588,7 @@
                                 <div class="p-2 overflow-hidden w-100">
                                     <h5 class="card-title fs-5 fw-normal pos-product-title mb-1">
                                         <p class="overflow-hidden" style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;" title="${product.name}">
-                                            ${product.name}
+                                            ${product.name} RN${product.code}
                                         </p>
                                     </h5>
                                     <p class="card-text mb-1">
@@ -764,7 +765,7 @@
         var selectedProductID = null;
         var selectedPosCartItemID = null;
         var isModalEdit = false;
-        var selectedPaymentMethod = 'cash';
+        var selectedPaymentMethod = 'New_client';
         var orderType = 'sale';
 
         function openProductModal(productID) {
@@ -787,6 +788,7 @@
 
             selectedProductID = productID;
             var product = $('#product-' + productID).data('product');
+            console.log(product);
             var posCartItem = posCartBasket.find(item => item.id == productID);
 
             if (posCartID) {
@@ -801,7 +803,7 @@
                 product.quantities.forEach(branchQty => {
                     branchSelect.append(`
                         <option value="${branchQty.branch_id}">
-                            ${branchQty.branch_name} (${branchQty.qty} available)
+                            ${branchQty.branch_name?.[window.appLocale]} (${branchQty.qty} available)
                         </option>
                     `);
                 });
@@ -1123,7 +1125,7 @@
 
         function selectPaymentMethod(paymentMethod) {
             selectedPaymentMethod = paymentMethod;
-            $('#cash').removeClass('active');
+            $('#New_client').removeClass('active');
             $('#visa').removeClass('active');
             $('#' + paymentMethod).addClass('active');
         }

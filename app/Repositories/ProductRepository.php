@@ -112,6 +112,8 @@ class ProductRepository extends Repository
             'meta_description' => $request->meta_description,
             'meta_keywords' => $keywords ? Str::limit($keywords, 200, '') : null,
             'carton_contents' => $request->carton_contents,
+            'carton_units_count' => $request->carton_units_count,
+            'carton_price'       => $request->carton_price,
 
         ]);
         
@@ -268,6 +270,9 @@ class ProductRepository extends Repository
             'meta_description' => $request->meta_description,
             'meta_keywords' => $keywords ? Str::limit($keywords, 200, '') : null,
             'carton_contents' => $request->carton_contents,
+            'carton_units_count' => $request->carton_units_count,
+             'carton_price'       => $request->carton_price,
+
         ]);
         
         ProductBranch::where('product_id', $product->id)->delete();

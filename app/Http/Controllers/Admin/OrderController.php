@@ -45,7 +45,11 @@ class OrderController extends Controller
 
         $query = OrderRepository::query();
 
-        $query->where('is_company', $co);
+        if ($co === 'courier') {
+            $query->whereIn('shipping_type', ['courier', 'private']);
+        } else {
+            $query->where('shipping_type', $co);
+        }
 
         if ($shop) {
             $query->where('shop_id', $shop->id);
@@ -69,23 +73,25 @@ class OrderController extends Controller
         $orderStatus = OrderStatus::cases();
         $orderStatus2 = OrderStatus2::cases();
         
-        $shop_methods = Setting::get('shop_methods');
+        Order::where('id', $order->id)->update([
+            'is_read' => true,
+        ]);
 
         $riders = Driver::whereHas('user', function ($query) {
             return $query->where('is_active', true);
         })->get();
 
-        return view('admin.order.show', compact('order', 'orderStatus' , 'orderStatus2', 'riders' , 'shop_methods'));
+        return view('admin.order.show', compact('order', 'orderStatus' , 'orderStatus2', 'riders'));
     }
 
     /**
      * Update the order status.
      */
-    public function statusChange(Order $order, Request $request , $method)
+    public function statusChange(Order $order, Request $request)
     {
         $request->validate(['status' => 'required']);
 
-        $order->update(['order_status' => $request->status , 'is_company' => $method]);
+        $order->update(['order_status' => $request->status]);
 
         $title = 'Order status updated';
         $message = 'Your order status updated to '.$request->status;
@@ -165,11 +171,18 @@ class OrderController extends Controller
     /**
      * Display a order list with filter status.
      */
-    public function updateStatus(Request $request)
+    public function updateDeliveryMethod(Request $request , $orderID)
     {
-    $newStatus = $request->d_status;
+        $validated = $request->validate([
+            'd_status' => 'required|in:company,private,courier',
+        ]);
+        
+        $order = Order::findOrFail($orderID);
+        $newStatus = $request->d_status;
+    
+        $order->shipping_type = $newStatus;
+        $order->save();
 
-    Setting::set('shop_methods',$newStatus);
     return redirect()->back()->with('success', __('Shipping methods updated successfully'));
     }
 
@@ -193,7 +206,4 @@ class OrderController extends Controller
     
         return redirect()->back()->with('success', __('Upload Invoice'));
     }
-
-
-    
 }

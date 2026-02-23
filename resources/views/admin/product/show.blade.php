@@ -64,7 +64,7 @@
                         </div>
 
                     </div>
-                    <h3 class="mb-2 mt-3 pb-1">{{ $product->name }}</h3>
+                    <h3 class="mb-2 mt-3 pb-1">{{ $product->name }} RN{{ $product->code }}</h3>
 
                     <div>
                         <h6 class="mb-1 text-muted">

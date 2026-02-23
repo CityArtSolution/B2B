@@ -16,4 +16,8 @@ class OrderProduct extends Model
     {
         return $this->hasOne(ShopOrder::class, 'shop_order_id');
     }
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
 }

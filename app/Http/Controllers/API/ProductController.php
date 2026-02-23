@@ -15,6 +15,8 @@ use App\Models\FlashSale;
 use App\Repositories\ProductRepository;
 use App\Repositories\ReviewRepository;
 use Illuminate\Http\Request;
+use App\Models\UserProductView;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -307,4 +309,65 @@ class ProductController extends Controller
             'review' => ReviewResource::make($review),
         ]);
     }
+    
+    public function trackVisit(Request $request)
+    {
+        $user = $request->user();
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'User not logged in']);
+        }
+        $productId = $request->product_id;
+        
+        if (!$productId) {
+            return response()->json(['success' => false, 'message' => 'Product ID is required']);
+        }
+
+        $visitCount = $request->visit_count ?? 1;
+        $timeSpent = $request->time_spent ?? 0;
+        $isFavorite = $request->is_favorite ?? false;
+    
+        $view = UserProductView::updateOrCreate(
+            ['user_id' => $user->id, 'product_id' => $productId],
+            [
+                'visit_count' => DB::raw("visit_count + {$visitCount}"),
+                'total_time' => DB::raw("total_time + {$timeSpent}"),
+                'is_favorite' => $isFavorite,
+                'last_visited_at' => now()
+            ]
+        );
+    
+        return response()->json(['success' => true, 'data' => $view]);
+    }
+
+    public function couponPopup(Request $request)
+    {
+        if (!auth()->check()) {
+            return response()->json(['data' => null]);
+        }
+    
+        $record = UserProductView::with('product.translations')
+            ->where('user_id', auth()->id())
+            ->whereNotNull('coupon_code')
+            ->latest()
+            ->first();
+    
+        if (!$record || !$record->product) {
+            return response()->json(['data' => null]);
+        }
+    
+        return response()->json([
+            'data' => [
+                'recordId' => $record->id,
+                'coupon_code' => $record->coupon_code,
+                'product' => [
+                    'id'    => $record->product->id,
+                    'name'  => is_object($record->product->translated_name)
+                                ? $record->product->translated_name->name
+                                : $record->product->translated_name,
+                    'image' => $record->product->thumbnail,
+                ]
+            ]
+        ]);
+    }
+    
 }

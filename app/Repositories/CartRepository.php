@@ -137,7 +137,7 @@ class CartRepository extends Repository
     /**
      * Store or update cart by request.
      */
-    public static function storeOrUpdateByRequest(CartRequest $request, Product $product): Cart
+    public static function storeOrUpdateByRequest(CartRequest $request, Product $product , $selectedBranchId = 1): Cart
     {
         $size = $request->size;
         $color = $request->color;
@@ -152,6 +152,7 @@ class CartRepository extends Repository
         if ($cart) {
             $cart->update([
                 'quantity' => $isBuyNow ? 1 : $cart->quantity + 1,
+                'branch_id' => $selectedBranchId,
                 'size' => $request->size ?? $cart->size,
                 'color' => $request->color ?? $cart->color,
                 'unit' => $request->unit ?? $cart->unit,
@@ -166,6 +167,7 @@ class CartRepository extends Repository
             'is_buy_now' => $isBuyNow,
             'customer_id' => $customer->id,
             'quantity' => $request->quantity ?? 1,
+            'branch_id' => $selectedBranchId,
             'size' => $size,
             'color' => $color,
             'unit' => $unit,

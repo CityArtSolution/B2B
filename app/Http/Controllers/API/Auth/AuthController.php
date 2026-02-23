@@ -109,4 +109,29 @@ class AuthController extends Controller
     }
 
     public function callback(Request $request) {}
+    
+    public function confirmation_data(Request $request)
+    {
+        $user = auth()->user(); 
+    
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not authenticated'
+            ], 401);
+        }
+        
+
+        $user->unpaid_invoices_total = $user->customer ? $user->customer->orders()->with('payments')->get()->flatMap(fn($order) => $order->payments)->where('is_paid', 0)->sum('amount'): 0;
+
+    
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'max_invoice_limit' => $user->maximum_invoices_total,
+                'max_invoice_now' => $user->unpaid_invoices_total,
+                'payment_status' => $user->payment_status,
+            ]
+        ]);
+    }
 }

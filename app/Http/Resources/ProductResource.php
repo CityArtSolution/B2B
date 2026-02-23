@@ -60,6 +60,7 @@ class ProductResource extends JsonResource
             'id' => $this->id,
             'is_digital' => (bool) $this->is_digital,
             'name' => $name,
+            'code' => $this->code,
             'thumbnail' => $this->thumbnail,
             'branch_qty' => $this->productBranches->map(function($branch) {
                 return [

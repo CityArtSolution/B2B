@@ -45,6 +45,89 @@
 
                 <!-- Shipping Address -->
                 <ShippingAddress />
+                
+                <!-- Shipping Method -->
+                <div v-if="basketStore.buyNowProduct?.products[0]?.is_digital !== true" class="p-6 mt-6 bg-white rounded-2xl border border-slate-200">
+                    <div class="text-slate-950 text-xl font-medium leading-7">
+                        {{ $t('Shipping Method') }}
+                        <span class="text-red-500">*</span>
+                    </div>
+                
+                    <div class="mt-4 flex flex-col gap-4">
+                
+                        <!-- Company Delivery -->
+                        <label class="flex items-center gap-4 cursor-pointer">
+                            <input type="radio"
+                                v-model="shippingType"
+                                value="company"
+                                class="radioBtn2" />
+                            <span class="text-slate-600 text-base">
+                                {{ $t('Delivery by the company') }}
+                            </span>
+                        </label>
+                
+                        <!-- Private Car -->
+                        <label class="flex items-center gap-4 cursor-pointer">
+                            <input type="radio"
+                                v-model="shippingType"
+                                value="private"
+                                class="radioBtn2" />
+                            <span class="text-slate-600 text-base">
+                                {{ $t('Private car') }}
+                            </span>
+                        </label>
+                
+                        <!-- Shipping Company -->
+                        <label class="flex items-center gap-4 cursor-pointer">
+                            <input type="radio"
+                                v-model="shippingType"
+                                value="courier"
+                                class="radioBtn2" />
+                            <span class="text-slate-600 text-base">
+                                {{ $t('Shipping company') }}
+                            </span>
+                        </label>
+                    </div>
+                
+                    <!-- Shipping Companies -->
+                    <div v-if="shippingType == 'courier'" class="mt-4 border-t pt-4">
+                        <div class="text-slate-700 text-base font-medium mb-2">
+                            {{ $t('Select Shipping Company') }}
+                        </div>
+                    
+                        <Combobox v-model="shippingCompany">
+                            <div class="relative mt-1">
+                    
+                                <ComboboxInput
+                                    class="form-input"
+                                    :displayValue="(company) => company?.name || ''"
+                                    @change="shippingCompanyQuery = $event.target.value"
+                                    :placeholder="$t('Search company')"
+                                />
+                    
+                                <ComboboxOptions
+                                    class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg bg-white border border-slate-200 shadow-lg">
+                    
+                                    <ComboboxOption
+                                        v-for="company in filteredShippingCompanies"
+                                        :key="company.id"
+                                        :value="company"
+                                        class="cursor-pointer select-none p-3 hover:bg-primary-50 text-slate-700">
+                    
+                                        {{ company.name }}
+                                    </ComboboxOption>
+                    
+                                    <div
+                                        v-if="filteredShippingCompanies.length === 0"
+                                        class="p-3 text-slate-400 text-sm">
+                                        {{ $t('No results found') }}
+                                    </div>
+                    
+                                </ComboboxOptions>
+                            </div>
+                        </Combobox>
+                    </div>
+                </div>
 
                 <div class="mt-6">
                     <div class="mb-1">
@@ -58,27 +141,35 @@
                 </div>
 
                 <!-- Payment Method -->
-                <div class="p-6 mt-4 bg-white rounded-2xl border border-slate-200">
+                <div class="p-6 mt-4 bg-white rounded-2xl border border-slate-200 w-full xl:w-[130%]">
                     <div class="text-slate-950 text-xl font-medium leading-7">
                         {{ $t('Payment Method') }}
                     </div>
 
                     <div class="mt-4 flex flex-wrap gap-4">
 
-                        <label v-if="master.cashOnDelivery && basketStore.buyNowProduct?.products[0]?.is_digital != true && AuthStore.user?.payment_status == 'credit'" for="cash" class="flex items-center gap-4 xl:min-w-80">
-                            <input v-model="paymentType" id="cash" name="payment" type="radio" class="radioBtn2"
-                                value="cash" /> 
+                        <label v-if="master.cashOnDelivery && basketStore.buyNowProduct?.products[0]?.is_digital != true" for="New_client" class="flex items-center gap-4 xl:min-w-80">
+                            <input v-model="paymentType" id="New_client" name="payment" type="radio" class="radioBtn2"
+                                value="New_client" /> 
                                 <!-- :checked="basketStore.buyNowProduct?.products[0]?.is_digital == false"  -->
                             <div class="p-2 bg-white rounded-xl border border-slate-200">
                                 <img :src="'assets/icons/money-2.svg'" alt="" class="w-7 h-7">
                             </div>
-                            <span class="text-slate-500 text-base font-normal leading-normal">{{ $t('Cash on delivery')
-                            }}</span>
+                            <span class="text-slate-500 text-base font-normal leading-normal">{{ $t('New client') }}</span>
                         </label>
+              
+                        <label v-if="master.cashOnDelivery && basketStore.buyNowProduct?.products[0]?.is_digital != true && confirmationData.payment_status == 'Previous_client'" class="flex items-center gap-4 xl:min-w-80">
+                            <input v-model="paymentType" type="radio" class="radioBtn2" name="payment" value="Previous_client"/>
+                            <div class="p-2 bg-white rounded-xl border border-slate-200">
+                                <img :src="'assets/icons/money-2.svg'" alt="" class="w-7 h-7">
+                            </div>
+                            <span class="text-slate-500">{{ $t('Previous client') }}</span>
+                        </label>
+
 
                         <label v-if="master.onlinePayment" for="card" class="flex items-center gap-4 xl:min-w-80">
                             <input v-model="paymentType" id="card" name="payment" type="radio" class="radioBtn2"
-                                value="card" checked/>
+                                value="card" />
                             <div class="p-2 bg-white rounded-xl border border-slate-200">
                                 <img :src="'assets/icons/card.svg'" alt="" class="w-7 h-7">
                             </div>
@@ -117,7 +208,7 @@
             </div>
 
             <!-- Order Summary -->
-            <BuyNowCheckoutOrderSummary :note="note" :paymentMethod="paymentMethod" :isDigitalProduct="basketStore.buyNowProduct?.products[0]?.is_digital" />
+            <BuyNowCheckoutOrderSummary :note="note" :paymentMethod="paymentMethod"  :shippingType="shippingType" :shippingCompany="shippingCompany" :isDigitalProduct="basketStore.buyNowProduct?.products[0]?.is_digital" :maxInvoiceLimit="confirmationData.max_invoice_limit" :maxInvoiceNow="confirmationData.max_invoice_now"/>
 
         </div>
 
@@ -126,11 +217,14 @@
 
 <script setup>
 import { ChevronDownIcon, HomeIcon } from '@heroicons/vue/24/outline';
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, computed , ref, watch } from 'vue';
+
 
 import BuyNowCheckoutOrderSummary from '../components/BuyNowCheckoutOrderSummary.vue';
 import BuyNowCheckoutProduct from '../components/BuyNowCheckoutProduct.vue';
 import ShippingAddress from '../components/CheckoutShippingAddress.vue';
+
+import axios from 'axios';
 
 import { useBasketStore } from '../stores/BasketStore';
 import { useMaster } from '../stores/MasterStore';
@@ -148,11 +242,61 @@ const showProductItems = ref(true);
 
 const note = ref("");
 
-const checkPayment = master.cashOnDelivery ? 'cash' : 'card';
+const shippingType = ref(null); 
+const shippingCompany = ref(null);
+
+const shippingCompanies = ref([]);
+const shippingCompanyQuery = ref('');
+
+const filteredShippingCompanies = computed(() => {
+    if (!shippingCompanyQuery.value) return shippingCompanies.value;
+
+    return shippingCompanies.value.filter(company =>
+        company.name
+            .toLowerCase()
+            .includes(shippingCompanyQuery.value.toLowerCase())
+    );
+});
+const checkPayment = master.cashOnDelivery ? 'New_client' : master.onlinePayment ? 'card' : 'Previous_client' ;
 const paymentType = ref(checkPayment);
 const paymentMethod = ref(null);
 
 const paymentGateway = ref(null);
+
+const confirmationData = ref({
+    max_invoice: null,
+    payment_status: null,
+});
+
+const fetchRiders = async () => {
+    try {
+        const res = await axios.get('/riders');
+
+        if (res.data.success) {
+            shippingCompanies.value = res.data.data;
+        }
+    } catch (error) {
+        console.error('Error fetching riders', error);
+    }
+};
+
+const fetchConfirmationData = async () => {
+    try {
+        const res = await axios.get('/confirmation-data', {
+            headers: {
+                Authorization: AuthStore.token,
+            }
+        });
+
+        if (res.data.success) {
+            confirmationData.value.max_invoice_limit = parseFloat(res.data.data.max_invoice_limit);
+            confirmationData.value.max_invoice_now = parseFloat(res.data.data.max_invoice_now);
+            confirmationData.value.payment_status = res.data.data.payment_status;
+        }
+    } catch (error) {
+        console.error('Error fetching confirmation data:', error);
+    }
+};
 
 onMounted(() => {
     window.scrollTo(0, 0);
@@ -160,6 +304,14 @@ onMounted(() => {
     paymentMethod.value = paymentType.value;
     if (!AuthStore.user) {
         router.push({ name: 'home' });
+    }
+    fetchRiders();
+    fetchConfirmationData(); 
+});
+
+watch(shippingType, (val) => {
+    if (val != 'courier') {
+        shippingCompany.value = null;
     }
 });
 

@@ -1,5 +1,12 @@
 <template>
     <div>
+        <CouponPopup
+            v-if="couponData"
+            :couponCode="couponData.coupon_code"
+            :recordId="couponData.recordId"
+            :product="couponData.product"
+        />
+
         <HeroBanner :banners="banner" :ads="ads" :isLoading="isLoading" />
         <AboutSupport :isLoading="isLoading" />
         <Categories :categories="categories" :isLoading="isLoginCategory" />
@@ -31,6 +38,7 @@ import RecentlyViews from "../components/RecentlyViews.vue";
 import TopRatedShops from "../components/TopRatedShops.vue";
 import { useBasketStore } from "../stores/BasketStore";
 import { useMaster } from "../stores/MasterStore";
+import CouponPopup from "../components/CouponPopup.vue";
 
 import axios from "axios";
 import { useAuth } from "../stores/AuthStore";
@@ -42,12 +50,26 @@ const authStore = useAuth();
 const isLoading = ref(true);
 const isLoginCategory = ref(true);
 const isLoginRecentlyView = ref(false);
+const couponData  = ref(null);
+
+const fetchCouponPopup = () => {
+    if (!authStore.token) return;
+
+    axios.get('/user/coupon-popup', {
+        headers: {
+            Authorization: authStore.token
+        }
+    }).then(res => {
+        couponData.value = res.data.data ?? null;
+    });
+};
 
 onMounted(() => {
     getData();
     master.fetchData();
     basketStore.fetchCart();
     fetchViewProducts();
+    fetchCouponPopup();
     master.basketCanvas = false;
     authStore.loginModal = false;
     authStore.registerModal = false;

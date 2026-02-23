@@ -110,9 +110,9 @@
                         <label>
                             {{ __('Description (IN)') }}
                         </label>
-                        <div id="in_editor" style="max-height: 750px; overflow-y: auto"> {!! old('description_in') !!} </div>
+                        <div id="in_editor" style="max-height: 750px; overflow-y: auto"> {!! old('description_In') !!} </div>
                         
-                        <input type="hidden" id="description_in" name="description_in" value="{{ old('description_in') }}">
+                        <input type="hidden" id="description_in" name="description_In" value="{{ old('description_In') }}">
                         @error('description_in')
                             <p class="text text-danger m-0">{{ $message }}</p>
                         @enderror
@@ -137,7 +137,7 @@
                                         {{ __('Select Branch') }}
                                     </option>
                                     @foreach ($branches as $branch)
-                                        <option data-name="{{ $branch->name }}" value="{{ $branch->id }}">{{ $branch->name }}</option>
+                                        <option data-name="{{ $branch->name[app()->getLocale() ?? 'en'] }}" value="{{ $branch->id }}">{{ $branch->name[app()->getLocale() ?? 'en'] }}</option>
                                     @endforeach
                                 </select>
                                 @error('branch')
@@ -190,7 +190,7 @@
                             <div class="col-md-6 col-lg-4 mt-4">
                                 <label class="form-label">{{ __('Select Color') }}</label>
                                 <select name="colorIds[]" data-placeholder="Select Color" class="form-control colorSelect"
-                                    multiple style="width: 100%">
+                                    multiple style="width: 100%" required="true">
                                     <option value="">
                                         {{ __('Select Color') }}
                                     </option>
@@ -216,7 +216,7 @@
                             <div class="col-md-6 col-lg-4 mt-4">
                                 <label class="form-label">{{ __('Select Size') }}</label>
                                 <select name="sizeIds[]" data-placeholder="Select Size" class="form-control sizeSelector" 
-                                    multiple="true" style="width: 100%">
+                                    multiple="true" style="width: 100%" required="true">
                                     <option value="">
                                         {{ __('Select Size') }}
                                     </option>
@@ -290,7 +290,28 @@
                                 <x-input type="text" name="discount_price" label="Discount Price"
                                     placeholder="Discount Price" onlyNumber="true" value="0" />
                             </div>
-
+                            
+                            
+                            <div class="col-lg-4 col-md-6 mt-3">
+                                <x-input 
+                                    type="text" 
+                                    name="carton_units_count" 
+                                    label="Units Per Carton" 
+                                    placeholder="Enter number of units per carton"
+                                    onlyNumber="true"
+                                />
+                            </div>
+                            
+                            <div class="col-lg-4 col-md-6 mt-3">
+                                <x-input 
+                                    type="text" 
+                                    name="carton_price" 
+                                    label="Carton Price" 
+                                    placeholder="Enter full carton price"
+                                    onlyNumber="true"
+                                />
+                            </div>
+                            
                             <!--<div class="col-lg-4 col-md-6 mt-3">-->
                             <!--    <x-input type="text" id="qty" name="quantity" label="Current Stock Quantity"-->
                             <!--        placeholder="Current Stock Quantity" onlyNumber="true" />-->

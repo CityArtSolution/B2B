@@ -30,6 +30,8 @@ class OrderRequest extends FormRequest
             'note' => 'nullable|string',
             'payment_method' => 'required|string',
             'coupon_code' => 'nullable|string|max:50',
+            'shipping_type' => 'required',
+            'shipping_company_id' => 'required_if:shipping_type,courier',
         ];
     }
 
@@ -76,6 +78,8 @@ class OrderRequest extends FormRequest
             'address_id.required' => __('The address field is required.'),
             'address_id.exists' => __('The selected address id is invalid.'),
             'payment_method.required' => __('The payment method field is required.'),
+            'shipping_type.required' => __('The shipping type field is required'),
+            'shipping_company_id.required_if' => __('The shipping company is required when shipping type is courier'),
         ];
     }
 }

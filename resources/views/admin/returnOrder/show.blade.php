@@ -60,6 +60,7 @@
                                     @if ($businessModel == 'multi')
                                         <th>{{ __('Shop') }}</th>
                                     @endif
+                                    <th>{{ __('Branch Name') }}</th>
                                     <th>{{ __('Quantity') }}</th>
                                     <th>{{ __('Size') }}</th>
                                     <th>{{ __('Color') }}</th>
@@ -80,6 +81,7 @@
                                         @if ($businessModel == 'multi')
                                             <td>{{ $returnOrder?->shop?->name }}</td>
                                         @endif
+                                        <td>{{ optional(\App\Models\Branch::find($product->branch_id))->name[app()->getLocale()] ?? '-' }}</td>
                                         <td>{{ $product->quantity ?? 0 }}</td>
                                         <td>{{ $product->size ?? '-' }}</td>
                                         <td>{{ $product->color ?? '-' }}</td>

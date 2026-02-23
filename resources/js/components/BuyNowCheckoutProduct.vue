@@ -39,6 +39,23 @@
                   {{ product?.color?.name }}
                 </div>
               </div>
+              <!--Adding Increase the quantity-->
+               <!-- Quantity Increase Or Decrease -->
+                <!--<div class="p-1 rounded-lg border border-slate-200 flex gap-2">-->
+                <!--    <button class="bg-slate-200 w-6 h-6 rounded" @click="basketStore.decrementQuantity(props.product)">-->
+                <!--        <MinusIcon class="w-6 h-6 text-slate-800" />-->
+                <!--    </button>-->
+
+                <!--    <div class="w-6 text-center text-slate-950 text-base font-medium leading-normal">-->
+                <!--        {{ props.product?.quantity }}-->
+                <!--    </div>-->
+
+                <!--    <button class="bg-slate-200 w-6 h-6 rounded" @click="basketStore.incrementQuantity(props.product)">-->
+                <!--        <PlusIcon class="w-6 h-6 text-slate-800" />-->
+                <!--    </button>-->
+                <!--</div>-->
+            </div>
+            <!--End of Adding increase quantity-->
               <!-- quantity and price -->
               <div class="text-slate-800 text-base font-normal leading-normal">
                 1 X {{ master.showCurrency((product?.discount_price > 0) ? product?.discount_price : product?.price) }}
@@ -48,7 +65,6 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script setup>
@@ -59,6 +75,9 @@ import { useMaster } from "../stores/MasterStore";
 const AuthStore = useAuth();
 const master = useMaster();
 const basketStore = useBasketStore();
+const props = defineProps({
+    product: Object
+});
 </script>
 
 <style lang="scss" scoped></style>

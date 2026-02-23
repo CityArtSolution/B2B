@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Repositories\CustomerRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\WalletRepository;
+use App\Repositories\AddressRepository;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
@@ -34,10 +35,25 @@ class CustomerController extends Controller
         $user = UserRepository::registerNewUser($request);
 
         // Create a new customer
-        CustomerRepository::storeByRequest($user);
+        $customer = CustomerRepository::storeByRequest($user);
 
         // create wallet
         WalletRepository::storeByRequest($user);
+        
+        // create address
+        AddressRepository::create([
+            'name'          => $request->name,
+            'phone'         => $request->phone,
+            'customer_id'   => $customer->id,
+            'area'          => $request->address['area'] ?? null,
+            'neighborhood'          => $request->address['neighborhood'] ?? null,
+            'flat_no'       => $request->address['flat_no'] ?? null,
+            'post_code'     => $request->address['Postal'] ?? null,
+            'address_line'  => $request->address['address_line'] ?? null,
+            'address_line2' => $request->address['address_line2'] ?? null,
+            'is_default'    => true,
+        ]);
+
 
         $user->assignRole(Roles::CUSTOMER->value);
 

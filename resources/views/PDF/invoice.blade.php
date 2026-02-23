@@ -327,7 +327,14 @@
 
         <table style="width:100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px;">
             <tr>
-                <td style="width:33%; padding:4px;font-weight:bold">المخرج:</b></td>
+                <td style="width:33%; padding:4px;font-weight:bold">
+                    المخرج:
+                    @if($order->shipping_type == 'private')
+                        سيارة خاصة
+                    @else
+                        {{ $order->driverOrder?->driver?->user?->name ?? '' }} 
+                    @endif
+                </b></td>
                 <td style="width:33%; padding:4px;">{{ __('The client\'s commercial register') }} : <b>{{ $user->Commercial_register ?? '' }}</b></td>
                 <td style="width:33%; padding:4px;">{{ __('Customer\'s mobile number') }}: <b>{{ $user?->phone }}</b></td>
             </tr>
@@ -404,7 +411,7 @@
                         </tr>
                 
                         <tr>
-                            <td style="border:1px solid #000; padding:6px;">{{ __('client name') }}</td><td style="border:1px solid #000; padding:6px;">{{ $user->name }}</td>
+                            <td style="border:1px solid #000; padding:6px;">{{ __('client name') }}</td><td style="border:1px solid #000; padding:6px;">{{ $user->name ?? '' }}</td>
                         </tr>
                         
                         <tr>
@@ -416,7 +423,7 @@
                         </tr>
                         
                         <tr>
-                            <td style="border:1px solid #000; padding:6px;">{{ __('client district') }}</td><td style="border:1px solid #000; padding:6px;"></td>
+                            <td style="border:1px solid #000; padding:6px;">{{ __('client district') }}</td><td style="border:1px solid #000; padding:6px;">{{ $address->neighborhood ?? ''}}</td>
                         </tr>
                         
                         <tr>
@@ -492,7 +499,7 @@
                         @endphp
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td class="text-center">{{ $product->id}}</td>
+                            <td class="text-center">RN{{ $product->code}}</td>
                             <td style="border: none !important">
                                 <table>
                                     <tr>

@@ -24,7 +24,11 @@ class SellerOrderResource extends JsonResource
             'amount' => (float) number_format($this->payable_amount, 2, '.', ''),
             'order_status' => $this->order_status->value,
             'payment_status' => $this->payment_status->value,
-            'payment_method' => $this->payment_method->value == PaymentMethod::CASH->value ? 'Cash' : 'Online',
+            'payment_method' => match ($this->payment_method->value) {
+                PaymentMethod::NEW_CLIENT      => 'New_Client',
+                PaymentMethod::PREVIOUS_CLIENT => 'Previous_Client',
+                default                        => 'Online',
+            },
             'estimated_delivery_date' => (string) $estimateDays,
             'pickup_date' => $this->pickup_date ? Carbon::parse($this->pickup_date)->format('d M, Y') : null,
             'delivery_date' => $this->delivery_date ? Carbon::parse($this->delivery_date)->format('d M, Y') : null,

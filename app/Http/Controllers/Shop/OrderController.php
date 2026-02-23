@@ -43,8 +43,11 @@ class OrderController extends Controller
     public function show($orderId)
     {
         $order = OrderRepository::query()->withoutGlobalScopes()->whereId($orderId)->firstOrFail();
-
         $orderStatus = OrderStatus::cases();
+
+        Order::where('id', $orderId)->update([
+            'is_read' => true,
+        ]);
 
         $riders = Driver::whereHas('user', function ($query) {
             return $query->where('is_active', true);

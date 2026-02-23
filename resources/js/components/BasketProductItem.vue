@@ -80,6 +80,7 @@ const master = useMaster();
 const props = defineProps({
     product: Object
 });
+console.log(props.product);
 
 const goToDetails = () => {
     master.basketCanvas = false,

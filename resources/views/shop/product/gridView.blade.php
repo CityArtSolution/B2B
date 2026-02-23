@@ -38,7 +38,7 @@
                         </div>
                     </div>
                     <div class="mt-3">
-                        <h5 class="card-title">{{ Str::limit($product->translated_name->name ?? $product->translated_name, 50, '...') }}</h5>
+                        <h5 class="card-title">{{ Str::limit($product->translated_name->name ?? $product->translated_name, 50, '...') }} RN{{ $product->code }}</h5>
 
                         <p>
                             {{ $product->translated_name->short_description ?? $product->short_description }}

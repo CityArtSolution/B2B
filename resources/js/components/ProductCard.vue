@@ -46,24 +46,36 @@
 
                         <div class="text-slate-950 text-base font-normal leading-normal truncate w-full"
                             :class="hasStock ? '' : 'opacity-30'">
-                            {{ props.product?.name }}
+                            {{ props.product?.name }}  RN{{ props.product?.code }}
                         </div>
-
+                        <div class="text-black text-sm leading-tight flex items-center gap-1.5 flex-wrap">
+                            {{ $t('Size from') }}:
+                            <template v-for="(size, index) in props.product?.sizes || []" :key="size.id">
+                                <span>{{ size.name }}</span>
+                                <span v-if="index < props.product.sizes.length - 1" class="text-gray-300">|</span>
+                            </template>
+                            <span v-if="!props.product?.sizes?.length">—</span>
+                        </div>
+                        <div class="text-black text-sm leading-tight flex items-center gap-1.5 flex-wrap">
+                            {{ $t('Shadd 36 Piece') }}
+                        </div>
                         <div class="flex items-center gap-2" :class="hasStock ? '' : 'opacity-30'">
                             <!-- price -->
                             <div class="text-primary text-base font-bold leading-normal">
-                                {{ masterStore.showCurrency(props.product?.discount_price > 0 ?
-                                    props.product?.discount_price : props.product?.price) }}
+                                {{ $t('Dozen Price') }}: {{ masterStore.showCurrency(props.product?.discount_price > 0 ? props.product?.discount_price : props.product?.price) }}
                             </div>
                             <!-- discount price -->
                             <div v-if="props.product?.discount_price > 0"
                                 class="text-slate-400 text-sm font-normal line-through leading-tight">
-                                {{ masterStore.showCurrency(props.product?.price) }}
+                                {{ $t('Dozen Price') }}: {{ masterStore.showCurrency(props.product?.price) }}
                             </div>
                         </div>
-                        <div class="text-slate-500 text-sm leading-tight" :class="hasStock ? '' : 'opacity-30'">
-                            {{ $t('Quantity') }}: {{ productQty }}
+                        <div class="w-full text-end text-black font-bold text-xs mt-0.5">
+                            {{ $t('Price without tax') }}
                         </div>
+                        <!--<div class="text-slate-500 text-sm leading-tight" :class="hasStock ? '' : 'opacity-30'">-->
+                        <!--    {{ $t('Quantity') }}: {{ productQty }}-->
+                        <!--</div>-->
 
 
                         <div class="flex justify-between items-center w-full">
@@ -98,18 +110,18 @@
             <div class="w-full p-2">
                 <div v-if="hasStock" class="justify-start items-center gap-3 flex w-full">
                     <button v-if="props.product?.is_digital == false"
-                        class="cursor-pointer w-10 h-10 bg-white rounded-[10px] border border-primary-100 justify-center items-center flex" style="width: 50%;"
+                        class="cursor-pointer w-10 h-10 bg-white rounded-[10px] border border-primary-100 justify-center items-center flex" style="width: 100%;"
                         @click="addToBasket(props.product)">
                         <div class="w-5 h-5">
-                            <BagIcon />
+                            <PlusIcon width="22" height="22" />
                         </div>
                     </button>
 
-                    <button
-                        class="justify-center items-center gap-0.5 flex border border-primary grow py-2.5 rounded-[10px]"
-                        @click="buyNow">
-                        <div class="text-primary text-sm font-normal leading-tight">{{ $t('Buy Now')}}</div>
-                    </button>
+                    <!--<button-->
+                    <!--    class="justify-center items-center gap-0.5 flex border border-primary grow py-2.5 rounded-[10px]"-->
+                    <!--    @click="buyNow">-->
+                    <!--    <div class="text-primary text-sm font-normal leading-tight">{{ $t('Buy Now')}}</div>-->
+                    <!--</button>-->
                 </div>
                 <button v-else
                     class="justify-center items-center gap-0.5 flex border border-red-300 py-2.5 rounded-[10px] w-full"
@@ -142,7 +154,7 @@ import { ArrowDownTrayIcon } from '@heroicons/vue/20/solid';
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
-import BagIcon from '../icons/Bag.vue';
+import PlusIcon from '../icons/PlusIcon.vue';
 import { useAuth } from '../stores/AuthStore';
 import { useBasketStore } from '../stores/BasketStore';
 import { useMaster } from '../stores/MasterStore';

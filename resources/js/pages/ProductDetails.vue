@@ -138,7 +138,7 @@
 
                         <!-- Title -->
                         <div class="mt-3 text-slate-950 text-2xl font-medium leading-normal">
-                            {{ product.name }}
+                            {{ product?.name }}  RN{{ product?.code }}
                         </div>
 
                         <!-- Short Description -->
@@ -544,6 +544,38 @@ const review = ref(false);
 
 const cartProduct = ref(null);
 const isLoading = ref(true);
+
+// Tracking user visits + favorite status
+let visitStartTime = Date.now();
+let visitCountKey = `product_${formData.value.product_id}_visits`;
+
+let visitCount = parseInt(localStorage.getItem(visitCountKey) || 0);
+visitCount++;
+localStorage.setItem(visitCountKey, visitCount);
+
+const sendVisitToBackend = () => {
+    const productId = formData.value.product_id;
+    const userId = authStore.user?.id || null;
+    const timeSpent = (Date.now() - visitStartTime) / 1000;
+
+    if (visitCount >= 4 && timeSpent >= 30) {
+        axios.post('/product-visit', {
+            product_id: productId,
+            user_id: userId,
+            visit_count: visitCount,
+            time_spent: timeSpent,
+            is_favorite: product.value.is_favorite ? 1 : 0
+        }, {
+            headers: { Authorization: authStore.token }
+        }).catch(err => console.error("Visit tracking error:", err));
+    }
+};
+
+window.addEventListener('beforeunload', sendVisitToBackend);
+onUnmounted(() => {
+    sendVisitToBackend();
+    window.removeEventListener('beforeunload', sendVisitToBackend);
+});
 
 onMounted(() => {
     fetchProductDetails();

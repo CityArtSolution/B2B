@@ -7,7 +7,7 @@
         display: inline-flex;
         align-items: center;
         gap: 5px;
-        background-color: #0d6efd; /* أزرق Bootstrap */
+        background-color: #0d6efd;
         color: white;
         font-size: 14px;
         padding: 6px 12px;
@@ -86,9 +86,11 @@
                                 <tr>
                                     <th>{{ __('SL') }}</th>
                                     <th>{{ __('Product') }}</th>
+                                    <th>{{ __('Product SKU') }}</th>
                                     @if ($businessModel == 'multi')
                                         <th>{{ __('Shop') }}</th>
                                     @endif
+                                    <th>{{ __('Branch Name') }}</th>
                                     <th>{{ __('Quantity') }}</th>
                                     <th>{{ __('Size') }}</th>
                                     <th>{{ __('Color') }}</th>
@@ -107,9 +109,11 @@
                                                 <span>{{ $product->name }}</span>
                                             </div>
                                         </td>
+                                        <td>RN{{ $product->code }}</td>
                                         @if ($businessModel == 'multi')
                                             <td>{{ $product->shop?->name }}</td>
                                         @endif
+                                        <td>{{ optional(\App\Models\Branch::find($product->pivot->branch_id))->name[app()->getLocale()] ?? '-' }}</td>
                                         <td>{{ $product->pivot->quantity }}</td>
                                         <td>{{ $product->pivot->size ?? '-' }}</td>
                                         <td>{{ $product->pivot->color ?? '-' }}</td>
@@ -188,26 +192,28 @@
                     <div class="dropdown">
                         <a class="btn border text-start dropdown-toggle" href="#" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            @if( $shop_methods == 'shipping from us' && $order->is_company == 1)
+                            @if( $order->shipping_type == 'company')
                                 {{ __('Shipping from us') }}
-                            @elseif( $shop_methods == 'rider' && $order->is_company == 0)
-                                {{ __('rider') }}
-                            @elseif( $shop_methods == 'rider' && $order->is_company == 1)
-                                {{ __('rider') }}
+                            @elseif( $order->shipping_type == 'private')
+                                {{ __('Private car') }}
                             @else
-                                {{ __('Shipping from us') }}
+                                {{ __('rider') }}
                             @endif
                         </a>
                             <ul class="dropdown-menu order-status">
                                     <li>
-                                        <form action="{{ route('admin.orders.updateStatus') }}" method="POST">
+                                        <form action="{{ route('admin.orders.updateDeliveryMethod', $order->id) }}" method="POST">
                                         @csrf
-                                            <button  name="d_status" value="rider" class="dropdown-item">
+                                            <button  name="d_status" value="courier" class="dropdown-item">
                                                 {{ __('rider') }}
                                             </button>
                                 
-                                            <button  name="d_status" value="shipping from us" class="dropdown-item">
+                                            <button  name="d_status" value="company" class="dropdown-item">
                                                 {{ __('Shipping from us') }}
+                                            </button>
+                                            
+                                            <button  name="d_status" value="private" class="dropdown-item">
+                                                {{ __('Private car') }}
                                             </button>
                                         </form>
                                     </li>
@@ -216,8 +222,7 @@
                 </div>
                 @endif
                 
-                
-                @if( $shop_methods == 'shipping from us' && $order->is_company == 1)
+                @if($order->shipping_type == 'company')
                 <div class="px-3 py-2 d-flex justify-content-between align-items-center flex-wrap gap-2 border-bottom">
                     <div class="text-color">{{ __('Change Order Status') }}</div>
                     <div class="dropdown">
@@ -231,65 +236,7 @@
                                     @foreach ($orderStatus2 as $status)
                                         <li>
                                             <a class="dropdown-item @if(in_array($status->value, ['Delivered','Cancelled'])) OrderStatusConfirm @endif"
-                                                href="{{ route('admin.order.status.change',[$order->id , $shop_methods == 'shipping from us' ? 1 : 0] ) }}?status={{ $status->value }}">
-                                                {{ __($status->value) }}
-                                            </a>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            @endhasPermission
-                         @endif
-                    </div>
-                </div>
-                @elseif( $shop_methods == 'rider' && $order->is_company == 0)
-                <div class="px-3 py-2 d-flex justify-content-between align-items-center flex-wrap gap-2 border-bottom">
-                    <div class="text-color">{{ __('Change Order Status') }}</div>
-                    <div class="dropdown">
-                        <a class="btn border text-start dropdown-toggle" href="#" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            {{ $order->order_status->value }}
-                        </a>
-                        @if($order->order_status->value != 'Delivered' && $order->order_status->value != 'Cancelled')
-                            @hasPermission(['admin.order.status.change'])
-                                <ul class="dropdown-menu order-status">
-                                    @php
-                                        $orderStatu = array_filter($orderStatus, function ($status) {
-                                            return $status->name !== 'ON_THE_WAY_TO_YOU';
-                                        });
-                                    @endphp
-                                    @foreach ($orderStatu as $status)
-                                        <li>
-                                            <a class="dropdown-item @if(in_array($status->value, ['Delivered','Cancelled'])) OrderStatusConfirm @endif"
-                                                href="{{ route('admin.order.status.change',[$order->id , $shop_methods == 'shipping from us' ? 1 : 0]) }}?status={{ $status->value }}">
-                                                {{ __($status->value) }}
-                                            </a>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            @endhasPermission
-                         @endif
-                    </div>
-                </div>
-                @elseif( $shop_methods == 'rider' && $order->is_company == 1)
-                <div class="px-3 py-2 d-flex justify-content-between align-items-center flex-wrap gap-2 border-bottom">
-                    <div class="text-color">{{ __('Change Order Status') }}</div>
-                    <div class="dropdown">
-                        <a class="btn border text-start dropdown-toggle" href="#" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            {{ $order->order_status->value }}
-                        </a>
-                        @if($order->order_status->value != 'Delivered' && $order->order_status->value != 'Cancelled')
-                            @hasPermission(['admin.order.status.change'])
-                                <ul class="dropdown-menu order-status">
-                                    @php
-                                        $orderStatu = array_filter($orderStatus, function ($status) {
-                                            return $status->name !== 'ON_THE_WAY_TO_YOU';
-                                        });
-                                    @endphp
-                                    @foreach ($orderStatu as $status)
-                                        <li>
-                                            <a class="dropdown-item @if(in_array($status->value, ['Delivered','Cancelled'])) OrderStatusConfirm @endif"
-                                                href="{{ route('admin.order.status.change',[$order->id , $shop_methods == 'shipping from us' ? 1 : 0]) }}?status={{ $status->value }}">
+                                                href="{{ route('admin.order.status.change',[$order->id]) }}?status={{ $status->value }}">
                                                 {{ __($status->value) }}
                                             </a>
                                         </li>
@@ -310,10 +257,15 @@
                         @if($order->order_status->value != 'Delivered' && $order->order_status->value != 'Cancelled')
                             @hasPermission(['admin.order.status.change'])
                                 <ul class="dropdown-menu order-status">
-                                    @foreach ($orderStatus2 as $status)
+                                    @php
+                                        $orderStatu = array_filter($orderStatus, function ($status) {
+                                            return $status->name !== 'ON_THE_WAY_TO_YOU';
+                                        });
+                                    @endphp
+                                    @foreach ($orderStatu as $status)
                                         <li>
                                             <a class="dropdown-item @if(in_array($status->value, ['Delivered','Cancelled'])) OrderStatusConfirm @endif"
-                                                href="{{ route('admin.order.status.change',[$order->id , $shop_methods == 'shipping from us' ? 1 : 0] ) }}?status={{ $status->value }}">
+                                                href="{{ route('admin.order.status.change',[$order->id]) }}?status={{ $status->value }}">
                                                 {{ __($status->value) }}
                                             </a>
                                         </li>
@@ -324,7 +276,6 @@
                     </div>
                 </div>
                 @endif
-                
                 
                 <div class="border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2 p-3">
                     <div class="text-color">{{ __('Payment Status') }}</div>
@@ -341,11 +292,10 @@
                     </div>
                 </div>
                 @hasPermission('admin.rider.assign.order')
-                    @if ($order->order_status->value != 'Pending' && $shop_methods != 'shipping from us')
+                    @if ($order->order_status->value != 'Pending' && $order->shipping_type == 'courier')
                         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 p-3">
                             <div class="fw-medium text-color">{{ __('Appointment of a shipping company') }}</div>
                             <div class="d-flex align-items-center gap-1">
-
                                 @if ($order->driverOrder)
                                     <span>{{ $order->driverOrder->driver?->user?->fullName }}</span>
                                 @else
@@ -356,7 +306,13 @@
                                         {{ __('Assign') }}
                                     </button>
                                 @endif
-
+                            </div>
+                        </div>
+                    @endif
+                    @if ($order->shipping_type == 'private')
+                        <div class="d-flex justify-content-center align-items-center flex-wrap gap-2 p-3">
+                            <div class="d-flex align-items-center gap-1">
+                                <span>{{ __('Private car') }}</span>
                             </div>
                         </div>
                     @endif

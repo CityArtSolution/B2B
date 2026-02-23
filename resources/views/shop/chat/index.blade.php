@@ -320,7 +320,6 @@
                 success: function(users) {
                     allUsersLists = users.data.data;
                     let userList = '';
-
                     if (users.data.data.length == 0) {
                         userList += `
                         <li class="chat-user-item d-flex justify-content-between align-items-start p-3 mb-2 rounded bg-white chat-side-li-style active"
@@ -340,7 +339,7 @@
                     users.data.data.forEach(user => {
                         userList += `
                             <li id="chat-item-li" class="chat-user-item d-flex justify-content-between align-items-start p-3 mb-2 rounded bg-white chat-side-li-style"
-                                style="cursor: pointer;" data-id="${user.user?.id}" data-user-name="${user.user?.name}" data-profile-image="${user.user.profile_photo}" data-status="${user.user?.last_online}">
+                                style="cursor: pointer;" data-id="${user.user?.id}" data-user-name="${user.user?.name}"data-profile-image="${user.user ? user.user.profile_photo : ''}" data-status="${user.user?.last_online}">
                                 <div class="d-flex align-items-center gap-2">
                                     <img src="${user.user?.profile_photo}" class="rounded-circle border" width="40" height="40" />
                                     <div style="max-width: 75%;">
@@ -349,7 +348,7 @@
                                         ${user.unread_message_user > 0 ? `<span class="badge rounded-3 bg-danger" style="font-size: 8px;" id="user-unreadMessage${user.user?.id}">${user.unread_message_user}</span>` : ``}
                                     </div>
                                     <p class="user-last-message text-muted m-0" style="word-break: break-all;">
-                                        ${user?.last_message.slice(0, 10)}${user?.last_message.length > 10 ? '...' : ''}
+                                        ${user?.last_message ? (user.last_message.slice(0, 10) + (user.last_message.length > 10 ? '...' : '')) : ''}
                                     </p>
                                     </div>
                                 </div>

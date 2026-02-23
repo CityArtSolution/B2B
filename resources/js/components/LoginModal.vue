@@ -85,9 +85,9 @@
                                         </div>
 
                                         <!-- Password -->
-                                        <div class="mt-4">
+                                        <div class="mt-4 hidden">
                                             <label
-                                                class="text-slate-700 text-base font-normal leading-normal mb-2 block">
+                                                class="text-slate-700 text-base font-normal leading-normal mb-2 block hidden">
                                                 {{ $t('Password') }}
                                             </label>
 
@@ -103,13 +103,13 @@
                                                         class="w-6 h-6 text-slate-700 absolute top-1/2 -translate-y-1/2" :class="master.langDirection==='rtl' ? 'left-4' : 'right-4'" />
                                                 </button>
                                             </div>
-                                            <span v-if="errors && errors?.password" class="text-red-500 text-sm">
+                                            <span  v-show="false" v-if="errors && errors?.password" class="text-red-500 text-sm">
                                                 {{ errors?.password[0] }}
                                             </span>
                                         </div>
 
                                         <!-- Forgot Password -->
-                                        <div class="mt-2 text-right">
+                                        <div class="mt-2 text-right"  v-show="false">
                                             <button type="button" class="text-right text-slate-700 text-base font-normal leading-normal hover:text-primary transition-all duration-300"
                                                 @click="showForgetPasswordDialog()">
                                                 {{ $t('Forgot Password') }}?

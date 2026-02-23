@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->float('amount')->default(0);
             $table->string('currency')->nullable()->default('USD');
-            $table->string('payment_method')->nullable()->default('cash');
+            $table->string('payment_method')->nullable()->default('New_client');
             $table->boolean('is_paid')->default(false);
             $table->timestamps();
         });

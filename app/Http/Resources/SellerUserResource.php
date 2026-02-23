@@ -58,7 +58,7 @@ class SellerUserResource extends JsonResource
                 'open_time' => $openingTime,
                 'close_time' => $closingTime,
                 'off_day' => $offDay,
-                'prefix' => $shop->prefix ?? 'RC',
+                'prefix' => $shop->prefix ?? 'RN',
                 'estimated_delivery_time' => (int) $shop->estimated_delivery_time,
                 'min_order_amount' => (float) $shop->min_order_amount ?? 0,
                 'shop_status' => $shopStatus,

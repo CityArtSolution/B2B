@@ -28,12 +28,6 @@
                                 {{ __('Add Product') }}
                             </a>
                         </li>
-                        <li>
-                            <a class="dropdown-item" href="{{ route('shop.digital.product.create') }}">
-                                <i class="fa-solid fa-square-plus me-1"></i>
-                                {{ __('Add Digital Product') }}
-                            </a>
-                        </li>
                     </ul>
                 </div>
             @endhasPermission
@@ -100,7 +94,7 @@
                                     @foreach ($branches as $branch)
                                         <option value="{{ $branch->id }}"
                                             {{ request('branch') == $branch->id ? 'selected' : '' }}>
-                                            {{ $branch->name }}
+                                            {{ $branch->name[app()->getLocale() ?? 'en'] }}
                                         </option>
                                     @endforeach
                                 </x-select>
