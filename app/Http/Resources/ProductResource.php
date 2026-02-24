@@ -48,6 +48,7 @@ class ProductResource extends JsonResource
         }
 
         $price = $this->price;
+        $carton_price=$this->carton_price;
         $discountPrice = $flashSaleProduct ? $flashSaleProduct->pivot->price : $this->discount_price;
 
         $translation = $this->translations()?->where('lang', $lang)->first();
@@ -72,6 +73,8 @@ class ProductResource extends JsonResource
             'price' => (float) number_format($price, 2, '.', ''),
             'discount_price' => (float) number_format($discountPrice, 2, '.', ''),
             'discount_percentage' => (float) number_format($discountPercentage, 2, '.', ''),
+            'carton_price'=>(float) number_format($carton_price, 2, '.', ''),
+            'carton_units_count'=>(int) $this->carton_units_count,
             'rating' => (float) $this->averageRating ?? 0.0,
             'total_reviews' => (string) Number::abbreviate($this->reviews?->count(), maxPrecision: 2),
             'total_sold' => (string) number_format($totalSold, 0, '.', ','),

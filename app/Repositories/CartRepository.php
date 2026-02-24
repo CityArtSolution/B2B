@@ -71,7 +71,10 @@ class CartRepository extends Repository
                     $discountPrice = $flashSaleProduct->pivot->price + $extraPrice;
                 }
 
-                $mainPrice = $product->price + $extraPrice;
+//                $mainPrice = $product->price + $extraPrice;
+                $mainPrice=$product->carton_price + $extraPrice; //change price from one item to one unit
+                $carton_units_count=$product->carton_units_count;
+
 
                 // calculate vat taxes
                 $priceTaxAmount = 0;
@@ -89,17 +92,21 @@ class CartRepository extends Repository
                 if ($discountPrice > 0) {
                     $discountPercentage = ($mainPrice - $discountPrice) / $mainPrice * 100;
                 }
+                $lang = request()->header('accept-language') ?? 'en';
+                $translation = $product->translations()?->where('lang', $lang)->first();
+                $name = $translation?->name ?? $product->name;
 
                 $productArray[] = (object) [
                     'id' => $product->id,
                     'quantity' => (int) $cart->quantity,
                     'is_digital' => (bool) $product?->is_digital,
-                    'name' => $product->name,
+                    'name' => $name,
                     'thumbnail' => $product->thumbnail,
                     'brand' => $product->brand?->name ?? null,
                     'price' => (float) number_format($mainPrice, 2, '.', ''),
                     'discount_price' => (float) number_format($discountPrice, 2, '.', ''),
                     'discount_percentage' => (float) number_format($discountPercentage, 2, '.', ''),
+                    'carton_units_count'=>(int) $product->carton_units_count,
                     'rating' => (float) $product->averageRating,
                     'total_reviews' => (string) Number::abbreviate($product->reviews->count(), maxPrecision: 2),
                     'total_sold' => (string) number_format($totalSold, 0, '.', ','),
@@ -196,7 +203,8 @@ class CartRepository extends Repository
             $flashSaleProduct = null;
             $quantity = null;
 
-            $price = $product->discount_price > 0 ? $product->discount_price : $product->price;
+//            $price = $product->discount_price > 0 ? $product->discount_price : $product->price;
+            $price = $product->discount_price > 0 ? $product->discount_price :$product->carton_price;
 
             if ($flashSale) {
                 $flashSaleProduct = $flashSale?->products()->where('id', $product->id)->first();

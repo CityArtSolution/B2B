@@ -41,6 +41,7 @@ const MostPopular = () => import("../pages/MostPopular.vue");
 const DiscountedProducts = () => import("../pages/DiscountedProducts.vue");
 const ContactUs = () => import("../pages/ContactUs.vue");
 const Login = () => import("../pages/Login.vue");
+const Register = () => import("../pages/Register.vue");
 const BestDeal = () => import("../pages/BestDeal.vue");
 const Products = () => import("../pages/Products.vue");
 const DigitalProducts = () => import("../pages/DigitalProducts.vue");
@@ -66,7 +67,7 @@ const routes = [
         meta: {
             layout: defaultLayout,
             title: "Home",
-            requiresAuth: false,
+            requiresAuth: true,
         },
     },
     {
@@ -420,6 +421,17 @@ const routes = [
         meta: {
             layout: layoutBlank,
             title: "Login",
+            requiresAuth: false,
+            guestOnly: true,
+        },
+    },
+    {
+        path: "/register",
+        name: "register",
+        component: Register,
+        meta: {
+            layout: layoutBlank,
+            title: "Register",
             requiresAuth: false,
             guestOnly: true,
         },

@@ -126,7 +126,8 @@ class UserRepository extends Repository
         }
 
 // $request->password
-// $request->email
+// $request->emaild
+
         return self::create([
             'name' => $request->first_name ?? $request->name,
             'last_name' => $request->last_name,
@@ -138,11 +139,11 @@ class UserRepository extends Repository
             'date_of_birth' => $request->date_of_birth ?? null,
             'country' => $request->country,
             'phone_code' => $request->phone_code,
-            'is_active' => true,
-            'Commercial_register' => $request->Commercial_register,
+            'is_active' => false,
+            'Commercial_register' => $request->commercial_register,
             'Additional_Number' => $request->Additional_Number,
-            'Tax_number' => $request->Tax_number,
-            'payment_status' => $request->payment_status,
+            'Tax_number' => $request->tax_id,
+            'payment_status' => "New_client",
         ]);
     }
 

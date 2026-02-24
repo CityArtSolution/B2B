@@ -148,14 +148,14 @@
 
                     <div class="mt-4 flex flex-wrap gap-4">
 
-                        <label v-if="master.cashOnDelivery" for="New_client" class="flex items-center gap-4 xl:min-w-80">
-                            <input v-model="paymentType" id="New_client" name="payment" type="radio" class="radioBtn2"
-                                value="New_client" />
+                        <label v-if="master.cashOnDelivery" for="Offer_Price" class="flex items-center gap-4 xl:min-w-80">
+                            <input v-model="paymentType" id="Offer_Price" name="payment" type="radio" class="radioBtn2"
+                                value="Offer_Price" />
                                 <!-- :checked="basketStore.buyNowProduct?.products[0]?.is_digital == false"  -->
                             <div class="p-2 bg-white rounded-xl border border-slate-200">
                                 <img :src="'assets/icons/money-2.svg'" alt="" class="w-7 h-7">
                             </div>
-                            <span class="text-slate-500 text-base font-normal leading-normal">{{ $t('New client') }}</span>
+                            <span class="text-slate-500 text-base font-normal leading-normal">{{ $t('Offer Price') }}</span>
                         </label>
 
                         <label v-if="master.cashOnDelivery && basketStore.buyNowProduct?.products[0]?.is_digital != true && confirmationData.payment_status == 'Previous_client'" class="flex items-center gap-4 xl:min-w-80">

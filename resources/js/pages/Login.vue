@@ -117,6 +117,24 @@
                             <LoadingSpin />
                         </button>
                     </form>
+                  <div class="mt-4 text-center registration-link">
+                    <p class="mb-0 text-muted">
+                      <template v-if="master.langDirection === 'rtl'">
+
+                        ليس لديك حساب؟
+                        <router-link :to="{ name: 'register' }" class="fw-bold text-primary text-decoration-none">
+
+                          إنشاء حساب جديد
+                        </router-link>
+                      </template>
+                      <template v-else>
+                        {{ $t("Don't have an account?") }}
+                        <router-link :to="{ name: 'register' }" class="fw-bold text-primary text-decoration-none">
+                          {{ $t('Register') }}
+                        </router-link>
+                      </template>
+                    </p>
+                  </div>
                 </div>
             </div>
         </section>

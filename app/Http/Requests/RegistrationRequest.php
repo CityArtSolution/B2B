@@ -46,12 +46,17 @@ class RegistrationRequest extends FormRequest
 
             // 'password' => 'required|string|min:6',
         return [
-            'name' => 'required|string|max:200',
+//            'name' => 'required|string|max:200',
+            'first_name' => 'required|string|max:100',
+            'last_name'  => 'required|string|max:100',
             'phone' => $phoneValidate,
-            'email' => [$emailRequired, 'email', new EmailRule, 'unique:users,email'],
-            'country' => [$countryRequired, 'string', 'max:100'],
+//            'email' => [$emailRequired, 'email', new EmailRule, 'unique:users,email'],
+//            'country' => [$countryRequired, 'string', 'max:100'],
             'gender' => ['nullable', 'string'],
             'profile_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,svg', 'max:2048'],
+
+            'commercial_register' => 'required_if:has_commercial_register,true|nullable|string',
+            'tax_id'              => 'required_if:has_commercial_register,true|nullable|string',
         ];
     }
 

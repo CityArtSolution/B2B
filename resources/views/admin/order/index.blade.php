@@ -111,9 +111,9 @@
                                     <td class="w-min">
                                         {{ __('Previous client') }}
                                     </td>
-                                @elseif ($order->payment_method === PaymentMethod::NEW_CLIENT)
+                                @elseif ($order->payment_method === PaymentMethod::OFFER_PRICE)
                                     <td class="w-min">
-                                        {{ __('New client') }}
+                                        {{ __('Offer Price') }}
                                     </td>
                                 @else
                                     <td class="w-min">{{ $order->payment_method }}</td>

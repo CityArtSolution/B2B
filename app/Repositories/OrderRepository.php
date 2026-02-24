@@ -75,8 +75,14 @@ class OrderRepository extends Repository
 
                 $branchProduct = $cart->product->quantityBranch($cart->branch_id);
 
-                if ($branchProduct) {
-                    $branchProduct->decrement('qty', $cart->quantity);
+
+//                if ($branchProduct) {
+//                    $branchProduct->decrement('qty', $cart->quantity);
+//                }
+                if ($paymentMethod->name !== 'OFFER_PRICE') {
+                    if ($branchProduct) {
+                        $branchProduct->decrement('qty', $cart->quantity);
+                    }
                 }
                 
                 

@@ -57,17 +57,18 @@
                             <span v-if="!props.product?.sizes?.length">—</span>
                         </div>
                         <div class="text-black text-sm leading-tight flex items-center gap-1.5 flex-wrap">
-                            {{ $t('Shadd 36 Piece') }}
+<!--                            {{ $t('Shadd 36 Piece') }}-->
+                          {{$t('Units Per Carton')}} {{ props.product.carton_units_count }}
                         </div>
                         <div class="flex items-center gap-2" :class="hasStock ? '' : 'opacity-30'">
                             <!-- price -->
                             <div class="text-primary text-base font-bold leading-normal">
-                                {{ $t('Dozen Price') }}: {{ masterStore.showCurrency(props.product?.discount_price > 0 ? props.product?.discount_price : props.product?.price) }}
+                                {{ $t('Unit Price') }}: {{ masterStore.showCurrency(props.product?.discount_price > 0 ? props.product?.discount_price : props.product?.price) }}
                             </div>
                             <!-- discount price -->
                             <div v-if="props.product?.discount_price > 0"
                                 class="text-slate-400 text-sm font-normal line-through leading-tight">
-                                {{ $t('Dozen Price') }}: {{ masterStore.showCurrency(props.product?.price) }}
+                                {{ $t('Unit Price') }}: {{ masterStore.showCurrency(props.product?.price) }}
                             </div>
                         </div>
                         <div class="w-full text-end text-black font-bold text-xs mt-0.5">
@@ -171,7 +172,7 @@ const toast = useToast();
 const props = defineProps({
     product: Object
 });
-
+console.log('product',props.product)
 
 const qtyList = computed(() => props.product?.branch_qty ?? []);
 

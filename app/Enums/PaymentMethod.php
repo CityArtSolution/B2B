@@ -5,6 +5,7 @@ namespace App\Enums;
 enum PaymentMethod: string
 {
     case NEW_CLIENT = 'New client';
+    case OFFER_PRICE = 'Offer Price';
     case PREVIOUS_CLIENT = 'Previous client';
     case ONLINE = 'Online Payment';
     case STRIPE = 'Stripe';
