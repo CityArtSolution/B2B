@@ -4,10 +4,15 @@ namespace App\Enums;
 
 enum PaymentMethod: string
 {
-    case CASH = 'Cash Payment';
+    case NEW_CLIENT = 'New client';
+    case OFFER_PRICE = 'Offer Price';
+    case PREVIOUS_CLIENT = 'Previous client';
     case ONLINE = 'Online Payment';
     case STRIPE = 'Stripe';
     case PAYPAL = 'PayPal';
+    case TAP = 'Tap';
+    case TABBY = 'Tabby';
+    case TAMARA = 'Tamara';
     case RAZORPAY = 'Razorpay';
     case PAYSTACK = 'PayStack';
     case AAMARPAY = 'Amarpay';

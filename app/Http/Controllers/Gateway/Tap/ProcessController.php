@@ -17,57 +17,44 @@ class ProcessController extends Controller
     public static function process($paymentGateway, Payment $payment, ?array $info = null)
     {
         $config = json_decode($paymentGateway->config);
-
-        // Generate token
+            
+            
+        $baseUrl      = 'https://api.tap.company/v2/';
+        $secretKey = $config->secret_key;
+        
+        if (!$secretKey || !$baseUrl) {
+            throw new \Exception('Tap configuration error');
+        }
+        
         $paymentToken = Str::uuid()->toString();
         $payment->update(['payment_token' => $paymentToken]);
 
-        // ---------------------
-        // USER DATA
-        // ---------------------
-        if ($info) {
-            $name  = $info['name'] ?? 'Not Available';
-            $email = $info['email'] ?? 'not_available@email.com';
-            $phone = $info['phone'] ?? '0000000000';
-            $description = $info['description'] ?? 'Payment';
+        $successUrl = $cancelUrl = null;
 
-            if ($info['type'] == 'subscription') {
-                $successUrl = route('subscription.payment.success', ['payment' => $payment, 'token' => $paymentToken]);
-                $cancelUrl  = route('subscription.payment.cancel', ['payment' => $payment, 'token' => $paymentToken]);
-            } else {
-                $successUrl = route('payment.success', $payment->id);
-                $cancelUrl  = route('payment.cancel', $payment->id);
-            }
+        if ($info && $info['type'] == 'subscription') {
+            $successUrl = route('subscription.payment.success', ['payment' => $payment, 'token' => $paymentToken]);
+            $cancelUrl = route('subscription.payment.cancel', ['payment' => $payment, 'token' => $paymentToken]);
         } else {
-            $user = $payment->orders[0]->customer?->user;
-            $name  = $user->name ?? 'Not Available';
-            $email = $user->email ?? 'Not Available';
-            $phone = $user->phone ?? '0000000000';
-            $description = "Order Payment - Total {$payment->amount}";
-
             $successUrl = route('payment.success', $payment->id);
-            $cancelUrl  = route('payment.cancel', $payment->id);
+            $cancelUrl = route('payment.cancel', $payment->id);
         }
 
-        // -------------------------
-        // TAP API – CREATE PAYMENT
-        // -------------------------
+
         try {
 
             $payload = [
                 "amount" => floatval($payment->amount),
-                "currency" => $config->currency ?? "SAR",
-                "description" => $description,
+                "currency" => "SAR",
+                "statement_descriptor" => "COQUI Store",
                 "customer" => [
-                    "first_name" => $name,
-                    "email" => $email,
+                    "first_name" =>  $payment->orders[0]->customer?->user?->name ?? 'Customer',
                     "phone" => [
                         "country_code" => "966",
-                        "number" => $phone
+                        "number" =>  $payment->orders[0]->customer?->user?->phone ?? '0000000000',
                     ]
                 ],
                 "source" => [
-                    "id" => "src_all"   // To allow all payment methods
+                    "id" => "src_all"
                 ],
                 "redirect" => [
                     "url" => $successUrl
@@ -77,10 +64,8 @@ class ProcessController extends Controller
                 ]
             ];
 
-            $response = Http::withHeaders([
-                'Authorization' => "Bearer ".$config->secret_key,
-                'Content-Type'  => 'application/json'
-            ])->post("https://api.tap.company/v2/charges", $payload);
+            $response = Http::withToken($secretKey)->acceptJson()
+                ->post($baseUrl . "charges", $payload);
 
             if (!$response->successful()) {
                 return json_encode(['error' => $response->json()]);
@@ -88,12 +73,10 @@ class ProcessController extends Controller
 
             $data = $response->json();
 
-            // Save tap charge id
             if (isset($data['id'])) {
                 $payment->update(['payment_token' => $data['id']]);
             }
 
-            // Return redirect URL
             return $data['transaction']['url'];
 
         } catch (\Throwable $th) {

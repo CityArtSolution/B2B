@@ -43,6 +43,9 @@ class Product extends Model
         'meta_description',
         'meta_keywords',
         'carton_contents',
+        'carton_units_count',
+        'carton_price',
+
     ];
     protected $appends = ['thumbnail'];
     // protected $fillable = ['carton_contents'];

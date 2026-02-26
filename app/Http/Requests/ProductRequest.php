@@ -59,6 +59,9 @@ class ProductRequest extends FormRequest
             'previousThumbnail.*.file' => 'nullable|file|mimes:png,jpg,jpeg,webp|max:2048',
             
             'carton_contents' => 'nullable',
+            
+            'carton_units_count' => 'nullable|integer|min:1',
+            'carton_price'       => 'nullable|numeric|min:0',
         ];
     }
 

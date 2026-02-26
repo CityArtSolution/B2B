@@ -244,7 +244,7 @@ class PosCartRepository extends Repository
             return true;
         }
 
-        $paymentMethod = $request->payment_method == 'cash' ? PaymentMethod::CASH->value : PaymentMethod::ONLINE->value;
+        $paymentMethod = $request->payment_method == 'New_client' ? PaymentMethod::NEW_CLIENT->value : PaymentMethod::ONLINE->value;
 
         $vatTaxes = VatTaxRepository::getActiveVatTaxes();
         $allVatTaxes = [];
@@ -273,7 +273,7 @@ class PosCartRepository extends Repository
             'pos_order' => true,
             'customer_id' => $request->customer_id ?? null,
             'order_code' => str_pad($lastOrderId + 1, 6, '0', STR_PAD_LEFT),
-            'prefix' => $shop->prefix ?? 'RC',
+            'prefix' => $shop->prefix ?? 'RN',
             'coupon_id' => $posCart->coupon_id,
             'delivery_charge' => 0,
             'total_amount' => $posCart->subtotal,

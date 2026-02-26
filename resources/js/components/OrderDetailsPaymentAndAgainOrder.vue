@@ -23,19 +23,19 @@
                                     </span>
                                     <div class="mt-3 flex flex-wrap gap-4 items-center justify-center">
 
-                                        <label v-if="againOrder && master.cashOnDelivery" class="flex items-center gap-4 border relative has-[:checked]:border-primary has-[:checked]:shadow-lg p-2 rounded-md border-slate-200 cursor-pointer grow max-w-40"
-                                            title="Cash on delivery">
-                                            <input v-model="paymentGateway" id="cash" name="paymentGateway" type="radio"
-                                                class="sr-only" value="cash" />
-                                            <div class="flex items-center">
-                                                <img :src="'/assets/icons/money-2.svg'" alt=""
-                                                    class="w-12 h-16 object-contain">
-                                                <span
-                                                    class="text-slate-600 text-xl overflow-hidden whitespace-nowrap text-ellipsis">
-                                                    {{ $t('Cash On Delivery') }}
-                                                </span>
-                                            </div>
-                                        </label>
+                                        <!--<label v-if="againOrder && master.cashOnDelivery" class="flex items-center gap-4 border relative has-[:checked]:border-primary has-[:checked]:shadow-lg p-2 rounded-md border-slate-200 cursor-pointer grow max-w-40"-->
+                                        <!--    title="Cash on delivery">-->
+                                        <!--    <input v-model="paymentGateway" id="cash" name="paymentGateway" type="radio"-->
+                                        <!--        class="sr-only" value="cash" />-->
+                                        <!--    <div class="flex items-center">-->
+                                        <!--        <img :src="'/assets/icons/money-2.svg'" alt=""-->
+                                        <!--            class="w-12 h-16 object-contain">-->
+                                        <!--        <span-->
+                                        <!--            class="text-slate-600 text-xl overflow-hidden whitespace-nowrap text-ellipsis">-->
+                                        <!--            {{ $t('Cash On Delivery') }}-->
+                                        <!--        </span>-->
+                                        <!--    </div>-->
+                                        <!--</label>-->
 
                                         <label v-if="master.onlinePayment" v-for="gateway in master.paymentGateways" :key="gateway.id" :for="gateway.name" class="flex items-center gap-4 border relative has-[:checked]:border-primary has-[:checked]:shadow-lg p-2 rounded-md border-slate-200 cursor-pointer grow max-w-40">
                                             <input v-model="paymentGateway" :id="gateway.name" name="paymentGateway"

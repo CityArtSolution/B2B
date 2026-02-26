@@ -65,9 +65,11 @@
                                 <tr>
                                     <th>{{ __('SL') }}</th>
                                     <th>{{ __('Product') }}</th>
+                                    <th>{{ __('Product SKU') }}</th>
                                     @if ($businessModel == 'multi')
                                         <th>{{ __('Shop') }}</th>
                                     @endif
+                                    <th>{{ __('Branch Name') }}</th>
                                     <th>{{ __('Quantity') }}</th>
                                     <th>{{ __('Size') }}</th>
                                     <th>{{ __('Color') }}</th>
@@ -83,12 +85,14 @@
                                             <div class="d-flex gap-1 align-items-center">
                                                 <img src="{{ $product->thumbnail }}" alt="" width="40"
                                                     height="40" loading="lazy">
-                                                <span>{{ $product->name }}</span>
+                                                <span>{{ $product->translated_name->name ?? $product->translated_name }}</span>
                                             </div>
                                         </td>
+                                        <td>RN{{ $product->code }}</td>
                                         @if ($businessModel == 'multi')
                                             <td>{{ $product->shop?->name }}</td>
                                         @endif
+                                        <td>{{ optional(\App\Models\Branch::find($product->pivot->branch_id))->name[app()->getLocale()] ?? '-' }}</td>
                                         <td>{{ $product->pivot->quantity }}</td>
                                         <td>{{ $product->pivot->size ?? '-' }}</td>
                                         <td>{{ $product->pivot->color ?? '-' }}</td>

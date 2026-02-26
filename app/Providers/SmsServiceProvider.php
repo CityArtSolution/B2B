@@ -8,6 +8,7 @@ use App\Services\NexmoService;
 use App\Services\TelesignService;
 use App\Services\TwilioService;
 use Illuminate\Support\ServiceProvider;
+use App\Services\TaqnyatService;
 
 class SmsServiceProvider extends ServiceProvider
 {
@@ -16,6 +17,10 @@ class SmsServiceProvider extends ServiceProvider
         $this->app->when(TwilioService::class)
             ->needs(SmsGatewayInterface::class)
             ->give(TwilioService::class);
+
+        $this->app->when(TaqnyatService::class)
+            ->needs(SmsGatewayInterface::class)
+            ->give(TaqnyatService::class);
 
         $this->app->when(MessageBirdService::class)
             ->needs(SmsGatewayInterface::class)

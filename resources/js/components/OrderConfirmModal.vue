@@ -30,10 +30,6 @@
                                         {{ $t('Your order has been placed successfully') }}.
                                     </div>
 
-                                    <div
-                                        class="mt-4 text-center text-slate-700 text-lg font-normal leading-7 tracking-tight">
-                                        {{ $t('You will receive an order confirmation email with details of your order') }}.
-                                    </div>
 
                                     <div class="mt-4 w-full flex">
                                         <button @click="goToHomepage"

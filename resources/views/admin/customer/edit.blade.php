@@ -68,11 +68,11 @@
 
                                     <div class="mt-3">
                                         <x-select label="{{ __('Payment Status') }}" name="payment_status" required="true">
-                                            <option value="cash" {{ $user->payment_status === 'cash' ? 'selected' : '' }}>
-                                                {{ __('Cash') }}
+                                            <option value="New_client" {{ $user->payment_status === 'New_client' ? 'selected' : '' }}>
+                                                {{ __('New client') }}
                                             </option>
-                                            <option value="credit" {{ $user->payment_status === 'credit' ? 'selected' : '' }}>
-                                                {{ __('Credit') }}
+                                            <option value="Previous_client" {{ $user->payment_status === 'Previous_client' ? 'selected' : '' }}>
+                                                {{ __('Previous client') }}
                                             </option>
                                         </x-select>
                                     </div>

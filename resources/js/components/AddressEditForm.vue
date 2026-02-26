@@ -21,14 +21,37 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-6">
                 <div>
-                    <label for="Area" class="form-label mb-2"> {{ $t('Area') }}
+                    <label for="Area" class="form-label mb-2"> 
+                        {{ $t('Area') }}
+                        <small class="text-red-500">*</small>
                     </label>
                     <input type="text" id="Area" :placeholder="$t('Enter Area')" class="form-input"
                         v-model="formData.area" :class="errors && errors?.area ? 'border-red-500' : 'border-slate-200'">
                     <span v-if="errors && errors?.area" class="text-red-500 text-sm">{{ errors?.area[0] }}</span>
                 </div>
                 <div>
-                    <label for="Flat" class="form-label mb-2"> {{ $t('Flat') }}</label>
+                    <label for="Neighborhood" class="form-label mb-2">
+                        {{ $t('Neighborhood') }}
+                        <small class="text-red-500">*</small>
+                    </label>
+                    <input
+                        type="text"
+                        id="Neighborhood"
+                        :placeholder="$t('Enter Neighborhood')"
+                        class="form-input"
+                        v-model="formData.neighborhood"
+                        :class="errors && errors?.neighborhood ? 'border-red-500' : 'border-slate-200'"
+                    />
+                    <span v-if="errors && errors?.neighborhood" class="text-red-500 text-sm">
+                        {{ errors?.neighborhood[0] }}
+                    </span>
+                </div>
+
+                <div>
+                    <label for="Flat" class="form-label mb-2"> 
+                        {{ $t('Flat') }}
+                        <small class="text-red-500">*</small>
+                    </label>
                     <input type="text" id="Flat" :placeholder="$t('Enter Flat no')" value="" class="form-input"
                         v-model="formData.flat_no"
                         :class="errors && errors?.flat_no ? 'border-red-500' : 'border-slate-200'" />
@@ -36,7 +59,9 @@
                 </div>
 
                 <div>
-                    <label for="Postal" class="form-label mb-2"> {{ $t('Postal Code') }}
+                    <label for="Postal" class="form-label mb-2"> 
+                        {{ $t('Postal Code') }}
+                        <small class="text-red-500">*</small>
                     </label>
                     <input type="text" id="Postal" v-model="formData.post_code" :placeholder="$t('Enter Postal Code')"
                         value="" class="form-input"
@@ -48,7 +73,8 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
                 <div>
-                    <label for="address" class="form-label mb-2"> {{ $t('Address Line 1') }}
+                    <label for="address" class="form-label mb-2"> 
+                        {{ $t('Address Line 1') }}
                         <small class="text-red-500">*</small>
                     </label>
                     <input type="text" id="address" v-model="formData.address_line" :placeholder="$t('Enter address 1')"
@@ -70,6 +96,7 @@
             <div class="mt-4">
                 <div class="text-slate-950 text-base font-medium leading-normal">
                     {{ $t('Address Tag') }}
+                    <small class="text-red-500">*</small>
                 </div>
 
                 <div class="flex justify-between items-center gap-2 mt-2 flex-wrap">
@@ -206,6 +233,7 @@ const formData = ref({
     area: '',
     flat_no: '',
     post_code: '',
+    neighborhood: '',
     address_line: '',
     address_line2: '',
     address_type: 'home',
@@ -213,6 +241,31 @@ const formData = ref({
     longitude: '',
     is_default: false
 });
+
+
+const requiredFields = [
+    'name',
+    'phone',
+    'area',
+    'neighborhood',
+    'flat_no',
+    'post_code',
+    'address_line',
+    'address_line2',
+    'address_type',
+];
+
+const validateForm = () => {
+    errors.value = {};
+
+    requiredFields.forEach(field => {
+        if (!formData.value[field]) {
+            errors.value[field] = ['This field is required'];
+        }
+    });
+
+    return Object.keys(errors.value).length === 0;
+};
 
 watch(() => props.address, () => {
     formData.value = props.address
@@ -268,6 +321,15 @@ const deleteAddress = () => {
 const isLoading = ref(false);
 const addressFormSubmit = () => {
     isLoading.value = true;
+    if (!validateForm()) {
+        toast.error('Please fill all required fields', {
+            position: masterStore.langDirection === 'rtl'
+                ? "bottom-right"
+                : "bottom-left",
+        });
+        return;
+    }
+
     axios.post(`/address/${props.address.id}/update`, formData.value, {
         headers: {
             'Authorization': authStore.token

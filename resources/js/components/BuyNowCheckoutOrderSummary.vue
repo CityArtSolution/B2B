@@ -136,7 +136,7 @@
         </button>
 
         <!-- End Order Confirm Dialog Modal -->
-        <OrderConfirmModal />
+        <OrderConfirmModal/>
 
         <VerifyOtpModal :showModal="showVerifyOtpModal" @hideModal="showVerifyOtpModal = false" />
     </div>
@@ -162,19 +162,25 @@ const router = new useRouter();
 const basketStore = useBasketStore();
 const master = useMaster();
 const authStore = useAuth();
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const toast = useToast();
 
 const hasCoupon = ref(false);
 
 const coupon = ref("");
-
 const showVerifyOtpModal = ref(false);
 
 const props = defineProps({
     note: String,
     paymentMethod: String,
-    isDigitalProduct: Boolean
+    isDigitalProduct: Boolean,
+    shippingType: String,
+    shippingCompany: [Number, null],
+    maxInvoiceLimit: Number,
+    maxInvoiceNow: Number,
 });
 
 const orderData = ref({
@@ -255,12 +261,25 @@ const content = {
 
 const isProcessing = ref(false);
 const processOrderConfirm = () => {
+
     if (!basketStore.address) {
         toast.error("Please select shipping address");
         return;
     }
 
-    if(props.isDigitalProduct == true && props.paymentMethod == 'cash') {
+    if (!props.isDigitalProduct) {
+        if (!props.shippingType) {
+            toast.error(t("Please select shipping method"));
+            return;
+        }
+    
+        if (props.shippingType == 'courier' && !props.shippingCompany) {
+            toast.error(t("Please select shipping company"));
+            return;
+        }
+    }
+
+    if(props.isDigitalProduct == true && props.paymentMethod == 'New_client' && props.paymentMethod == 'Previous_client') {
         toast.error("Please select payment method", {
             position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
         });
@@ -273,6 +292,15 @@ const processOrderConfirm = () => {
         });
         return;
     }
+    if(props.paymentMethod == 'New_client' || props.paymentMethod == 'Previous_client') {
+        if (props.maxInvoiceLimit <= props.maxInvoiceNow + basketStore.total_amount) {
+            toast.error(t('max_invoice_reached'), {
+                position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
+            });
+            return;
+        }
+    }
+
 
     if (basketStore.buyNowProduct) {
         isProcessing.value = true;
@@ -282,7 +310,12 @@ const processOrderConfirm = () => {
             payment_method: props.paymentMethod,
             coupon_code: coupon.value,
             note: props.note,
-            is_buy_now: true
+            is_buy_now: true,
+            shipping_type: props.isDigitalProduct ? null : props.shippingType,
+            shipping_company_id: props.shippingType == 'courier'
+                ? props.shippingCompany
+                : null,
+
         }, {
             headers: {
                 Authorization: authStore.token,

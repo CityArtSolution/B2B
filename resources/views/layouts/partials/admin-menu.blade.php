@@ -35,12 +35,12 @@
         </a>
         <div class="collapse dropdownMenuCollapse {{ $request->routeIs('shop.pos.*') ? 'show' : '' }}" id="OrderManagement">
             <div class="listBar">
-                <a class="menu {{ $request->routeIs('') ? 'active' : '' }} subMenu " href="{{ route('admin.order.index' ,[0,1]) }}">
+                <a class="menu {{ $request->routeIs('') ? 'active' : '' }} subMenu " href="{{ route('admin.order.index' ,[0,'company']) }}">
                     <span>
                         {{ __('Shipping from us') }}
                     </span>
                 </a>
-                <a class="menu {{ $request->routeIs('') ? 'active' : '' }} subMenu " href="{{ route('admin.order.index' ,[0,0]) }}">
+                <a class="menu {{ $request->routeIs('') ? 'active' : '' }} subMenu " href="{{ route('admin.order.index' ,[0,'courier']) }}">
                     <span>
                         {{ __('rider') }}
                     </span>
@@ -97,10 +97,39 @@
     </li>
 @endhasPermission
 
+@hasPermission('admin.CustomerEngagement.index')
+<li>
+    <a class="menu {{ request()->routeIs('admin.CustomerEngagement.*') ? 'active' : '' }}" data-bs-toggle="collapse" href="#CustomerEngagement">
+        <span>
+            <img class="menu-icon" src="{{ asset('assets/icons-admin/accessibility-svgrepo-com.svg') }}" alt="icon" loading="lazy" />
+            {{ __('Customer Engagement Management') }}
+        </span>
+        <img src="{{ asset('assets/icons-admin/caret-down.svg') }}" alt="icon" class="downIcon">
+    </a>
+    <div class="collapse dropdownMenuCollapse {{ request()->routeIs('admin.CustomerEngagement.*') ? 'show' : '' }}" id="CustomerEngagement">
+        <div class="listBar">
+
+            <a href="{{ route('admin.CustomerEngagement.index') }}" class="subMenu hasCount {{ request()->routeIs('admin.CustomerEngagement.index') ? 'active' : '' }}">
+                {{ __('Customer Interests') }}
+            </a>
+
+            <a href="{{ route('admin.CustomerEngagement.newCustomers') }}" class="subMenu hasCount {{ request()->routeIs('admin.CustomerEngagement.newCustomers') ? 'active' : '' }}">
+                {{ __('New Customer Max Limit') }}
+            </a>
+
+            <a href="{{ route('admin.CustomerEngagement.existingCustomers') }}" class="subMenu hasCount {{ request()->routeIs('admin.CustomerEngagement.existingCustomers') ? 'active' : '' }}">
+                {{ __('Existing Customer Max Limit') }}
+            </a>
+
+        </div>
+    </div>
+</li>
+@endhasPermission
+
+
 @hasPermission([ 'admin.conversation.customer.chat.index' , 'admin.conversation.getUsers' , 'admin.conversation.getMessageAdmin'])
     <li>
-        <a class="menu {{ $request->routeIs('shop.customer.chat.index') ? 'active' : '' }}"
-            href="{{ route('shop.customer.chat.index') }}">
+        <a class="menu {{ $request->routeIs('shop.customer.chat.index') ? 'active' : '' }}" href="{{ route('shop.customer.chat.index') }}">
             <span class="position-relative">
                 <img class="menu-icon" src="{{ asset('assets/icons-admin/message.svg') }}" alt="icon" loading="lazy" />
                 {{ __('Conversations') }}
@@ -296,7 +325,7 @@
 @endhasPermission
 
 
-@hasPermission(['admin.blog.index', 'admin.blog.create'])
+{{--@hasPermission(['admin.blog.index', 'admin.blog.create'])
     <!--- blogs--->
     <li>
         <a class="menu {{ request()->routeIs('admin.blog.*') ? 'active' : '' }}" data-bs-toggle="collapse"
@@ -325,7 +354,7 @@
             </div>
         </div>
     </li>
-@endhasPermission
+@endhasPermission--}}
 @hasPermission(['admin.customer.index', 'admin.customer.create'])
     <!--- customers--->
     <li>
@@ -730,12 +759,6 @@
                     </a>
                 @endhasPermission
 
-                {{-- @hasPermission('admin.installments.index') --}}
-                    <a href="{{ route('admin.installment.index') }}"
-                        class="subMenu {{ request()->routeIs('admin.installment.*') ? 'active' : '' }}">
-                        {{ __('Installments') }}
-                    </a>
-                {{-- @endhasPermission --}}
                 
                 @hasPermission('admin.themeColor.index')
                     <!--<a href="{{ route('admin.themeColor.index') }}"-->

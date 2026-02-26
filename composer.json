@@ -10,6 +10,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "barryvdh/laravel-dompdf": "^3.1",
         "druc/laravel-langscanner": "^2.2",
         "endroid/qr-code": "^5.0",
         "google/apiclient": "^2.17",

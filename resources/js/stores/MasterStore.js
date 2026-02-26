@@ -31,6 +31,7 @@ export const useMaster = defineStore("masterStore", {
         footerQr: null,
         socialLinks: [],
         basketCanvas: false,
+        chatCanvas: false,
         search: null,
         categories: [],
         themeColors: {
@@ -165,6 +166,9 @@ export const useMaster = defineStore("masterStore", {
                 return (this.selectedCurrency?.symbol ?? "$") + amount;
             }
             return amount + (this.selectedCurrency?.symbol ?? "$");
+        },
+        toggleChatCanvas() {
+            this.chatCanvas = !this.chatCanvas;
         },
     },
 

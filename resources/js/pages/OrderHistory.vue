@@ -5,48 +5,56 @@
         <AuthPageHeader title="Order History" />
 
         <!-- Order Status -->
-        <div class="bg-white px-3 border-t border-slate-100 flex gap-4 md:gap-8 overflow-x-auto">
-
-            <label class="statusLinkBtn" for="Pending">
-                <input type="radio" v-model="orderStatus" name="status" class="sr-only" value="Pending" id="Pending" checked />
-                {{ $t('Pending') }} ({{ statusWiseOrders.pending }})
-            </label>
-
-            <label class="statusLinkBtn" for="Confirm">
-                <input type="radio" v-model="orderStatus" name="status" class="sr-only" value="Confirm" id="Confirm" />
-                {{ $t('Confirm') }} ({{ statusWiseOrders.confirm }})
-            </label>
-
-            <label class="statusLinkBtn" for="Pickup">
-                <input type="radio" v-model="orderStatus" name="status" class="sr-only" value="Pickup" id="Pickup" />
-                {{ $t('Pickup') }} ({{ statusWiseOrders.pickup }})
-            </label>
-
-            <label class="statusLinkBtn" for="Processing">
-                <input type="radio" v-model="orderStatus" name="status" class="sr-only" value="Processing" id="Processing" />
-                {{ $t('Processing') }} ({{ statusWiseOrders.processing }})
-            </label>
-
-            <label class="statusLinkBtn" for="OnTheWay">
-                <input type="radio" v-model="orderStatus" name="status" class="sr-only" value="On The Way" id="OnTheWay" />
-                {{ $t('On The Way') }} ({{ statusWiseOrders.on_the_way }})
-            </label>
-
-            <label class="statusLinkBtn" for="delivered">
-                <input type="radio" v-model="orderStatus" name="status" class="sr-only" value="Delivered" id="delivered" />
-                {{ $t('Delivered') }} ({{ statusWiseOrders.delivered }})
-            </label>
-
-            <label class="statusLinkBtn" for="Cancelled">
-                <input type="radio" v-model="orderStatus" name="status" class="sr-only" value="cancelled" id="Cancelled" />
-                {{ $t('Cancelled') }} ({{ statusWiseOrders.cancelled }})
-            </label>
-
-            <label class="statusLinkBtn" for="All">
-                <input type="radio" v-model="orderStatus" name="status" class="sr-only" value="" id="All" />
-                {{ $t('All') }} ({{ statusWiseOrders.all }})
-            </label>
-
+        <div class="bg-white p-4 overflow-x-auto">
+          <div class="flex items-center min-w-max relative">
+        
+        
+        <div
+          v-for="(status, index) in statuses"
+          :key="status.value"
+          class="flex items-center"
+        >
+          <div
+            class="flex flex-col items-center cursor-pointer"
+            @click="orderStatus = status.value"
+          >
+        
+            <!-- title -->
+            <span class="mb-2 text-sm font-medium"
+              :class="orderStatus === status.value ? 'text-primary' : 'text-slate-500'">
+              {{ $t(status.label) }}
+            </span>
+        
+            <!-- circle -->
+            <div
+              class="w-16 h-16 rounded-full flex items-center justify-center border-2 transition-all duration-300"
+              :class="index <= activeIndex
+                ? 'border-primary bg-primary/10'
+                : 'border-slate-300 bg-white'"
+            >
+              <component
+                :is="status.icon"
+                class="w-7 h-7"
+                :class="[
+                  index === activeIndex ? 'text-primary' : 'text-slate-400',
+                  index === activeIndex ? status.animate : ''
+                ]"
+              />
+            </div>
+        
+            <!-- count -->
+            <span class="mt-2 text-sm text-slate-600">
+              {{ status.count }}
+            </span>
+          </div>
+        
+          <div
+            v-if="index < statuses.length - 1"
+            class="w-12 h-[2px] mx-2 transition-all duration-500"
+            :class="index < activeIndex ? 'bg-primary' : 'bg-slate-300'"
+          ></div>
+        </div>
+          </div>
         </div>
 
         <!-- Order History -->
@@ -85,9 +93,28 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch, computed  } from 'vue';
 import AuthPageHeader from '../components/AuthPageHeader.vue';
 import OrderHistoryOrderItem from '../components/OrderHistoryOrderItem.vue';
+import {
+  ClockIcon,
+  CheckCircleIcon,
+  CogIcon,
+  CubeIcon,
+  TruckIcon,
+  XCircleIcon
+} from '@heroicons/vue/24/outline'
+
+const statuses = computed(() => [
+  { label: 'Pending'   , value: 'Pending'   ,icon: ClockIcon        ,animate: 'animate-spin-slow',count: statusWiseOrders.value.pending },
+  { label: 'Confirm'   , value: 'Confirm'   ,icon: CheckCircleIcon  ,animate: 'animate-check'    ,count: statusWiseOrders.value.confirm },
+  { label: 'Processing', value: 'Processing',icon: CogIcon          ,animate: 'animate-spin'     ,count: statusWiseOrders.value.processing },
+  { label: 'Pickup'    , value: 'Pickup'    ,icon: CubeIcon         ,animate: 'animate-bounce'   ,count: statusWiseOrders.value.pickup },
+  { label: 'On The Way', value: 'On The Way',icon: TruckIcon        ,animate: 'animate-truck'    ,count: statusWiseOrders.value.on_the_way },
+  { label: 'Delivered' , value: 'Delivered' ,icon: CheckCircleIcon  ,animate: 'animate-ping-once',count: statusWiseOrders.value.delivered },
+  { label: 'Cancelled' , value: 'cancelled' ,icon: XCircleIcon      ,animate: 'animate-shake'    ,count: statusWiseOrders.value.cancelled },
+  { label: 'All'       , value: ''          ,icon: CheckCircleIcon  ,animate: ''                 ,count: statusWiseOrders.value.all },
+])
 
 import { useRouter } from 'vue-router';
 const router = useRouter();
@@ -112,6 +139,16 @@ const statusWiseOrders = ref({
     delivered: 0,
     cancelled: 0
 });
+
+const activeIndex = computed(() =>
+  statuses.value.findIndex(s => s.value === orderStatus.value)
+)
+
+const activeLineWidth = computed(() => {
+  const total = statuses.value.length - 1
+  if (activeIndex.value <= 0) return '0%'
+  return `${(activeIndex.value / total) * 100}%`
+})
 
 const onClickHandler = (page) => {
     currentPage.value = page;
@@ -154,7 +191,50 @@ const fetchOrders = async () => {
 
 </script>
 <style scoped>
-    .statusLinkBtn{
-        @apply py-4 border-b-2 relative has-[:checked]:text-primary text-base font-normal leading-normal has-[:checked]:border-primary cursor-pointer border-transparent shrink-0;
-    }
+@keyframes draw {
+  from {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-icon {
+  animation: bounce 1.5s infinite;
+}
+
+@keyframes bounce {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spinSlow 3s linear infinite;
+}
+
+@keyframes truck {
+  0% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  100% { transform: translateX(-4px); }
+}
+.animate-truck {
+  animation: truck 1.2s infinite ease-in-out;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  50% { transform: translateX(3px); }
+  75% { transform: translateX(-3px); }
+  100% { transform: translateX(0); }
+}
+.animate-shake {
+  animation: shake 0.6s;
+}
+
 </style>

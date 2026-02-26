@@ -50,7 +50,7 @@
                                             >
                                                 <div class="flex items-start justify-between">
                                                     <div class="flex-1">
-                                                        <h3 class="font-medium text-gray-900">{{ branch.name }}</h3>
+                                                        <h3 class="font-medium text-gray-900">{{ branch.name[locale] }}</h3>
                                                         <p class="text-sm text-gray-600 mt-1">{{ branch.address }}</p>
                                                         <p v-if="branch.phone" class="text-sm text-gray-500 mt-1">{{ branch.phone }}</p>
                                                     </div>
@@ -107,6 +107,9 @@ import axios from 'axios';
 import { useAuth } from '../stores/AuthStore';
 import { useMaster } from '../stores/MasterStore';
 import LoadingSpin from './LoadingSpin.vue';
+import { useI18n } from 'vue-i18n';
+
+const { locale } = useI18n();
 
 const AuthStore = useAuth();
 const master = useMaster();

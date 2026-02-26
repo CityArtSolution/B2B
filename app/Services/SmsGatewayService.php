@@ -23,6 +23,8 @@ class SmsGatewayService
     protected function resolveGateway(string $provider, $config): ?SmsGatewayInterface
     {
         switch ($provider) {
+            case 'taqnyat':
+                return App::makeWith(TaqnyatService::class, ['config' => $config]);
             case 'twilio':
                 return App::makeWith(TwilioService::class, ['config' => $config]);
             case 'message_bird':

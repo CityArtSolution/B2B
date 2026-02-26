@@ -10,6 +10,7 @@
         <div>
             <Footer />
             <BasketCard />
+            <CustomerService />
         </div>
 
         <!-- Global Modals -->
@@ -28,6 +29,7 @@ import NavbarTop from "../components/NavbarTop.vue"
 import Navbar from "../components/Navbar.vue";
 import Footer from "../components/Footer.vue";
 import BasketCard from '../components/BasketCard.vue';
+import CustomerService from '../components/CustomerService.vue';
 import BranchSelectionModal from '../components/BranchSelectionModal.vue';
 
 import { useMaster } from '../stores/MasterStore';

@@ -92,10 +92,6 @@ foreach ($product->quantities as $q) {
                 
                     <div class="col-md-6" style="margin: 23px 0 105px;">
                         <label>{{ __('Description (EN)') }}<span class="text-danger">*</span></label>
-                        @hasPermission('shop.product.generate.AI.data')
-                            <button class="btn btn-sm btn-primary rounded mb-1" id="generateAi" type="button">­ЪДа Generate Via
-                                Ai</button>
-                        @endhasPermission
                         <div id="editor" style="max-height: 750px; overflow-y: auto">
                             {!! old('description') ?? $product->description !!}
                         </div>
@@ -111,9 +107,9 @@ foreach ($product->quantities as $q) {
                         <div id="ur_editor" style="max-height: 750px; overflow-y: auto">
                             {!! old('description_ur') ?? $product->transl('Ur')->description ??  $product->description !!}
                         </div>
-                        <input type="hidden" id="description_ur" name="description_ar"
-                            value="{{ old('description_ar') ?? $product->translated_ar_name->description ??  $product->description }}">
-                        @error('description_ar')
+                        <input type="hidden" id="description_ur" name="description_ur"
+                            value="{{ old('description_ur') ?? $product->transl('Ur')->description ??  $product->description }}">
+                        @error('description_ur')
                             <p class="text text-danger m-0">{{ $message }}</p>
                         @enderror
                     </div>
@@ -123,11 +119,11 @@ foreach ($product->quantities as $q) {
                             {{ __('Description (IN)') }}
                         </label>
                         <div id="in_editor" style="max-height: 750px; overflow-y: auto">
-                            {!! old('description_ar') ?? $product->translated_ar_name->description ??  $product->description !!}
+                            {!! old('description_in') ?? $product->transl('In')->description !!}
                         </div>
-                        <input type="hidden" id="description_in" name="description_ar"
-                            value="{{ old('description_ar') ?? $product->translated_ar_name->description ??  $product->description }}">
-                        @error('description_ar')
+                        <input type="hidden" id="description_in" name="description_In"
+                            value="{{ old('description_in') ?? $product->transl('In')->description }}">
+                        @error('description_in')
                             <p class="text text-danger m-0">{{ $message }}</p>
                         @enderror
                     </div>
@@ -154,9 +150,9 @@ foreach ($product->quantities as $q) {
                                         {{ __('Select Branch') }}
                                     </option>
                                     @foreach ($branches as $branch)
-                                        <option data-name="{{ $branch->name }}" value="{{ $branch->id }}"
+                                        <option data-name="{{ $branch->name[app()->getLocale() ?? 'en'] }}" value="{{ $branch->id }}"
                                             {{ in_array($branch->id,$product->quantities?->pluck('branch_id')->toArray()) ? 'selected' : '' }}>
-                                            {{ $branch->name }}
+                                            {{ $branch->name[app()->getLocale() ?? 'en'] }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -466,7 +462,27 @@ foreach ($product->quantities as $q) {
                                 <x-input type="text" name="discount_price" label="Discount Price"
                                     placeholder="Discount Price" onlyNumber="true" :value="$product->discount_price" />
                             </div>
-
+                            <div class="col-lg-4 col-md-6 mt-3">
+                                <x-input 
+                                    type="text" 
+                                    name="carton_units_count" 
+                                    label="Units Per Carton" 
+                                    placeholder="Enter number of units per carton"
+                                    onlyNumber="true"
+                                    :value="$product->carton_units_count" 
+                                />
+                            </div>
+                            
+                            <div class="col-lg-4 col-md-6 mt-3">
+                                <x-input 
+                                    type="text" 
+                                    name="carton_price" 
+                                    label="Carton Price" 
+                                    placeholder="Enter full carton price"
+                                    onlyNumber="true"
+                                    :value="$product->carton_price" 
+                                />
+                            </div>
                             <!--<div class="col-lg-4 col-md-6 mt-3 {{ $product->is_digital ? 'd-none' : 'd-block' }}">-->
                             <!--    <x-input type="text" name="quantity" id="qty"-->
                             <!--        label="Current Stock Quantity" placeholder="Current Stock Quantity" onlyNumber="true"-->

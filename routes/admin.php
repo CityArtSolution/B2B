@@ -53,6 +53,7 @@ use App\Http\Controllers\Admin\SMSGatewaySetupController;
 use App\Http\Controllers\Admin\TicketIssueTypeController;
 use App\Http\Controllers\Admin\SubscriptionPlanController;
 use App\Http\Controllers\Admin\MailConfigurationController;
+use App\Http\Controllers\Admin\CustomerEngagementController;
 use App\Http\Controllers\Admin\{CustomerNotificationController,InstallmentController};
 
 /*
@@ -82,6 +83,15 @@ Route::name('admin.')->group(function () {
             Route::get('/branches/{id}/edit', 'edit')->name('branches.edit');
             Route::put('/branch/update', 'update')->name('branches.update');
             Route::delete('/branch/{id}/destroy', 'destroy')->name('branches.destroy');
+        });
+        
+        // Customer Engagement
+        Route::controller(CustomerEngagementController::class)->group(function () {
+            Route::get('/Customer-Interests', 'index')->name('CustomerEngagement.index');
+            Route::get('/newCustomers', 'newCustomers')->name('CustomerEngagement.newCustomers');
+            Route::get('/existingCustomers', 'existingCustomers')->name('CustomerEngagement.existingCustomers');
+            Route::get('/account-statement/{id}', 'account_statement')->name('customer.account-statement');
+            Route::put('/update-limit/{userId}', 'update_limit')->name('CustomerEngagement.update-limit');
         });
         
         // banner
@@ -145,10 +155,12 @@ Route::name('admin.')->group(function () {
         Route::controller(OrderController::class)->group(function () {
             Route::get('/orders/{status?}/osc/{co?}', 'index')->name('order.index');
             Route::get('/orders/{order}/show', 'show')->name('order.show');
-            Route::get('/orders/{order}/status-change/{method}', 'statusChange')->name('order.status.change');
+            Route::get('/orders/{order}/status-change', 'statusChange')->name('order.status.change');
             Route::get('/orders/{order}/payment-status-toggle', 'paymentStatusToggle')->name('order.payment.status.toggle');
             Route::post('/orders/{order}/uploadInvoice', 'uploadInvoice')->name('order.uploadInvoice');
-            Route::post('/orders/Shipping-methods/updateStatus', 'updateStatus')->name('orders.updateStatus');
+            Route::post('/orders/{orderID}/updateDeliveryMethod', 'updateDeliveryMethod')->name('orders.updateDeliveryMethod');
+            Route::get('/orders/{order}/Accept', 'accept')->name('order.Accept');
+
         });
 
         // Categories

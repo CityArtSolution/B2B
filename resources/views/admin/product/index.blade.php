@@ -68,7 +68,7 @@
                                     <img src="{{ $product->thumbnail }}" width="50">
                                 </td>
 
-                                <td>{{ Str::limit($product->name, 50, '...') }}</td>
+                                <td>{{ Str::limit($product->name, 50, '...') }} {{ $product->shop->prefix }}{{ $product->code }}</td>
 
                                 <td>
                                     <a class="text-decoration-none text-dark"

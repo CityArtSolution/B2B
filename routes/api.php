@@ -16,6 +16,7 @@ use App\Http\Controllers\API\ReviewController;
 use App\Http\Controllers\API\AddressController;
 use App\Http\Controllers\API\CountryController;
 use App\Http\Controllers\API\ProductController;
+use App\Http\Controllers\API\RiderController;
 use App\Http\Controllers\API\SupportController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\Auth\AuthController;
@@ -56,6 +57,7 @@ Route::controller(CountryController::class)->group(function () {
 Route::controller(AuthController::class)->group(function () {
     Route::post('/registration', 'register');
     Route::post('/login', 'login');
+    Route::middleware('auth:sanctum')->get('/confirmation-data', 'confirmation_data');
 });
 
 Route::controller(ForgotPasswordController::class)->group(function () {
@@ -115,6 +117,16 @@ Route::controller(ProductController::class)->group(function () {
     Route::get('/product-details', 'show');
 });
 
+// Rider route
+Route::controller(RiderController::class)->group(function () {
+    Route::get('/riders', 'index');
+});
+
+// product-visit route
+Route::post('/product-visit', [ProductController::class, 'trackVisit'])->middleware('auth:sanctum');
+
+Route::get('/user/coupon-popup', [ProductController::class, 'couponPopup'])->middleware('auth:sanctum');
+
 // review route
 Route::controller(ReviewController::class)->group(function () {
     Route::get('/reviews', 'index');
@@ -140,6 +152,7 @@ Route::controller(BlogController::class)->group(function () {
     Route::get('/blogs', 'index');
     Route::get('/blog/{blog}/details', 'show');
 });
+
 
 // auth middleware route
 Route::middleware(['auth:sanctum', 'role:customer'])->group(function () {

@@ -21,7 +21,11 @@ class RiderOrderResource extends JsonResource
             'amount' => (float) number_format($this->order->payable_amount, 2, '.', ''),
             'order_status' => $this->order->order_status->value,
             'payment_status' => $this->order->payment_status->value,
-            'payment_method' => $this->order->payment_method->value == PaymentMethod::CASH->value ? 'Cash' : 'Online',
+            'payment_method' => match ($this->order->payment_method->value) {
+                PaymentMethod::NEW_CLIENT      => 'New_Client',
+                PaymentMethod::PREVIOUS_CLIENT => 'Previous_Client',
+                default                        => 'Online',
+            },
             'user' => [
                 'name' => $this->order->customer->user->name,
                 'phone' => $this->order->customer->user->phone,

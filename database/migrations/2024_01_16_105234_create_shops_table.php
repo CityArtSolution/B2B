@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignId('banner_id')->nullable()->constrained('media')->nullOnDelete();
             $table->float('delivery_charge')->nullable()->default(0);
             $table->float('min_order_amount')->default(0);
-            $table->string('prefix')->default('RC');
+            $table->string('prefix')->default('RN');
             $table->string('address')->nullable();
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();

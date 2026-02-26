@@ -7,32 +7,32 @@
         return $status->name !== 'ON_THE_WAY_TO_YOU';
     });
     
-    $pending = Order::where('order_status', OrderStatus::PENDING->value)->where('is_company', 0)->count();
+    $pending = Order::where('order_status', OrderStatus::PENDING->value)->whereIn('shipping_type', ['courier' , 'private'])->count();
     
-    $confirm = Order::where('order_status', OrderStatus::CONFIRM->value)->where('is_company', 0)->count();
+    $confirm = Order::where('order_status', OrderStatus::CONFIRM->value)->whereIn('shipping_type', ['courier' , 'private'])->count();
     
-    $processing = Order::where('order_status', OrderStatus::PROCESSING->value)->where('is_company', 0)->count();
+    $processing = Order::where('order_status', OrderStatus::PROCESSING->value)->whereIn('shipping_type', ['courier' , 'private'])->count();
     
-    $deliveredToShippingCompany = Order::where('order_status', OrderStatus::DELIVEREDTOCO->value)->where('is_company', 0)->count();
+    $deliveredToShippingCompany = Order::where('order_status', OrderStatus::DELIVEREDTOCO->value)->whereIn('shipping_type', ['courier' , 'private'])->count();
     
-    $onTheWay = Order::where('order_status', OrderStatus::ON_THE_WAY->value)->where('is_company', 0)->count();
+    $onTheWay = Order::where('order_status', OrderStatus::ON_THE_WAY->value)->whereIn('shipping_type', ['courier' , 'private'])->count();
     
-    $delivered = Order::where('order_status', OrderStatus::DELIVERED->value)->where('is_company', 0)->count();
+    $delivered = Order::where('order_status', OrderStatus::DELIVERED->value)->whereIn('shipping_type', ['courier' , 'private'])->count();
     
-    $cancelled = Order::where('order_status', OrderStatus::CANCELLED->value)->where('is_company', 0)->count();
+    $cancelled = Order::where('order_status', OrderStatus::CANCELLED->value)->whereIn('shipping_type', ['courier' , 'private'])->count();
     
     
-    $pending1 = Order::where('order_status', OrderStatus2::PENDING->value)->where('is_company', 1)->count();
+    $pending1 = Order::where('order_status', OrderStatus2::PENDING->value)->where('shipping_type', 'company')->count();
     
-    $confirm1 = Order::where('order_status', OrderStatus2::CONFIRM->value)->where('is_company', 1)->count();
+    $confirm1 = Order::where('order_status', OrderStatus2::CONFIRM->value)->where('shipping_type', 'company')->count();
     
-    $processing1 = Order::where('order_status', OrderStatus2::PROCESSING->value)->where('is_company', 1)->count();
+    $processing1 = Order::where('order_status', OrderStatus2::PROCESSING->value)->where('shipping_type', 'company')->count();
     
-    $onTheWayToYou1 = Order::where('order_status', OrderStatus2::ON_THE_WAY_TO_YOU->value)->where('is_company', 1)->count();
+    $onTheWayToYou1 = Order::where('order_status', OrderStatus2::ON_THE_WAY_TO_YOU->value)->where('shipping_type', 'company')->count();
     
-    $delivered1 = Order::where('order_status', OrderStatus2::DELIVERED->value)->where('is_company', 1)->count();
+    $delivered1 = Order::where('order_status', OrderStatus2::DELIVERED->value)->where('shipping_type', 'company')->count();
     
-    $cancelled1 = Order::where('order_status', OrderStatus2::CANCELLED->value)->where('is_company', 1)->count();
+    $cancelled1 = Order::where('order_status', OrderStatus2::CANCELLED->value)->where('shipping_type', 'company')->count();
     
 
 
@@ -200,12 +200,13 @@ $products_data = $products_addresses->map(function ($product) {
                         'deliveredToShippingCompany' => asset('assets/icons-admin/company-svgrepo-com.svg'),
                         'delivered' => asset('assets/icons-admin/box-check.svg'),
                         'cancelled' => asset('assets/icons-admin/shopping-cart-times.svg'),
+                        'pickup' => asset('assets/icons-admin/shopping-cart-times.svg'),
                     ];
                 @endphp
                 <h5>{{__('External Shipping')}}</h5>
                 <div class="d-flex flex-wrap gap-3 orderStatus">
                     @foreach ($orderStatu as $status)
-                        <a href="{{ route('admin.order.index', [str_replace(' ', '_', $status->value), 0]) }}"
+                        <a href="{{ route('admin.order.index', [str_replace(' ', '_', $status->value), 'courier']) }}"
                             class="d-flex status flex-grow-1 {{ Str::camel($status->value) }}">
                             <div class="d-flex align-items-center gap-2 justify-content-between w-100">
                                 <div class="d-flex align-items-center gap-2">
@@ -229,12 +230,14 @@ $products_data = $products_addresses->map(function ($product) {
                         'onTheWayToYou' => asset('assets/icons-admin/truck.svg'),
                         'delivered' => asset('assets/icons-admin/box-check.svg'),
                         'cancelled' => asset('assets/icons-admin/shopping-cart-times.svg'),
+                        'pickup' => asset('assets/icons-admin/shopping-cart-times.svg'),
+
                     ];
                 @endphp
                 <h5 style="margin-top:35px">{{__('Internal Shipping')}}</h5>
                 <div class="d-flex flex-wrap gap-3 orderStatus">
                     @foreach ($orderStatuses2 as $status)
-                        <a href="{{ route('admin.order.index', [str_replace(' ', '_', $status->value) , 1]) }}"
+                        <a href="{{ route('admin.order.index', [str_replace(' ', '_', $status->value) , 'company']) }}"
                             class="d-flex status flex-grow-1 {{ Str::camel($status->value) }}">
                             <div class="d-flex align-items-center gap-2 justify-content-between w-100">
                                 <div class="d-flex align-items-center gap-2">

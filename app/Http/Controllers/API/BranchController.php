@@ -46,6 +46,11 @@ class BranchController extends Controller
             Cache::put('selected_branch_' . $user->id, $branch->id, now()->addDays(7));
         }
 
+        $customer = auth()->user()->customer;
+
+        $cart = $customer->carts()->delete();
+
+
         // Debug logging
         \Log::info('Branch selected', [
             'branch_id' => $branch->id,

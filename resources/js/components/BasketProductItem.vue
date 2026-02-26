@@ -18,6 +18,12 @@
                     {{ props.product?.name }}
                 </span>
             </div>
+          <div class="text-slate-950 text-base font-normal leading-normal truncate">
+                <span class="cursor-pointer">
+                   {{$t('Units Per Carton')}} {{ props.product?.carton_units_count }}
+                  
+                </span>
+          </div>
 
             <!-- Price Discount -->
             <div class="flex items-center gap-2">
@@ -80,6 +86,7 @@ const master = useMaster();
 const props = defineProps({
     product: Object
 });
+console.log(props.product);
 
 const goToDetails = () => {
     master.basketCanvas = false,

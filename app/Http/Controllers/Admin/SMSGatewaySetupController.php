@@ -165,12 +165,12 @@ class SMSGatewaySetupController extends Controller
     private function taqnyatConfig($request)
     {
         $request->validate([
-            'api_key' => 'required',
+            'bearer_token' => 'required',
             'sender' => 'required',
         ]);
 
         $data = [
-            'api_key' => $request->api_key,
+            'bearer_token' => $request->bearer_token,
             'sender' => $request->sender,
         ];
 

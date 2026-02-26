@@ -5,6 +5,7 @@ namespace App\Enums;
 enum OrderStatus: string
 {
     case PENDING = 'Pending';
+    case PICKUP = 'Pickup';
     case CONFIRM = 'Confirm';
     case PROCESSING = 'Processing';
     case ON_THE_WAY = 'On The Way';
@@ -12,4 +13,6 @@ enum OrderStatus: string
     case ON_THE_WAY_TO_YOU = 'On The Way To You';
     case DELIVERED = 'Delivered';
     case CANCELLED = 'Cancelled';
+
+    case ACCEPTED = 'Accepted';
 }

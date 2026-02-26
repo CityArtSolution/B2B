@@ -88,6 +88,7 @@ class OrderController extends Controller
      */
     public function store(OrderRequest $request)
     {
+//        dd($request);
         $isBuyNow = $request->is_buy_now ?? false;
         $user = auth()->user();
 
@@ -119,7 +120,7 @@ class OrderController extends Controller
         $payment = OrderRepository::storeByRequestFromCart($request, $paymentMethod, $carts);
 
         $paymentUrl = null;
-        if ($paymentMethod->name != 'CASH') {
+        if ($paymentMethod->name != 'Offer_Price' && $paymentMethod->name != 'PREVIOUS_CLIENT') {
             $paymentUrl = route('order.payment', ['payment' => $payment, 'gateway' => $request->payment_method]);
         }
         $orderId = $payment->orders()->pluck('id');
@@ -174,7 +175,7 @@ class OrderController extends Controller
 
             // Check product quantity
             foreach ($order->products as $product) {
-                if ($product->quantity < $product->pivot->quantity) {
+                if ($product->quantityBranch($product->pivot->branch_id) < $product->pivot->quantity) {
                     return $this->json('Sorry, your product quantity out of stock', [], 422);
                 }
             }
@@ -203,7 +204,7 @@ class OrderController extends Controller
 
             // payment url
             $paymentUrl = null;
-            if ($paymentMethod->name != 'CASH') {
+            if ($paymentMethod->name != 'NEW_CLIENT' && $paymentMethod->name != 'PREVIOUS_CLIENT') {
                 $paymentUrl = route('order.payment', ['payment' => $payment, 'gateway' => $payment->payment_method]);
             }
 
@@ -288,7 +289,7 @@ class OrderController extends Controller
 
     public function payment(Order $order, $paymentMethod = null)
     {
-        if ($paymentMethod != 'cash' && $paymentMethod != null) {
+        if ($paymentMethod != 'Previous_client' && $paymentMethod != 'New_client' && $paymentMethod != null) {
 
             $payment = Payment::create([
                 'amount' => $order->payable_amount,

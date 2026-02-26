@@ -27,6 +27,7 @@ export const useBasketStore = defineStore("basketStore", {
         address: null,
         buyNowShopId: null,
         buyNowProduct: null,
+        buyNowQuantity: 1,
         isLoadingCart: false,
     }),
 
@@ -69,6 +70,35 @@ export const useBasketStore = defineStore("basketStore", {
     },
 
     actions: {
+    increaseBuyNowQuantity() {
+        console.log("Before Increase:", this.buyNowQuantity);
+        console.log("BuyNowProduct:", this.buyNowProduct);
+
+        if (!this.buyNowProduct?.products?.length) {
+            console.log("No product found to increase!");
+            return;
+        }
+
+        const product = this.buyNowProduct.products[0];
+        console.log("Product stock:", product.stock);
+
+        if (this.buyNowQuantity < product.stock) {
+            this.buyNowQuantity = this.buyNowQuantity + 1;
+            console.log("After Increase:", this.buyNowQuantity);
+        } else {
+            console.log("Reached max stock");
+        }
+    },
+    decreaseBuyNowQuantity() {
+        console.log("Before Decrease:", this.buyNowQuantity);
+
+        if (this.buyNowQuantity > 1) {
+            this.buyNowQuantity = this.buyNowQuantity - 1;
+            console.log("After Decrease:", this.buyNowQuantity);
+        } else {
+            console.log("Reached min quantity 1");
+        }
+    },
         /**
          * Add a product to cart.
          * @param {object} data - object containing product id, quantity, color, size, unit.

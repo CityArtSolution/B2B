@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            if (!Schema::hasColumn('orders', 'is_company')) {
-                $table->boolean('is_company')->default(0)->after('order_status');
+            if (!Schema::hasColumn('orders', 'shipping_type')) {
+                $table->string('shipping_type')->default('courier')->after('order_status');
             }
         });
     }
@@ -24,8 +24,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            if (Schema::hasColumn('orders', 'is_company')) {
-                $table->dropColumn('is_company');
+            if (Schema::hasColumn('orders', 'shipping_type')) {
+                $table->dropColumn('shipping_type');
             }
         });
     }

@@ -10,6 +10,7 @@ use App\Models\Coupon;
 use App\Models\GeneraleSetting;
 use App\Models\Shop;
 use App\Models\User;
+use App\Models\UserProductView;
 use App\Repositories\CouponRepository;
 
 class CouponController extends Controller
@@ -50,6 +51,14 @@ class CouponController extends Controller
      */
     public function store(CouponRequest $request)
     {
+
+        $query = parse_url(url()->previous(), PHP_URL_QUERY); 
+        
+        $params = [];
+        if ($query) {
+            parse_str($query, $params);
+        }
+
         $generalSetting = generaleSetting();
 
         $shopId = null;
@@ -63,6 +72,10 @@ class CouponController extends Controller
         $coupon = CouponRepository::storeByRequest($request, $shopId);
 
         $coupon->shops()->sync($request->shops);
+
+        if (isset($params['req'])) {
+            UserProductView::where('id', $params['req'])->update(['coupon_code' => $request->code]);
+        }
 
         return to_route('admin.coupon.index')->withSuccess(__('Coupon created successfully'));
     }

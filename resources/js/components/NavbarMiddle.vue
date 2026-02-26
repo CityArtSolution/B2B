@@ -235,11 +235,11 @@
                                                 <div v-for="menu in master.menus" :key="menu.id" class="w-full  text-base">
                                                     <router-link v-if="!menu.is_external" :to="menu.url"
                                                         class="py-2 font-normal text-slate-600 border-b-2 border-slate-200 block">
-                                                        {{ menu.name }}
+                                                        {{ menu.name[$i18n.locale ?? 'en'] }}
                                                     </router-link>
                                                     <a v-else :href="menu.url" :target="menu.target"
                                                         class="py-2 border-b-2 border-slate-200 block font-normal text-slate-600">
-                                                        {{ menu.name }}
+                                                        {{ menu.name[$i18n.locale ?? 'en'] }}
                                                     </a>
                                                 </div>
 

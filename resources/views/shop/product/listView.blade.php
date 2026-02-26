@@ -20,7 +20,7 @@
                     <img src="{{ $product->thumbnail }}" width="50">
                 </td>
 
-                <td>{{ Str::limit($product->translated_name->name ?? $product->translated_name, 50, '...') }}</td>
+                <td>{{ Str::limit($product->translated_name->name ?? $product->translated_name, 50, '...') }} RN{{ $product->code }}</td>
                 <td>
                     {{ $product?->brand?->name ?? 'N/A' }}
                 </td>

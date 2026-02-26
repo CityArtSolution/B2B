@@ -101,13 +101,13 @@
                 <ChevronRightIcon class="w-4 h-4 text-slate-400" />
             </router-link>
 
-            <router-link to="/change-password"
-                class="flex gap-2 text-slate-600 text-base py-2 hover:text-primary menuLinkItem w-full justify-between">
-                <span class="flex gap-2 truncate overflow-hidden">
-                    <KeyIcon width="24" height="24" colorClass="currentColor" /> {{ $t('Change Password') }}
-                </span>
-                <ChevronRightIcon class="w-4 h-4 text-slate-400" />
-            </router-link>
+            <!--<router-link to="/change-password"-->
+            <!--    class="flex gap-2 text-slate-600 text-base py-2 hover:text-primary menuLinkItem w-full justify-between">-->
+            <!--    <span class="flex gap-2 truncate overflow-hidden">-->
+            <!--        <KeyIcon width="24" height="24" colorClass="currentColor" /> {{ $t('Change Password') }}-->
+            <!--    </span>-->
+            <!--    <ChevronRightIcon class="w-4 h-4 text-slate-400" />-->
+            <!--</router-link>-->
 
             <button
                 class="flex gap-2 text-slate-600 text-base py-2 hover:text-primary menuLinkItem w-full justify-between"

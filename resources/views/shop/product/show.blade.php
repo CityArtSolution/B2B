@@ -47,9 +47,9 @@
                 <!-- Product Details Section -->
                 <div class="col-lg-7">
                     <span class="badge bg-primary">{{ $product->brand?->name }}</span>
-                    <h2 class="mt-3">{{ $product->translated_name->name }}</h2>
+                    <h2 class="mt-3">{{ $product->translated_name->name ?? $product->name }} RN{{ $product->code }}</h2>
                     <p class="text-muted">
-                        {{ $product->translated_name->short_description }}
+                        {{ $product->translated_name->short_description ?? $product->short_description }}
                     </p>
 
                     <div class="d-flex align-items-center">
@@ -74,7 +74,6 @@
                                 {{ number_format($product->getDiscountPercentage($product->price, $product->discount_price)) }}%</span>
                         @endif
                     </div>
-
                     <!-- Size Selection -->
                     <div class="mb-3">
                         <label class="fw-bold">Size</label>
@@ -102,7 +101,7 @@
                     <div class="mb-3">
                         <label class="fw-bold">Quantity:</label>
                         @foreach($product->quantities as $row)
-                            <br> <span>-- {{ $row->branch->name }} ({{ $row->qty }})</span>
+                            <br> <span>-- {{ $row->branch->name[app()->getLocale() ?? 'en'] }} ({{ $row->qty }})</span>
                         @endforeach
                     </div>
 
@@ -116,7 +115,7 @@
                 {{ __('Description') }}
             </h5>
             <p>
-                {!! $product->translated_name->description !!}
+                {!! $product->translated_name->description ?? $product->description  !!}
             </p>
         </div>
     </div>
