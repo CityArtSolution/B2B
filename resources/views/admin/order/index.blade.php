@@ -114,11 +114,21 @@
                                 @elseif ($order->payment_method === PaymentMethod::OFFER_PRICE)
                                     <td class="w-min">
                                         {{ __('Offer Price') }}
+
                                     </td>
                                 @else
                                     <td class="w-min">{{ $order->payment_method }}</td>
                                 @endif
                                 <td class="w-min">
+                                    @if ($order->payment_method === PaymentMethod::OFFER_PRICE  && $order->order_status->name ===  "PENDING")
+                                        <a href="{{ route('admin.order.Accept', $order->id) }}" data-bs-toggle="tooltip"
+                                           data-bs-placement="top" data-bs-title="{{ __('Accept Order') }}"
+                                           class="circleIcon svg-bg">
+                                            <img style="width: 20px" src="{{ asset('assets/icons-admin/accept-svg.svg') }}" alt="icon"
+                                                 loading="lazy" />
+
+                                        </a>
+                                    @endif
                                     @hasPermission('admin.order.show')
                                         <a href="{{ route('admin.order.show', $order->id) }}" data-bs-toggle="tooltip"
                                             data-bs-placement="top" data-bs-title="{{ __('view details') }}"

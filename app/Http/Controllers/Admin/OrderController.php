@@ -24,6 +24,7 @@ class OrderController extends Controller
      */
     public function index(Request $request, $status = null , $co)
     {
+
         $status = $status ? str_replace('_', ' ', $status) : '';
     
         $generaleSetting = GeneraleSetting::first();
@@ -65,6 +66,22 @@ class OrderController extends Controller
         return view('admin.order.index', compact('orders', 'status' , 'co'));
     }
 
+
+    public function accept(Order $order)
+    {
+
+        $order->update(['order_status' => 'Accepted']);
+        foreach ($order->products as $product) {
+            $quantityToSubtract = $product->pivot->quantity;
+            $branchId = $product->pivot->branch_id;
+            $branchProduct = $product->quantityBranch($branchId);
+            if ($branchProduct) {
+
+                $branchProduct->decrement('qty', $quantityToSubtract);
+            }
+        }
+        return redirect()->back();
+    }
     /**
      * Display the order details.
      */

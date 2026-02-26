@@ -159,6 +159,8 @@ Route::name('admin.')->group(function () {
             Route::get('/orders/{order}/payment-status-toggle', 'paymentStatusToggle')->name('order.payment.status.toggle');
             Route::post('/orders/{order}/uploadInvoice', 'uploadInvoice')->name('order.uploadInvoice');
             Route::post('/orders/{orderID}/updateDeliveryMethod', 'updateDeliveryMethod')->name('orders.updateDeliveryMethod');
+            Route::get('/orders/{order}/Accept', 'accept')->name('order.Accept');
+
         });
 
         // Categories
