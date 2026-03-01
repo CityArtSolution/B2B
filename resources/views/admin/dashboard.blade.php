@@ -201,6 +201,7 @@ $products_data = $products_addresses->map(function ($product) {
                         'delivered' => asset('assets/icons-admin/box-check.svg'),
                         'cancelled' => asset('assets/icons-admin/shopping-cart-times.svg'),
                         'pickup' => asset('assets/icons-admin/shopping-cart-times.svg'),
+                        'accepted' => asset('assets/icons-admin/accept-svg.svg'),
                     ];
                 @endphp
                 <h5>{{__('External Shipping')}}</h5>
