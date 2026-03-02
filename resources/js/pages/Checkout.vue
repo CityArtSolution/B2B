@@ -258,7 +258,7 @@ const filteredShippingCompanies = computed(() => {
     );
 });
 
-const checkPayment = master.cashOnDelivery ? 'New_client' : master.onlinePayment ? 'card' : 'Previous_client' ;
+const checkPayment = master.cashOnDelivery ? 'Offer_Price' : master.onlinePayment ? 'card' : 'Previous_client' ;
 const paymentType = ref(checkPayment);
 const paymentMethod = ref(null);
 

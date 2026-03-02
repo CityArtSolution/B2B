@@ -28,8 +28,13 @@ class ProductDetailsResource extends JsonResource
         }
 
         $discountPercentage = $this->getDiscountPercentage($this->price, $this->discount_price);
-        $totalSold = $this->orders->sum('pivot.quantity');
-
+//        $totalSold = $this->orders->sum('pivot.quantity');
+        $totalSold = $this->orders
+            ->reject(fn($order) =>
+                $order->payment_method->value === 'Offer Price' &&
+                $order->order_status->value === 'Pending'
+            )
+            ->sum('pivot.quantity');
         $flashSale = $this->flashSales?->first();
         $flashSaleProduct = null;
         $quantity = null;
