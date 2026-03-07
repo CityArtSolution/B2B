@@ -65,18 +65,9 @@ class RiderController extends Controller
         $totalDelivery = $driver->driverOrders()->where('is_completed', true)->count();
         $totalPending = $driver->driverOrders()->where('is_completed', false)->count();
 
-        $allCashCollected = $driver->orders()->where('order_status', OrderStatus::DELIVERED->value)->where('payment_method', PaymentMethod::CASH->value)->sum('payable_amount');
-
-        $wallet = DriverRepository::getWallet($driver);
-
-        $alreadyWithdraw = $driver->user->withdraws()->where('status', 'approved')->sum('amount');
-
-        $pendingWithdraw = $driver->user->withdraws()->where('status', 'pending')->sum('amount');
-
-        $deniedWithdraw = $driver->user->withdraws()->where('status', 'denied')->sum('amount');
-
-        return view('admin.rider.show', compact('user', 'driver', 'totalDelivery', 'totalPending', 'allCashCollected', 'alreadyWithdraw', 'pendingWithdraw', 'deniedWithdraw', 'wallet'));
+        return view('admin.rider.show', compact('user', 'driver', 'totalDelivery', 'totalPending'));
     }
+
 
     /**
      * Show the form for editing the specified resource.

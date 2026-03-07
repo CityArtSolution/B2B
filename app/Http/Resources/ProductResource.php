@@ -9,6 +9,24 @@ use Illuminate\Support\Number;
 
 class ProductResource extends JsonResource
 {
+    private function getTranslationsMap(string $field, mixed $fallback = null): array
+    {
+        $translations = $this->relationLoaded('translations')
+            ? $this->translations
+            : $this->translations()->get();
+
+        $values = $translations
+            ->filter(fn ($translation) => filled($translation->lang) && filled($translation->{$field} ?? null))
+            ->mapWithKeys(fn ($translation) => [$translation->lang => $translation->{$field}])
+            ->toArray();
+
+        if (filled($fallback) && ! array_key_exists('en', $values)) {
+            $values['en'] = $fallback;
+        }
+
+        return $values;
+    }
+
     /**
      * Transform the resource into an array.
      *
@@ -16,7 +34,7 @@ class ProductResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $this->load(['reviews', 'orders', 'quantities' , 'sizes', 'colors', 'unit', 'brand', 'shop', 'flashSales']);
+        $this->load(['reviews', 'orders', 'quantities' , 'sizes', 'colors', 'unit', 'brand', 'shop', 'flashSales', 'translations']);
 
         $lang = request()->header('accept-language') ?? 'en';
 
@@ -51,8 +69,10 @@ class ProductResource extends JsonResource
         $carton_price=$this->carton_price;
         $discountPrice = $flashSaleProduct ? $flashSaleProduct->pivot->price : $this->discount_price;
 
-        $translation = $this->translations()?->where('lang', $lang)->first();
+        $translation = $this->translations->where('lang', $lang)->first();
         $name = $translation?->name ?? $this->name;
+        $description = $translation?->description ?? $this->description;
+        $shortDescription = $translation?->short_description ?? $this->short_description;
 
         $brandTranslation = $this->brand?->translations()?->where('lang', $lang)->first();
         $brandName = $brandTranslation?->name ?? $this->brand?->name;
@@ -61,6 +81,13 @@ class ProductResource extends JsonResource
             'id' => $this->id,
             'is_digital' => (bool) $this->is_digital,
             'name' => $name,
+            'short_description' => $shortDescription,
+            'description' => $description,
+            'translations' => [
+                'name' => $this->getTranslationsMap('name', $this->name),
+                'short_description' => $this->getTranslationsMap('short_description', $this->short_description),
+                'description' => $this->getTranslationsMap('description', $this->description),
+            ],
             'code' => $this->code,
             'thumbnail' => $this->thumbnail,
             'branch_qty' => $this->productBranches->map(function($branch) {

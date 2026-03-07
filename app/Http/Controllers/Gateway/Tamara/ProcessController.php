@@ -16,12 +16,11 @@ class ProcessController extends Controller
      */
     public static function process($paymentGateway, Payment $payment, ?array $info = null)
     {
-        $config = json_decode($paymentGateway->config);
-        
-        $apiToken      = $config->api_token;
-        $baseUrl       = 'https://api-sandbox.tamara.co';
+        $secretKey = env('TAMARA_SECRET_KEY');
+        $baseUrl   = env('TAMARA_BASE_URL', 'https://api-sandbox.tamara.co');
+        $currency  = 'SAR';
 
-        if (!$baseUrl || !$apiToken) {
+        if (!$baseUrl || !$secretKey) {
             throw new \Exception('Tamara configuration error');
         }
         
@@ -43,80 +42,55 @@ class ProcessController extends Controller
         $payload = [
             "total_amount" => [
                 "amount"   => number_format($payment->amount, 2, '.', ''),
-                "currency" => "SAR"
+                "currency" => $currency
             ],
             "shipping_amount" => [
                 "amount"   => "0.00",
-                "currency" => "SAR"
+                "currency" => $currency
             ],
             "tax_amount" => [
-                "amount"   => "0.00",
-                "currency" => "SAR"
+                'amount'   => 0,
+                "currency" => $currency
             ],
         
             "order_reference_id" => (string) $payment->id,
-            "risk_assessment" => [
-                "is_premium_customer"   => false,
-                "account_creation_date"    => '31-01-2019',
-                "total_order_count" => 12,
-                "risk_score"        => 5
-            ],
+            'order_number'       => (string) $payment->id,
+            'description'        => "Invoice #{$payment->id}",
+            'country_code'       => 'SA',
+            'payment_type'       => 'PAY_BY_INSTALMENTS',
+    
             "consumer" => [
                 "first_name"   => $customer->name ?? 'Customer',
-                "last_name"    => $customer->name ?? 'Customer',
                 "phone_number" => $customer->phone ?? '0500000000',
             ],
         
-            "items" => [
-                [
-                    "reference_id" => "item_{$payment->id}",
-                    "type" => "Physical",
-                    "name" => "Order #{$payment->id}",
-                    "sku"  => "SKU-{$payment->id}",
-                    "quantity" => 1,
-                    "total_amount" => [
-                        "amount"   => number_format($payment->amount, 2, '.', ''),
-                        "currency" => "SAR"
-                    ]
-                ]
-            ],
-            
-            "country_code"       => "SA",
-            "description"        => "Invoice #{$payment->id}",
-            "merchant_urls" => [
+            "merchant_url" => [
                 "success" => $successUrl,
                 "cancel"  => $cancelUrl,
                 "failure" => $cancelUrl
             ],
-            "locale"             => app()->getLocale() === 'ar' ? 'ar_SA' : 'en_US',
             "platform" => "COQUI",
             "is_mobile" => false
         ];
-        try {
-            $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $apiToken,
-                'Content-Type' => 'application/json',
-            ])->post($baseUrl, $payload);
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $secretKey,
+            'Content-Type' => 'application/json',
+            'Accept'        => 'application/json',
+        ])->post($baseUrl . '/checkout', $payload);
 
 
-            if (!$response->successful()) {
-                return json_encode(['error' => 'integration not successful']);
-            }
-
-            $data = $response->json();
-
-            if (isset($data['checkout_url'])) {
-                return $data['checkout_url'];
-            }
-
-            // Debug Tamara error
-            throw new \Exception(json_encode($data));
-
-        } catch (\Throwable $e) {
-            return json_encode([
-                'error' => true,
-                'message' => $e->getMessage()
-            ]);
+        if (!$response->successful()) {
+            throw new \Exception('Tamara checkout failed: ' . $response->body());
         }
+        
+        $data = $response->json();
+
+        if (isset($data['checkout_url'])) {
+            return $data['checkout_url'];
+        }
+
+        // Debug Tamara error
+        throw new \Exception(json_encode($data));
     }
 }

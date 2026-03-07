@@ -46,9 +46,7 @@ class RegistrationRequest extends FormRequest
 
             // 'password' => 'required|string|min:6',
         return [
-//            'name' => 'required|string|max:200',
-            'first_name' => 'required|string|max:100',
-            'last_name'  => 'required|string|max:100',
+            'name' => 'required|string|max:200',
             'phone' => $phoneValidate,
 //            'email' => [$emailRequired, 'email', new EmailRule, 'unique:users,email'],
 //            'country' => [$countryRequired, 'string', 'max:100'],

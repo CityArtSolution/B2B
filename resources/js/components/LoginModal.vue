@@ -72,7 +72,7 @@
                                         <div class="mt-8">
                                             <label
                                                 class="text-slate-700 text-base font-normal leading-normal mb-2 block">
-                                                {{ $t('Email / Phone Number') }}
+                                                {{ $t('Phone Number') }}
                                             </label>
 
                                             <input type="text" v-model="loginFormData.phone"

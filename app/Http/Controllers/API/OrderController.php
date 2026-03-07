@@ -88,7 +88,6 @@ class OrderController extends Controller
      */
     public function store(OrderRequest $request)
     {
-//        dd($request);
         $isBuyNow = $request->is_buy_now ?? false;
         $user = auth()->user();
 
@@ -120,7 +119,7 @@ class OrderController extends Controller
         $payment = OrderRepository::storeByRequestFromCart($request, $paymentMethod, $carts);
 
         $paymentUrl = null;
-        if ($paymentMethod->name != 'Offer_Price' && $paymentMethod->name != 'PREVIOUS_CLIENT') {
+        if ($paymentMethod->name != 'OFFER_PRICE' && $paymentMethod->name != 'PREVIOUS_CLIENT') {
             $paymentUrl = route('order.payment', ['payment' => $payment, 'gateway' => $request->payment_method]);
         }
         $orderId = $payment->orders()->pluck('id');

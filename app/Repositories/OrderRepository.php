@@ -72,10 +72,7 @@ class OrderRepository extends Repository
 
             foreach ($cartProducts as $cart) {
                 // $cart->product->decrement('quantity', $cart->quantity);
-
                 $branchProduct = $cart->product->quantityBranch($cart->branch_id);
-
-
 //                if ($branchProduct) {
 //                    $branchProduct->decrement('qty', $cart->quantity);
 //                }

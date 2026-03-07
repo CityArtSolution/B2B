@@ -9,6 +9,24 @@ use Illuminate\Support\Number;
 
 class ProductDetailsResource extends JsonResource
 {
+    private function getTranslationsMap(string $field, mixed $fallback = null): array
+    {
+        $translations = $this->relationLoaded('translations')
+            ? $this->translations
+            : $this->translations()->get();
+
+        $values = $translations
+            ->filter(fn ($translation) => filled($translation->lang) && filled($translation->{$field} ?? null))
+            ->mapWithKeys(fn ($translation) => [$translation->lang => $translation->{$field}])
+            ->toArray();
+
+        if (filled($fallback) && ! array_key_exists('en', $values)) {
+            $values['en'] = $fallback;
+        }
+
+        return $values;
+    }
+
     /**
      * Transform the resource into an array.
      *
@@ -16,7 +34,7 @@ class ProductDetailsResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $this->load(['reviews', 'orders', 'colors', 'shop', 'sizes', 'unit', 'brand', 'flashSales']);
+        $this->load(['reviews', 'orders', 'colors', 'shop', 'sizes', 'unit', 'brand', 'flashSales', 'translations']);
 
         $lang = request()->header('accept-language') ?? 'en';
 
@@ -51,7 +69,7 @@ class ProductDetailsResource extends JsonResource
         $price = $this->price;
         $discountPrice = $flashSaleProduct ? $flashSaleProduct->pivot?->price : $this->discount_price;
 
-        $translation = $this->translations()?->where('lang', $lang)->first();
+        $translation = $this->translations->where('lang', $lang)->first();
         $name = $translation?->name ?? $this->name;
         $description = $translation?->description ?? $this->description;
         $shortDescription = $translation?->short_description ?? $this->short_description;
@@ -68,6 +86,11 @@ class ProductDetailsResource extends JsonResource
             'code' => $this->code,
             'is_digital' => (bool) $this->is_digital,
             'short_description' => $shortDescription,
+            'translations' => [
+                'name' => $this->getTranslationsMap('name', $this->name),
+                'short_description' => $this->getTranslationsMap('short_description', $this->short_description),
+                'description' => $this->getTranslationsMap('description', $this->description),
+            ],
             'price' => (float) number_format($price, 2, '.', ''),
             'discount_price' => (float) number_format($discountPrice, 2, '.', ''),
             'discount_percentage' => (float) number_format($discountPercentage, 2, '.', ''),
