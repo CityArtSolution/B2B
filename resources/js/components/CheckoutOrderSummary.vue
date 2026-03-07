@@ -238,7 +238,7 @@ const processOrderConfirm = () => {
         return;
     }
     
-    if(props.paymentMethod == 'New_client' || props.paymentMethod == 'Previous_client') {
+    if(props.paymentMethod == 'Offer_Price' || props.paymentMethod == 'Previous_client') {
         if (props.maxInvoiceLimit <= props.maxInvoiceNow + basketStore.total_amount) {
             toast.error(t('max_invoice_reached'), {
                 position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
@@ -288,7 +288,7 @@ const processOrderConfirm = () => {
             let paymentUrl = response.data.data.order_payment_url;
 
             if (paymentUrl != null) {
-                openPaymentPopupWindow(paymentUrl);
+                // openPaymentPopupWindow(paymentUrl);
                 return;
             } else {
                 basketStore.showOrderConfirmModal = true

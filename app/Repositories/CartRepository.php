@@ -40,8 +40,13 @@ class CartRepository extends Repository
 
                 $discountPercentage = $product->getDiscountPercentage($product->price, $product->discount_price);
 
-                $totalSold = $product->orders->sum('pivot.quantity');
-
+//                $totalSold = $product->orders->sum('pivot.quantity');
+                $totalSold = $product->orders
+                    ->reject(fn($order) =>
+                        $order->payment_method->value === 'Offer Price' &&
+                        $order->order_status->value === 'Pending'
+                    )
+                    ->sum('pivot.quantity');
                 $flashSale = $product->flashSales?->first();
                 $flashSaleProduct = null;
                 $quantity = null;
