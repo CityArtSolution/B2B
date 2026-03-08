@@ -54,26 +54,24 @@ class ProductResource extends JsonResource
             )
             ->sum('pivot.quantity');
 
-        $flashSale = $this->flashSales?->first();
-        $flashSaleProduct = null;
+        $branchId = $request->input('branch_id');
+        $flashSale = $this->activeFlashSale($branchId);
         $quantity = null;
 
         if ($flashSale) {
-            $flashSaleProduct = $flashSale?->products()->where('id', $this->id)->first();
-
-            $quantity = $flashSaleProduct?->pivot->quantity - $flashSaleProduct->pivot->sale_quantity;
+            $quantity = $flashSale->pivot->quantity - $flashSale->pivot->sale_quantity;
 
             if ($quantity == 0) {
                 $quantity = null;
-                $flashSaleProduct = null;
+                $flashSale = null;
             } else {
-                $discountPercentage = $flashSale?->pivot->discount;
+                $discountPercentage = $flashSale->pivot->discount;
             }
         }
 
         $price = $this->price;
         $carton_price=$this->carton_price;
-        $discountPrice = $flashSaleProduct ? $flashSaleProduct->pivot->price : $this->discount_price;
+        $discountPrice = $flashSale ? $flashSale->pivot->price : $this->discount_price;
 
         $translation = $this->translations->where('lang', $lang)->first();
         $name = $translation?->name ?? $this->name;

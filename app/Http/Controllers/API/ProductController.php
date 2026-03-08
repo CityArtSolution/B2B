@@ -11,7 +11,6 @@ use App\Http\Resources\ProductDetailsResource;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\ReviewResource;
 use App\Http\Resources\SizeResource;
-use App\Models\FlashSale;
 use App\Repositories\ProductRepository;
 use App\Repositories\ReviewRepository;
 use Illuminate\Http\Request;
@@ -63,8 +62,20 @@ class ProductController extends Controller
             return $query->where('shop_id', $shop->id);
         })->isActive();
 
-        $flashSale = FlashSale::isActive()->first();
-        $flashSaleMinPrice = $flashSale ? $flashSale->products->min('pivot.price') : null;
+        $flashSaleMinPrice = DB::table('flash_sale_products')
+            ->join('flash_sales', 'flash_sales.id', '=', 'flash_sale_products.flash_sale_id')
+            ->when($selectedBranchId, function ($query) use ($selectedBranchId) {
+                return $query->where('flash_sale_products.branch_id', $selectedBranchId);
+            })
+            ->where('flash_sale_products.quantity', '>', 0)
+            ->where('flash_sales.status', 1)
+            ->where('flash_sales.start_date', '<=', now()->toDateString())
+            ->where('flash_sales.end_date', '>=', now()->toDateString())
+            ->where(function ($query) {
+                $query->where('flash_sales.start_time', '<=', now()->toTimeString())
+                    ->orWhere('flash_sales.end_time', '>=', now()->toTimeString());
+            })
+            ->min('flash_sale_products.price');
 
         $productMinPrice = $productQuery->min('price');
         if ($flashSaleMinPrice && $flashSaleMinPrice < $productMinPrice) {
@@ -97,8 +108,11 @@ class ProductController extends Controller
             ->when($product_code, function ($query) use ($product_code) {
                 return $query->where('code', $product_code);
             })
-            ->when($discountedProduct, function ($query) {
-                $query->where('discount_price', '>', 0)->whereNotNull('discount_price')->orWhereHas('flashSales', function ($q) {
+            ->when($discountedProduct, function ($query) use ($selectedBranchId) {
+                $query->where('discount_price', '>', 0)->whereNotNull('discount_price')->orWhereHas('flashSales', function ($q) use ($selectedBranchId) {
+                    if ($selectedBranchId) {
+                        $q->where('flash_sale_products.branch_id', $selectedBranchId);
+                    }
                     $q->isActive();
                 });
             })
@@ -137,7 +151,12 @@ class ProductController extends Controller
                 return $query->orderByDesc('orders_count')->orderByDesc('average_rating');
             })->when($sortType == 'newest' || $sortType == 'just_for_you', function ($query) {
                 return $query->orderBy('id', 'desc');
-            })->when($minPrice || $maxPrice, function ($query) use ($minPrice, $maxPrice) {
+            })->when($minPrice || $maxPrice, function ($query) use ($minPrice, $maxPrice, $selectedBranchId) {
+                $branchCondition = $selectedBranchId ? ' AND flash_sale_products.branch_id = ?' : '';
+                $bindings = $selectedBranchId
+                    ? [$selectedBranchId, $minPrice ?? 0, $maxPrice ?? PHP_INT_MAX]
+                    : [$minPrice ?? 0, $maxPrice ?? PHP_INT_MAX];
+
                 $query->whereRaw('
                     COALESCE(
                         (SELECT flash_sale_products.price
@@ -145,6 +164,7 @@ class ProductController extends Controller
                          INNER JOIN flash_sales ON flash_sales.id = flash_sale_products.flash_sale_id
                          WHERE flash_sale_products.product_id = products.id
                          AND flash_sale_products.quantity > 0
+                         '.$branchCondition.'
                          AND flash_sales.status = 1
                          AND flash_sales.start_date <= CURDATE()
                          AND flash_sales.end_date >= CURDATE()
@@ -153,10 +173,11 @@ class ProductController extends Controller
                         ),
                         IF(discount_price > 0, discount_price, price)
                     ) BETWEEN ? AND ?
-                ', [$minPrice ?? 0, $maxPrice ?? PHP_INT_MAX]);
+                ', $bindings);
             })
-            ->when(in_array($sortType, ['high_to_low', 'low_to_high']), function ($query) use ($sortType) {
+            ->when(in_array($sortType, ['high_to_low', 'low_to_high']), function ($query) use ($sortType, $selectedBranchId) {
                 $order = $sortType === 'high_to_low' ? 'DESC' : 'ASC';
+                $branchCondition = $selectedBranchId ? ' AND flash_sale_products.branch_id = '.(int) $selectedBranchId : '';
 
                 return $query->orderByRaw("
                     COALESCE(
@@ -165,6 +186,7 @@ class ProductController extends Controller
                          INNER JOIN flash_sales ON flash_sales.id = flash_sale_products.flash_sale_id
                          WHERE flash_sale_products.product_id = products.id
                          AND flash_sale_products.quantity > 0
+                         $branchCondition
                          AND flash_sales.status = 1
                          AND flash_sales.start_date <= CURDATE()
                          AND flash_sales.end_date >= CURDATE()
@@ -342,7 +364,7 @@ class ProductController extends Controller
     public function couponPopup(Request $request)
     {
         if (!auth()->check()) {
-            return response()->json(['data' => null]);
+            return response()->json(['data' => 'User not authenticated'], 401);
         }
     
         $record = UserProductView::with('product.translations')

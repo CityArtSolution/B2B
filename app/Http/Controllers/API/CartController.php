@@ -114,9 +114,7 @@ class CartController extends Controller
 
         $quantity = $cart->quantity;
 
-        $flashSale = $product->flashSales?->first();
-
-        $flashSaleProduct = $flashSale?->products()->where('id', $product->id)->first();
+        $flashSale = $product->activeFlashSale($selectedBranchId);
 
         // Check quantity based on selected branch
         // $selectedBranchId = $request->branch_id ?? session('selected_branch');
@@ -130,8 +128,8 @@ class CartController extends Controller
             }
         }
 
-        if ($flashSaleProduct) {
-            $flashSaleQty = $flashSaleProduct->pivot->quantity - $flashSaleProduct->pivot->sale_quantity;
+        if ($flashSale) {
+            $flashSaleQty = $flashSale->pivot->quantity - $flashSale->pivot->sale_quantity;
 
             if ($flashSaleQty > 0) {
                 $productQty = min($productQty, $flashSaleQty);

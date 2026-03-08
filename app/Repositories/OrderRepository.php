@@ -87,22 +87,19 @@ class OrderRepository extends Repository
                 $product = $cart->product;
                 $price = $product->discount_price > 0 ? $product->discount_price : $product->price;
 
-                $flashSale = $product->flashSales?->first();
-                $flashSaleProduct = null;
+                $flashSale = $product->activeFlashSale($cart->branch_id);
                 $quantity = 0;
 
                 $saleQty = $cart->quantity;
 
                 if ($flashSale) {
-                    $flashSaleProduct = $flashSale?->products()->where('id', $product->id)->first();
-
-                    $quantity = $flashSaleProduct?->pivot->quantity - $flashSaleProduct->pivot->sale_quantity;
+                    $quantity = $flashSale->pivot->quantity - $flashSale->pivot->sale_quantity;
 
                     if ($quantity == 0) {
-                        $flashSaleProduct = null;
+                        $flashSale = null;
                     } else {
-                        $price = $flashSaleProduct->pivot->price;
-                        $saleQty += $flashSaleProduct->pivot->sale_quantity;
+                        $price = $flashSale->pivot->price;
+                        $saleQty += $flashSale->pivot->sale_quantity;
 
                         $flashSale->products()->updateExistingPivot($product->id, [
                             'sale_quantity' => $saleQty,
@@ -259,19 +256,16 @@ class OrderRepository extends Repository
             $product = $cart->product;
             $price = $product->discount_price > 0 ? $product->discount_price : $product->price;
 
-            $flashSale = $product->flashSales?->first();
-            $flashSaleProduct = null;
+            $flashSale = $product->activeFlashSale($cart->branch_id);
             $quantity = 0;
 
             if ($flashSale) {
-                $flashSaleProduct = $flashSale?->products()->where('id', $product->id)->first();
-
-                $quantity = $flashSaleProduct?->pivot->quantity - $flashSaleProduct->pivot->sale_quantity;
+                $quantity = $flashSale->pivot->quantity - $flashSale->pivot->sale_quantity;
 
                 if ($quantity == 0) {
-                    $flashSaleProduct = null;
+                    $flashSale = null;
                 } else {
-                    $price = $flashSaleProduct->pivot->price;
+                    $price = $flashSale->pivot->price;
                 }
             }
             $sizePrice = $product->sizes()?->where('id', $cart->size)->first()->pivot?->price ?? 0;

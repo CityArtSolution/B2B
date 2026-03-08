@@ -15,23 +15,21 @@ class ChatProductResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $flashSale = $this->flashSales?->first();
-        $flashSaleProduct = null;
+        $branchId = $request->input('branch_id');
+        $flashSale = $this->activeFlashSale($branchId);
         $quantity = null;
 
         if ($flashSale) {
-            $flashSaleProduct = $flashSale?->products()->where('id', $this->id)->first();
-
-            $quantity = $flashSaleProduct?->pivot->quantity - $flashSaleProduct->pivot->sale_quantity;
+            $quantity = $flashSale->pivot->quantity - $flashSale->pivot->sale_quantity;
 
             if ($quantity == 0) {
                 $quantity = null;
-                $flashSaleProduct = null;
+                $flashSale = null;
             }
         }
 
         $price = $this->price;
-        $discountPrice = $flashSaleProduct ? $flashSaleProduct->pivot->price : $this->discount_price;
+        $discountPrice = $flashSale ? $flashSale->pivot->price : $this->discount_price;
         return [
             'id' => $this->id,
             'name' =>  $this->name,

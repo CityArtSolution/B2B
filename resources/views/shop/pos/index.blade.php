@@ -571,14 +571,32 @@
             return currencyPosition == 'prefix' ? currency + amount : amount + currency;
         }
 
+        const productMap = {};
+
+        function getProductData(productID) {
+            return productMap[String(productID)] ?? null;
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
         // append products
         function appendProducts(products) {
             const productList = $('#product-list');
             productList.empty(); // Clear the existing product list if necessary
             products.forEach(product => {
+                productMap[String(product.id)] = product;
+                const productName = escapeHtml(product.name);
+                const productCode = escapeHtml(product.code);
                 const productHtml = `
                     <div class="col-xxl-6 col-md-6">
-                        <div class="border rounded cursor-pointer theme-dark" data-product='${JSON.stringify(product)}' onclick="openProductModal(${product.id})" id="product-${product.id}">
+                        <div class="border rounded cursor-pointer theme-dark" onclick="openProductModal(${product.id})" id="product-${product.id}">
                             <div class="d-flex align-items-center">
                                 <div class="bg-light">
                                     <img src="${product.thumbnail}"
@@ -587,8 +605,8 @@
                                 </div>
                                 <div class="p-2 overflow-hidden w-100">
                                     <h5 class="card-title fs-5 fw-normal pos-product-title mb-1">
-                                        <p class="overflow-hidden" style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;" title="${product.name}">
-                                            ${product.name} RN${product.code}
+                                        <p class="overflow-hidden" style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;" title="${productName}">
+                                            ${productName} RN${productCode}
                                         </p>
                                     </h5>
                                     <p class="card-text mb-1">
@@ -787,8 +805,10 @@
             }
 
             selectedProductID = productID;
-            var product = $('#product-' + productID).data('product');
-            console.log(product);
+            var product = getProductData(productID);
+            if (!product) {
+                return;
+            }
             var posCartItem = posCartBasket.find(item => item.id == productID);
 
             if (posCartID) {
@@ -931,7 +951,10 @@
                 }
             }
 
-            var product = $('#product-' + selectedProductID).data('product');
+            var product = getProductData(selectedProductID);
+            if (!product) {
+                return;
+            }
             var color = product.colors.find(color => color.id == selectedColorID);
             var size = product.sizes.find(size => size.id == selectedSizeID);
 
@@ -963,7 +986,10 @@
                 }
             }
 
-            var product = $('#product-' + selectedProductID).data('product');
+            var product = getProductData(selectedProductID);
+            if (!product) {
+                return;
+            }
             var color = product.colors.find(color => color.id == selectedColorID);
             var size = product.sizes.find(size => size.id == selectedSizeID);
 

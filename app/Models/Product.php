@@ -135,7 +135,7 @@ class Product extends Model
         $currentDateTime = Carbon::now();
 
         return $this->belongsToMany(FlashSale::class, 'flash_sale_products', 'product_id', 'flash_sale_id')
-            ->withPivot('price', 'quantity', 'discount', 'sale_quantity')
+            ->withPivot('branch_id', 'price', 'quantity', 'discount', 'sale_quantity')
             ->where('status', 1)
             ->where(function ($query) use ($currentDateTime) {
                 $query->where('start_date', '<=', $currentDateTime->toDateString())
@@ -145,6 +145,17 @@ class Product extends Model
                             ->orWhere('end_time', '>=', $currentDateTime->toTimeString());
                     });
             })->latest('id');
+    }
+
+    public function activeFlashSale($branchId = null): ?FlashSale
+    {
+        $query = $this->flashSales();
+
+        if (filled($branchId)) {
+            $query->wherePivot('branch_id', $branchId);
+        }
+
+        return $query->first();
     }
 
     /**

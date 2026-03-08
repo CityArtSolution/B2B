@@ -53,26 +53,23 @@ class ProductDetailsResource extends JsonResource
                 $order->order_status->value === 'Pending'
             )
             ->sum('pivot.quantity');
-        $flashSale = $this->flashSales?->first();
-        $flashSaleProduct = null;
+        $branchId = $request->input('branch_id');
+        $flashSale = $this->activeFlashSale($branchId);
         $quantity = null;
 
         if ($flashSale) {
-
-            $flashSaleProduct = $flashSale->products()->where('id', $this->id)->first();
-
-            $quantity = $flashSaleProduct->pivot->quantity - $flashSaleProduct->pivot->sale_quantity;
+            $quantity = $flashSale->pivot->quantity - $flashSale->pivot->sale_quantity;
 
             if ($quantity == 0) {
                 $quantity = null;
-                $flashSaleProduct = null;
+                $flashSale = null;
             } else {
                 $discountPercentage = $flashSale->pivot->discount;
             }
         }
 
         $price = $this->price;
-        $discountPrice = $flashSaleProduct ? $flashSaleProduct->pivot?->price : $this->discount_price;
+        $discountPrice = $flashSale ? $flashSale->pivot?->price : $this->discount_price;
 
         $translation = $this->translations->where('lang', $lang)->first();
         $name = $translation?->name ?? $this->name;
@@ -119,7 +116,7 @@ class ProductDetailsResource extends JsonResource
                 'delivery_charge' => (float) getDeliveryCharge(1),
                 'last_online' => $lastOnline
             ],
-            'flash_sale' => $flashSaleProduct ? FlashSaleResource::make($flashSale) : null,
+            'flash_sale' => $flashSale ? FlashSaleResource::make($flashSale) : null,
             'meta_title' => $this->meta_title ?? $name,
             'meta_description' => $this->meta_description ?? $name,
             'meta_keywords' => $this->meta_keywords,

@@ -47,20 +47,17 @@ class CartRepository extends Repository
                         $order->order_status->value === 'Pending'
                     )
                     ->sum('pivot.quantity');
-                $flashSale = $product->flashSales?->first();
-                $flashSaleProduct = null;
+                $flashSale = $product->activeFlashSale($cart->branch_id);
                 $quantity = null;
 
                 if ($flashSale) {
-                    $flashSaleProduct = $flashSale?->products()->where('id', $product->id)->first();
-
-                    $quantity = $flashSaleProduct?->pivot->quantity - $flashSaleProduct->pivot->sale_quantity;
+                    $quantity = $flashSale->pivot->quantity - $flashSale->pivot->sale_quantity;
 
                     if ($quantity == 0) {
                         $quantity = null;
-                        $flashSaleProduct = null;
+                        $flashSale = null;
                     } else {
-                        $discountPercentage = $flashSale?->pivot->discount;
+                        $discountPercentage = $flashSale->pivot->discount;
                     }
                 }
 
@@ -72,8 +69,8 @@ class CartRepository extends Repository
                 $extraPrice = $sizePrice + $colorPrice;
 
                 $discountPrice = $product->discount_price > 0 ? ($product->discount_price + $extraPrice) : 0;
-                if ($flashSaleProduct) {
-                    $discountPrice = $flashSaleProduct->pivot->price + $extraPrice;
+                if ($flashSale) {
+                    $discountPrice = $flashSale->pivot->price + $extraPrice;
                 }
 
 //                $mainPrice = $product->price + $extraPrice;
@@ -204,23 +201,20 @@ class CartRepository extends Repository
             }
 
             $product = $cart->product;
-            $flashSale = $product->flashSales?->first();
-            $flashSaleProduct = null;
+            $flashSale = $product->activeFlashSale($cart->branch_id);
             $quantity = null;
 
 //            $price = $product->discount_price > 0 ? $product->discount_price : $product->price;
             $price = $product->discount_price > 0 ? $product->discount_price :$product->carton_price;
 
             if ($flashSale) {
-                $flashSaleProduct = $flashSale?->products()->where('id', $product->id)->first();
-
-                $quantity = $flashSaleProduct?->pivot->quantity - $flashSaleProduct->pivot->sale_quantity;
+                $quantity = $flashSale->pivot->quantity - $flashSale->pivot->sale_quantity;
 
                 if ($quantity == 0) {
                     $quantity = null;
-                    $flashSaleProduct = null;
+                    $flashSale = null;
                 } else {
-                    $price = $flashSaleProduct->pivot->price;
+                    $price = $flashSale->pivot->price;
                 }
             }
 

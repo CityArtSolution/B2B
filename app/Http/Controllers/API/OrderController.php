@@ -262,16 +262,13 @@ class OrderController extends Controller
 
                 $product->update(['quantity' => $product->quantity + $qty]);
 
-                $flashSale = $product->flashSales?->first();
-                $flashSaleProduct = null;
+                $flashSale = $product->activeFlashSale($product->pivot->branch_id);
 
                 if ($flashSale) {
-                    $flashSaleProduct = $flashSale?->products()->where('id', $product->id)->first();
-
-                    if ($flashSaleProduct && $product->pivot?->price) {
-                        if ($flashSaleProduct->pivot->sale_quantity >= $qty && ($product->pivot?->price == $flashSaleProduct->pivot->price)) {
+                    if ($product->pivot?->price) {
+                        if ($flashSale->pivot->sale_quantity >= $qty && ($product->pivot?->price == $flashSale->pivot->price)) {
                             $flashSale->products()->updateExistingPivot($product->id, [
-                                'sale_quantity' => $flashSaleProduct->pivot->sale_quantity - $qty,
+                                'sale_quantity' => $flashSale->pivot->sale_quantity - $qty,
                             ]);
                         }
                     }

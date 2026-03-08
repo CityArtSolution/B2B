@@ -97,6 +97,7 @@
                                 <th class="text-center">{{ __('SL') }}</th>
                                 <th>{{ __('Thumbnail') }}</th>
                                 <th>{{ __('Product Name') }}</th>
+                                <th class="text-center">{{ __('Branch') }}</th>
                                 <th class="text-center">{{ __('Price') }}</th>
                                 <th class="text-center">{{ __('Quantity') }}</th>
                                 <th class="text-center">{{ __('Action') }}</th>
@@ -115,6 +116,10 @@
                                 <td>{{ Str::limit($product->name, 50, '...') }}</td>
 
                                 <td class="text-center">
+                                    {{ optional($branches->firstWhere('id', $product->pivot->branch_id))->name[app()->getLocale()] ?? '-' }}
+                                </td>
+
+                                <td class="text-center">
                                     {{ showCurrency($product->pivot->price) }}
                                 </td>
 
@@ -128,7 +133,7 @@
                                 <td class="text-center">
                                     <div class="d-flex gap-2 justify-content-center">
                                         @hasPermission('shop.flashSale.product.edit')
-                                            <button type="button" onclick="openProductUpdateModal({{ $product }})"
+                                            <button type="button" onclick='openProductUpdateModal(@json($product))'
                                                 class="btn btn-outline-primary circleIcon" data-bs-toggle="tooltip"
                                                 data-bs-placement="left" data-bs-title="{{ __('Edit Product') }}">
                                                 <img src="{{ asset('assets/icons-admin/edit.svg') }}" alt="edit"
@@ -181,6 +186,17 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="updateBranchId" class="form-label m-0">
+                                {{ __('Branch') }}
+                                <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-control" id="updateBranchId" name="branch_id" required></select>
+                            @error('branch_id')
+                                <p class="text text-danger m-0">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
                             <label for="updatePrice" class="form-label m-0">
                                 {{ __('Price') }}
                                 <span class="text-danger">*</span>
@@ -221,11 +237,31 @@
 
 @push('scripts')
     <script>
+        function getBranchLabel(branchName) {
+            if (!branchName) {
+                return '';
+            }
+
+            const locale = window.appLocale ?? 'en';
+            return branchName[locale] ?? branchName.en ?? branchName.ar ?? Object.values(branchName)[0] ?? '';
+        }
+
+        function buildBranchOptions(quantities, selectedBranchId = null) {
+            return (quantities ?? []).map((quantity) => {
+                const selected = Number(selectedBranchId) === Number(quantity.branch_id) ? 'selected' : '';
+                const branchLabel = getBranchLabel(quantity.branch?.name);
+
+                return `<option value="${quantity.branch_id}" data-qty="${quantity.qty}" ${selected}>${branchLabel} (${quantity.qty})</option>`;
+            }).join('');
+        }
+
         function openProductUpdateModal(product) {
             var flashSaleID = "{{ $flashSale->id }}";
             $("#updateName").text(product.name);
             $("#updatePrice").val(product.pivot.price);
             $("#updateQuantity").val(product.pivot.quantity);
+            $("#updateBranchId").html(buildBranchOptions(product.quantities, product.pivot.branch_id));
+            $("#updateBranchId").trigger('change');
             $("#productUpdateForm").attr('action',
                 `{{ route('shop.flashSale.product.edit', ['flashSale' => ':flashSale', 'product' => ':product']) }}`
                 .replace(':flashSale', flashSaleID).replace(':product', product.id));
@@ -282,6 +318,10 @@
                         .price;
                     var discountPercentage = flashSale.discount / 100 * productPrice;
                     const discountPrice = parseFloat((productPrice - discountPercentage).toFixed(2));
+                    const productBranches = product.quantities ?? [];
+                    const defaultBranch = productBranches.find(item => Number(item.qty) > 0) ?? productBranches[0] ?? null;
+                    const defaultQuantity = defaultBranch ? defaultBranch.qty : 0;
+                    const branchOptions = buildBranchOptions(productBranches, defaultBranch?.branch_id);
 
                     const productCard = `
                      <div class="product-card" data-product-id="${product.id}">
@@ -309,13 +349,20 @@
                             </div>
 
                             <div class="flex-grow-1">
+                                <p class="mb-1"><small>Branch:</small></p>
+                                <select class="product-input flash-sale-branch-select" name="products[${index}][branch_id]" data-product-id="${product.id}" required>
+                                    ${branchOptions}
+                                </select>
+                            </div>
+
+                            <div class="flex-grow-1">
                                 <p class="mb-1"><small>Discount Price:</small></p>
                                 <input class="product-input" type="text" name="products[${index}][discount_price]" placeholder="Discount Price" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/^(\d*\.\d{0,2}|\d*)$/, '$1');" value="${discountPrice}"/>
                             </div>
 
                             <div class="flex-grow-1">
                                 <p class="mb-1"><small>Quantity:</small></p>
-                                <input class="product-input" type="text" name="products[${index}][quantity]" placeholder="Quantity" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^(\d*\.\d{0,2}|\d*)$/, '$1');" value="${product.quantity}">
+                                <input class="product-input flash-sale-quantity-input" type="text" name="products[${index}][quantity]" placeholder="Quantity" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^(\d*\.\d{0,2}|\d*)$/, '$1');" value="${defaultQuantity}" max="${defaultQuantity}">
                             </div>
                         </div>
                     `;
@@ -331,6 +378,29 @@
                 selectedProducts = selectedProducts.filter(p => p.id !== productId);
 
                 renderSelectedProducts();
+            });
+
+            $(document).on('change', '.flash-sale-branch-select', function() {
+                const selectedQty = Number($(this).find(':selected').data('qty') ?? 0);
+                const productCard = $(this).closest('.product-card');
+                const quantityInput = productCard.find('.flash-sale-quantity-input');
+
+                quantityInput.attr('max', selectedQty);
+
+                if (Number(quantityInput.val()) > selectedQty || !quantityInput.val()) {
+                    quantityInput.val(selectedQty);
+                }
+            });
+
+            $('#updateBranchId').on('change', function() {
+                const selectedQty = Number($(this).find(':selected').data('qty') ?? 0);
+                const quantityInput = $('#updateQuantity');
+
+                quantityInput.attr('max', selectedQty);
+
+                if (Number(quantityInput.val()) > selectedQty || !quantityInput.val()) {
+                    quantityInput.val(selectedQty);
+                }
             });
 
         });

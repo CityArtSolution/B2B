@@ -20,7 +20,7 @@ class FlashSale extends Model
      */
     public function products()
     {
-        return $this->belongsToMany(Product::class, 'flash_sale_products')->withPivot('price', 'quantity', 'discount', 'sale_quantity');
+        return $this->belongsToMany(Product::class, 'flash_sale_products')->withPivot('branch_id', 'price', 'quantity', 'discount', 'sale_quantity');
     }
 
     /**
