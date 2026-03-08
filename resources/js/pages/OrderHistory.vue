@@ -107,9 +107,9 @@ import {
 
 const statuses = computed(() => [
   { label: 'Pending'   , value: 'Pending'   ,icon: ClockIcon        ,animate: 'animate-spin-slow',count: statusWiseOrders.value.pending },
+  { label: 'Pickup'    , value: 'Pickup'    ,icon: CubeIcon         ,animate: 'animate-bounce'   ,count: statusWiseOrders.value.pickup },
   { label: 'Confirm'   , value: 'Confirm'   ,icon: CheckCircleIcon  ,animate: 'animate-check'    ,count: statusWiseOrders.value.confirm },
   { label: 'Processing', value: 'Processing',icon: CogIcon          ,animate: 'animate-spin'     ,count: statusWiseOrders.value.processing },
-  { label: 'Pickup'    , value: 'Pickup'    ,icon: CubeIcon         ,animate: 'animate-bounce'   ,count: statusWiseOrders.value.pickup },
   { label: 'On The Way', value: 'On The Way',icon: TruckIcon        ,animate: 'animate-truck'    ,count: statusWiseOrders.value.on_the_way },
   { label: 'Delivered' , value: 'Delivered' ,icon: CheckCircleIcon  ,animate: 'animate-ping-once',count: statusWiseOrders.value.delivered },
   { label: 'Cancelled' , value: 'cancelled' ,icon: XCircleIcon      ,animate: 'animate-shake'    ,count: statusWiseOrders.value.cancelled },
