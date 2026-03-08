@@ -68,7 +68,7 @@
                             <!-- discount price -->
                             <div v-if="props.product?.discount_price > 0"
                                 class="text-slate-400 text-sm font-normal line-through leading-tight">
-                                {{ $t('Carton Price') }}: {{ masterStore.showCurrency(props.product?.price) }}
+                                {{ $t('Unit Price') }}: {{ masterStore.showCurrency(props.product?.price) }}
                             </div>
                         </div>
                         <div class="w-full text-end text-black font-bold text-xs mt-0.5">
