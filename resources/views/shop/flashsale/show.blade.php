@@ -314,8 +314,7 @@
                 selectedProductsContainer.empty();
 
                 selectedProducts.forEach((product, index) => {
-                    const productPrice = product.discount_price > 0 ? product.discount_price : product
-                        .price;
+                    const productPrice = product.carton_price > 0 ? product.carton_price : (product.discount_price > 0 ? product.discount_price : product.price);
                     var discountPercentage = flashSale.discount / 100 * productPrice;
                     const discountPrice = parseFloat((productPrice - discountPercentage).toFixed(2));
                     const productBranches = product.quantities ?? [];

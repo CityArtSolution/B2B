@@ -53,7 +53,7 @@ class FlashSaleController extends Controller
             $product = Product::find($productArr['id']);
 
             if ($product) {
-                $productPrice = $product->discount_price > 0 ? $product->discount_price : $product->price;
+                $productPrice = $product->carton_price > 0 ? $product->carton_price : ($product->discount_price > 0 ? $product->discount_price : $product->price);
                 $branchId = $productArr['branch_id'];
                 $branchQuantity = $product->quantityBranch($branchId);
                 $availableQuantity = (int) ($branchQuantity?->qty ?? 0);
@@ -93,7 +93,7 @@ class FlashSaleController extends Controller
             'quantity' => ['required', 'integer', 'min:1'],
         ]);
 
-        $productPrice = $product->discount_price > 0 ? $product->discount_price : $product->price;
+        $productPrice = $product->carton_price > 0 ? $product->carton_price : ($product->discount_price > 0 ? $product->discount_price : $product->price);
         $branchId = $request->integer('branch_id');
         $branchQuantity = $product->quantityBranch($branchId);
         $availableQuantity = (int) ($branchQuantity?->qty ?? 0);
