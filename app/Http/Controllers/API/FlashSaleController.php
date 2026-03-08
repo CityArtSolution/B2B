@@ -63,16 +63,13 @@ class FlashSaleController extends Controller
         $perPage = $request->per_page ?? 18;
         $skip = ($page * $perPage) - $perPage;
 
-        $selectedBranchId = $request->branch_id ?? $selectedBranch ?? session('selected_branch');
+        $selectedBranchId = session('selected_branch');
 
         $products = $flashSale->products()->where(function ($query) use ($categoryId, $selectedBranchId) {
             $query->when($categoryId, function ($query) use ($categoryId) {
                 return $query->whereHas('categories', function ($query) use ($categoryId) {
                     $query->where('id', $categoryId);
                 });
-            })
-            ->when($selectedBranchId, function ($query) use ($selectedBranchId) {
-                return $query->wherePivot('branch_id', $selectedBranchId);
             })
             ->when($selectedBranchId, function ($query) use ($selectedBranchId) {
                 return $query->whereHas('productBranches', function ($query) use ($selectedBranchId) {

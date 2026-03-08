@@ -117,19 +117,6 @@ class HomeController extends Controller
         // get running flash sale
         $runningFlashSale = FlashSaleRepository::getRunning();
 
-        if ($runningFlashSale && $selectedBranchId) {
-            $hasBranchProducts = $runningFlashSale->products()
-                ->wherePivot('branch_id', $selectedBranchId)
-                ->whereHas('productBranches', function ($query) use ($selectedBranchId) {
-                    $query->where('branch_id', $selectedBranchId)->where('qty', '>', 0);
-                })
-                ->exists();
-
-            if (! $hasBranchProducts) {
-                $runningFlashSale = null;
-            }
-        }
-
         return $this->json('home', [
             'banners' => BannerResource::collection($banners),
             'ads' => BannerResource::collection($ads),

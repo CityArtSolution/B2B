@@ -19,11 +19,12 @@
                     <div class="flex items-center gap-2 flex-wrap"
                         :class="hasStock ? '' : 'opacity-30'">
                         <div class="text-primary text-base font-bold leading-normal">
-                            {{ masterStore.showCurrency(unitPrice) }}
+                            {{ masterStore.showCurrency(props.product?.discount_price > 0 ?
+                                props.product?.discount_price : props.product?.price) }}
                         </div>
-                        <div v-if="hasDiscountedUnitPrice"
+                        <div v-if="props.product?.discount_price > 0"
                             class="text-slate-400 text-sm font-normal line-through leading-tight">
-                            {{ masterStore.showCurrency(originalUnitPrice) }}
+                            {{ masterStore.showCurrency(props.product?.price) }}
                         </div>
                         <div v-if="props.product?.discount_percentage > 0"
                             class="px-1 py-0.5 bg-red-500 rounded-2xl text-white text-xs font-medium">
@@ -98,26 +99,6 @@ const masterStore = useMaster();
 const props = defineProps({
     product: Object
 });
-
-const cartonUnitsCount = computed(() => {
-    const units = Number(props.product?.carton_units_count ?? 0);
-    return units > 0 ? units : 1;
-});
-
-const originalCartonPrice = computed(() => {
-    const cartonPrice = Number(props.product?.carton_price ?? 0);
-    const fallbackPrice = Number(props.product?.price ?? 0);
-    return cartonPrice > 0 ? cartonPrice : fallbackPrice;
-});
-
-const discountedCartonPrice = computed(() => {
-    const discountPrice = Number(props.product?.discount_price ?? 0);
-    return discountPrice > 0 ? discountPrice : originalCartonPrice.value;
-});
-
-const unitPrice = computed(() => discountedCartonPrice.value / cartonUnitsCount.value);
-const originalUnitPrice = computed(() => originalCartonPrice.value / cartonUnitsCount.value);
-const hasDiscountedUnitPrice = computed(() => Number(props.product?.discount_price ?? 0) > 0 && discountedCartonPrice.value < originalCartonPrice.value);
 
 // Check if product has quantity > 0 for the selected branch
 const qtyList = computed(() => props.product?.branch_qty ?? []);

@@ -15,20 +15,9 @@ class FlashSaleResource extends JsonResource
     public function toArray(Request $request, $running = false, $taken = false): array
     {
         if ($running) {
-            $selectedBranchId = $request->input('branch_id') ?? session('selected_branch');
-
-            $products = $this->products()
-                ->isActive()
-                ->when($selectedBranchId, function ($query) use ($selectedBranchId) {
-                    return $query->wherePivot('branch_id', $selectedBranchId)
-                        ->whereHas('productBranches', function ($productBranchQuery) use ($selectedBranchId) {
-                            $productBranchQuery->where('branch_id', $selectedBranchId)->where('qty', '>', 0);
-                        });
-                })
-                ->when($taken, function ($query) {
-                    return $query->take(9);
-                })
-                ->get();
+            $products = $this->products()->isActive()->when($taken, function ($query) {
+                return $query->take(9);
+            })->get();
         }
 
         return [
