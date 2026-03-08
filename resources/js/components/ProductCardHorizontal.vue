@@ -63,13 +63,6 @@
                     </button>
 
                     <div class="w-1.5 h-1.5 bg-slate-200 rounded-md"></div>
-
-                    <button class="justify-center items-center gap-0.5 flex" @click="buyNow">
-                        <div class="text-slate-600 text-sm font-normal leading-tight">
-                            {{ $t('Buy Now') }}
-                        </div>
-                        <ArrowRightIcon class="w-4 h-4 text-slate-600" />
-                    </button>
                 </div>
                 <button v-else class="justify-start items-center gap-2 flex">
                     <div class="text-red-500 text-sm font-normal leading-tight">{{ $t('Request Stock') }}</div>

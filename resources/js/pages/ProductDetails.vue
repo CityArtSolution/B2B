@@ -318,14 +318,14 @@
                             </button>
 
                             <!-- Buy Now -->
-                            <button
+                            <!-- <button
                                 class="grow text-white bg-primary px-6 py-4 rounded-[10px] border border-primary max-w-[50%]"
                                 :class="product?.is_digital == true ? 'my-4' : ''"
                                 @click="buyNow">
                                 <span class="text-base font-medium leading-normal">
                                     {{ $t("Buy Now") }}
                                 </span>
-                            </button>
+                            </button> -->
                         </div>
                     </div>
                 </div>

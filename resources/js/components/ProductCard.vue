@@ -63,12 +63,12 @@
                         <div class="flex items-center gap-2" :class="hasStock ? '' : 'opacity-30'">
                             <!-- price -->
                             <div class="text-primary text-base font-bold leading-normal">
-                                {{ $t('Unit Price') }}: {{ masterStore.showCurrency(props.product?.discount_price > 0 ? props.product?.discount_price : props.product?.price) }}
+                                {{ $t(props.product?.discount_price > 0 ? 'Carton Price' : 'Unit Price') }}: {{ masterStore.showCurrency(props.product?.discount_price > 0 ? props.product?.discount_price : props.product?.price) }}
                             </div>
                             <!-- discount price -->
                             <div v-if="props.product?.discount_price > 0"
                                 class="text-slate-400 text-sm font-normal line-through leading-tight">
-                                {{ $t('Unit Price') }}: {{ masterStore.showCurrency(props.product?.price) }}
+                                {{ $t('Carton Price') }}: {{ masterStore.showCurrency(props.product?.price) }}
                             </div>
                         </div>
                         <div class="w-full text-end text-black font-bold text-xs mt-0.5">
@@ -124,14 +124,13 @@
                     <!--    <div class="text-primary text-sm font-normal leading-tight">{{ $t('Buy Now')}}</div>-->
                     <!--</button>-->
                 </div>
-                <button v-else
+                <!-- <button v-else
                     class="justify-center items-center gap-0.5 flex border border-red-300 py-2.5 rounded-[10px] w-full"
                     disabled>
                     <div class="text-red-300 text-sm font-normal leading-tight">
-                        <!-- Request Stock -->
                         {{ $t('Buy Now') }}
                     </div>
-                </button>
+                </button> -->
             </div>
         </div>
     </div>

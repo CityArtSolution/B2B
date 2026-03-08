@@ -485,7 +485,7 @@
                 <tbody>
                     @foreach ($order->products ?? [] as $product)
                         @php
-                            $price = $product->discount_price > 0 ? $product->discount_price : $product->price;
+                            $price = (float) ($product->pivot->price ?? 0);
 
                             $name = $product->name;
                             $shortDescription = $product->short_description;
@@ -536,7 +536,7 @@
                         {{ __('Sub Total') }}
                     </p>
                     <p class="w-50 text-right fw-500">
-                        {{ showCurrency($order->total_amount) ?? '' }}
+                        {{ showCurrency($order->products_subtotal) ?? '' }}
                     </p>
                 </div>
                 @if ($order->coupon_discount > 0)
@@ -583,7 +583,7 @@
                         {{ __('Total Amount') }}
                     </p>
                     <p class="w-50 text-right total">
-                        {{ showCurrency($order->payable_amount) }}
+                        {{ showCurrency($order->invoice_total) }}
                     </p>
                 </div>
             </div>
@@ -591,7 +591,7 @@
             <table style="width:100%; border-collapse: collapse; font-size: 14px;">                
                 <tr>
                     <td style="border:1px solid #000; padding:6px;"> ﺍﻻﺟﻤﺎﻟﻲ ﻗﺒﻞ ﺿﺮﻳﺒﺔ ﺍﻟﻘﻴﻤﺔ ﺍﻟﻤﻀﺎﻓﺔ</td>
-                    <td style="border:1px solid #000; padding:6px;text-align: left;">{{ showCurrency($order->total_amount) ?? '' }}</td>
+                    <td style="border:1px solid #000; padding:6px;text-align: left;">{{ showCurrency($order->products_subtotal) ?? '' }}</td>
                 </tr>
                 @if ($order->coupon_discount > 0)
                 <tr>
@@ -611,7 +611,7 @@
                 @endif
                 <tr>
                     <td style="border:1px solid #000; padding:6px;">{{ __('Total Amount') }}</td>
-                    <td style="border:1px solid #000; padding:6px;text-align: left;">{{ showCurrency($order->payable_amount) ?? ''}}</td>
+                    <td style="border:1px solid #000; padding:6px;text-align: left;">{{ showCurrency($order->invoice_total) ?? ''}}</td>
                 </tr>
             </table>
         @endif

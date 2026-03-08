@@ -244,14 +244,14 @@
                                 <tr>
                                     <td><strong>Paid Amount:</strong></td>
                                     <td class="text">
-                                        {{ $order->payment_status->value == 'Paid' ? showCurrency($order->payable_amount) : showCurrency(0) }}
+                                        {{ $order->payment_status->value == 'Paid' ? showCurrency($order->invoice_total) : showCurrency(0) }}
                                     </td>
                                 </tr>
                                 @if ($order->payment_status->value != 'Paid')
                                     <tr>
                                         <td><strong>Due Amount:</strong></td>
                                         <td class="text">
-                                            {{ showCurrency($order->payable_amount) }}
+                                            {{ showCurrency($order->invoice_total) }}
                                         </td>
                                     </tr>
                                 @endif
@@ -325,7 +325,7 @@
                 <tfoot>
                     <tr>
                         <td colspan="3"><strong>Subtotal</strong></td>
-                        <td>{{ showCurrency($order->total_amount) }}</td>
+                        <td>{{ showCurrency($order->products_subtotal) }}</td>
                     </tr>
                     <tr>
                         <td colspan="3"><strong>Shipping</strong></td>
@@ -353,7 +353,7 @@
                     @endif
                     <tr>
                         <td colspan="3"><strong>Grand Total</strong></td>
-                        <td>{{ showCurrency($order->payable_amount) }}</td>
+                        <td>{{ showCurrency($order->invoice_total) }}</td>
                     </tr>
                 </tfoot>
             </table>

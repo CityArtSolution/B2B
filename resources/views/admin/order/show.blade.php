@@ -117,19 +117,9 @@
                                         <td>{{ $product->pivot->quantity }}</td>
                                         <td>{{ $product->pivot->size ?? '-' }}</td>
                                         <td>{{ $product->pivot->color ?? '-' }}</td>
-                                        <td>
-                                            @php
-                                                $price =
-                                                    $product->pivot->price > 0
-                                                        ? $product->pivot->price
-                                                        : ($product->discount_price > 0
-                                                            ? $product->discount_price
-                                                            : $product->price);
-                                            @endphp
-                                            {{ showCurrency($price) }}
-                                        </td>
+                                        <td>{{ showCurrency($product->pivot->price) }}</td>
                                         <td class="text-end">
-                                            {{ showCurrency($product->pivot->quantity * $price) }}
+                                            {{ showCurrency($product->pivot->quantity * $product->pivot->price) }}
                                         </td>
                                     </tr>
                                 @endforeach
@@ -140,7 +130,7 @@
                     <div class="max-300 ms-auto d-flex flex-column gap-1" style="max-width: 672px;">
                         <div class="d-flex align-items-center justify-content-between gap-2">
                             <div>{{ __('Sub Total') }}</div>
-                            <div>{{ showCurrency($order->total_amount) }}</div>
+                            <div>{{ showCurrency($order->products_subtotal) }}</div>
                         </div>
 
                         <div class="d-flex align-items-center justify-content-between gap-2">
@@ -160,7 +150,7 @@
 
                         <div class="d-flex align-items-center justify-content-between gap-2 border-top pt-1 mt-1">
                             <div class="fw-bold">{{ __('Grand Total') }}</div>
-                            <div class="fw-bold">{{ showCurrency($order->payable_amount) }}</div>
+                            <div class="fw-bold">{{ showCurrency($order->invoice_total) }}</div>
                         </div>
                     </div>
                 </div>

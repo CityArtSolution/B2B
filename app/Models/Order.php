@@ -133,4 +133,31 @@ class Order extends Model
             Cache::forget($key);
         }
     }
+
+    public function getInvoiceTotalAttribute(): float
+    {
+        $subtotal = $this->products_subtotal > 0 ? $this->products_subtotal : (float) ($this->total_amount ?? 0);
+        $delivery = (float) ($this->delivery_charge ?? 0);
+        $tax = (float) ($this->tax_amount ?? 0);
+        $discount = (float) ($this->coupon_discount ?? 0);
+
+        return round(($subtotal + $delivery + $tax) - $discount, 2);
+    }
+
+    public function getProductsSubtotalAttribute(): float
+    {
+        if ($this->relationLoaded('products')) {
+            $subtotal = $this->products->sum(function ($product) {
+                return ((float) ($product->pivot->price ?? 0)) * ((int) ($product->pivot->quantity ?? 0));
+            });
+
+            return round((float) $subtotal, 2);
+        }
+
+        $subtotal = $this->products()
+            ->selectRaw('COALESCE(SUM(order_products.price * order_products.quantity), 0) as subtotal')
+            ->value('subtotal');
+
+        return round((float) $subtotal, 2);
+    }
 }

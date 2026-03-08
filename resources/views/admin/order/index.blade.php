@@ -103,7 +103,7 @@
                                     </td>
                                 @endif
                                 <td class="w-min">
-                                    {{ showCurrency($order->payable_amount) }}
+                                    {{ showCurrency($order->invoice_total) }}
                                     <br>
                                     <span class="badge rounded-pill text-bg-primary">{{ $order->payment_status }}</span>
                                 </td>

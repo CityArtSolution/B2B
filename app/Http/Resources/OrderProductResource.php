@@ -20,7 +20,7 @@ class OrderProductResource extends JsonResource
 
         $review = $this->reviews()->where('customer_id', auth()->user()->customer?->id)->where('product_id', $this->id)->where('order_id', $request->order_id)->first();
 
-        $price = $this->pivot->price > 0 ? $this->pivot->price : ($this->discount_price > 0 ? $this->discount_price : $this->price);
+        $price = (float) ($this->pivot->price ?? 0);
 
         $isReturned = ReturnOrderDetail::where('product_id', $this->id)
             ->whereHas('returnOrder', function ($q) use ($request) {
@@ -36,8 +36,8 @@ class OrderProductResource extends JsonResource
             'name' => $this->name,
             'brand' => $this->brand?->name ?? null,
             'thumbnail' => $this->thumbnail,
-            'price' => (float) $this->price,
-            'discount_price' => (float) $this->discount_price > 0 ? $price : 0,
+            'price' => $price,
+            'discount_price' => 0,
             'order_qty' => (int) $this->pivot->quantity,
             'color' => $this->pivot->color ?? null,
             'size' => $this->pivot->size ?? null,
