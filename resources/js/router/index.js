@@ -67,7 +67,7 @@ const routes = [
         meta: {
             layout: defaultLayout,
             title: "Home",
-            requiresAuth: true,
+            requiresAuth: false,
         },
     },
     {
