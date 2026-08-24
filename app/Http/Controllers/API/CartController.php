@@ -62,13 +62,14 @@ class CartController extends Controller
 
         // Check quantity based on selected branch
         $selectedBranchId = $request->branch_id ?? session('selected_branch');
-        if ($selectedBranchId) {
+
+        if (!$selectedBranchId) {
+            return $this->json('Please select a branch first.', [], 422);
+        }
+
         $availableQuantity = $product->productBranches()
             ->where('branch_id', $selectedBranchId)
             ->value('qty') ?? 0;
-        } else {
-            $availableQuantity = $product->productBranches()->sum('qty');
-        }
 
         $cartQty = $cart?->quantity ?? 0;
 
@@ -114,11 +115,10 @@ class CartController extends Controller
 
         $quantity = $cart->quantity;
 
-        $flashSale = $product->activeFlashSale($selectedBranchId);
-
-        // Check quantity based on selected branch
-        // $selectedBranchId = $request->branch_id ?? session('selected_branch');
+        // Get branch_id from the existing cart
         $selectedBranchId = $cart->branch_id;
+
+        $flashSale = $product->activeFlashSale($selectedBranchId);
         $productQty = $product->quantity; // Default to total quantity
 
         if ($selectedBranchId) {
