@@ -16,11 +16,13 @@ class TaqnyatService implements SmsGatewayInterface
 
     public function sendMessage($phone, $message)
     {
+        $cleanPhone = preg_replace('/[^0-9]/', '', $phone);
+
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $this->config->bearer_token,
             'Content-Type' => 'application/json',
         ])->post('https://api.taqnyat.sa/v1/messages', [
-            'recipients' => [$phone],
+            'recipients' => [$cleanPhone],
             'body' => $message,
             'sender' => $this->config->sender,
         ]);

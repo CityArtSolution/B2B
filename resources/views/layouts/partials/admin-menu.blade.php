@@ -827,76 +827,69 @@
 
 <!--- third party configuration --->
 @hasPermission(['admin.pusher.index','admin.mailConfig.index','admin.paymentGateway.index','admin.sms-gateway.index','admin.firebase.index','admin.googleReCaptcha.index','admin.aiPrompt.configure'])
-    <!--<li>-->
-    <!--    <a class="menu {{ request()->routeIs('admin.pusher.*', 'admin.mailConfig.*', 'admin.paymentGateway.*', 'admin.sms-gateway.*', 'admin.firebase.*', 'admin.googleReCaptcha.*', 'admin.aiPrompt.configure') ? 'active' : '' }}"-->
-    <!--        data-bs-toggle="collapse" href="#thirdPartConfig" title="Third Party configuration">-->
-    <!--        <span>-->
-    <!--            <img class="menu-icon" src="{{ asset('assets/icons-admin/3rd-config.svg') }}" alt="icon"-->
-    <!--                loading="lazy" />-->
-    <!--            {{ __('3rd Party Configuration') }}-->
-    <!--        </span>-->
-    <!--        <img src="{{ asset('assets/icons-admin/caret-down.svg') }}" alt="" class="downIcon">-->
-    <!--    </a>-->
-    <!--    <div class="collapse dropdownMenuCollapse {{ $request->routeIs('admin.pusher.*', 'admin.mailConfig.*', 'admin.paymentGateway.*', 'admin.sms-gateway.*', 'admin.firebase.*', 'admin.googleReCaptcha.*', 'admin.aiPrompt.configure') ? 'show' : '' }}"-->
-    <!--        id="thirdPartConfig">-->
-    <!--        <div class="listBar">-->
-    <!--            @hasPermission('admin.paymentGateway.index')-->
-                    <!--<a href="{{ route('admin.paymentGateway.index') }}"-->
-                    <!--    class="subMenu {{ request()->routeIs('admin.paymentGateway.*') ? 'active' : '' }}">-->
-                    <!--    {{ __('Payment Gateway') }}-->
-                    <!--</a>-->
-    <!--            @endhasPermission-->
+    <li>
+        <a class="menu {{ request()->routeIs('admin.pusher.*', 'admin.mailConfig.*', 'admin.paymentGateway.*', 'admin.sms-gateway.*', 'admin.firebase.*', 'admin.googleReCaptcha.*', 'admin.aiPrompt.configure') ? 'active' : '' }}"
+            data-bs-toggle="collapse" href="#thirdPartConfig" title="Third Party configuration">
+            <span>
+                <img class="menu-icon" src="{{ asset('assets/icons-admin/3rd-config.svg') }}" alt="icon"
+                    loading="lazy" />
+                {{ __('3rd Party Configuration') }}
+            </span>
+            <img src="{{ asset('assets/icons-admin/caret-down.svg') }}" alt="" class="downIcon">
+        </a>
+        <div class="collapse dropdownMenuCollapse {{ request()->routeIs('admin.pusher.*', 'admin.mailConfig.*', 'admin.paymentGateway.*', 'admin.sms-gateway.*', 'admin.firebase.*', 'admin.googleReCaptcha.*', 'admin.aiPrompt.configure') ? 'show' : '' }}"
+            id="thirdPartConfig">
+            <div class="listBar">
+                @hasPermission('admin.paymentGateway.index')
+                    <a href="{{ route('admin.paymentGateway.index') }}"
+                        class="subMenu {{ request()->routeIs('admin.paymentGateway.*') ? 'active' : '' }}">
+                        {{ __('Payment Gateway') }}
+                    </a>
+                @endhasPermission
 
-    <!--            @hasPermission('admin.sms-gateway.index')-->
-                    <!--<a href="{{ route('admin.sms-gateway.index') }}"-->
-                    <!--    class="subMenu {{ request()->routeIs('admin.sms-gateway.*') ? 'active' : '' }}">-->
-                    <!--    {{ __('SMS Gateway') }}-->
-                    <!--</a>-->
-    <!--            @endhasPermission-->
+                @hasPermission('admin.sms-gateway.index')
+                    <a href="{{ route('admin.sms-gateway.index') }}"
+                        class="subMenu {{ request()->routeIs('admin.sms-gateway.*') ? 'active' : '' }}">
+                        {{ __('SMS Gateway') }}
+                    </a>
+                @endhasPermission
 
-    <!--            {{-- @hasPermission('admin.socialAuth.index')-->
-    <!--                <a href="{{ route('admin.socialAuth.index') }}"-->
-    <!--                    class="subMenu {{ request()->routeIs('admin.socialAuth.*') ? 'active' : '' }}">-->
-    <!--                    {{ __('Social Authentication') }}-->
-    <!--                </a>-->
-    <!--            @endhasPermission --}}-->
+                @hasPermission('admin.pusher.index')
+                    <a href="{{ route('admin.pusher.index') }}"
+                        class="subMenu {{ request()->routeIs('admin.pusher.*') ? 'active' : '' }}">
+                        {{ __('Pusher Setup') }}
+                    </a>
+                @endhasPermission
 
-    <!--            @hasPermission('admin.pusher.index')-->
-    <!--                <a href="{{ route('admin.pusher.index') }}"-->
-    <!--                    class="subMenu {{ request()->routeIs('admin.pusher.*') ? 'active' : '' }}">-->
-    <!--                    {{ __('Pusher Setup') }}-->
-    <!--                </a>-->
-    <!--            @endhasPermission-->
+                @hasPermission('admin.mailConfig.index')
+                    <a href="{{ route('admin.mailConfig.index') }}"
+                        class="subMenu {{ request()->routeIs('admin.mailConfig.*') ? 'active' : '' }}">
+                        {{ __('Mail Config') }}
+                    </a>
+                @endhasPermission
+                @hasPermission('admin.aiPrompt.configure')
+                    <a href="{{ route('admin.aiPrompt.configure') }}"
+                        class="subMenu {{ request()->routeIs('admin.aiPrompt.configure') ? 'active' : '' }}">
+                        {{ __('OpenAI Config') }}
+                    </a>
+                @endhasPermission
 
-    <!--            @hasPermission('admin.mailConfig.index')-->
-    <!--                <a href="{{ route('admin.mailConfig.index') }}"-->
-    <!--                    class="subMenu {{ request()->routeIs('admin.mailConfig.*') ? 'active' : '' }}">-->
-    <!--                    {{ __('Mail Config') }}-->
-    <!--                </a>-->
-    <!--            @endhasPermission-->
-    <!--            @hasPermission('admin.aiPrompt.configure')-->
-    <!--                <a href="{{ route('admin.aiPrompt.configure') }}"-->
-    <!--                    class="subMenu {{ request()->routeIs('admin.aiPrompt.configure') ? 'active' : '' }}">-->
-    <!--                    {{ __('OpenAI Config') }}-->
-    <!--                </a>-->
-    <!--            @endhasPermission-->
+                @hasPermission('admin.firebase.index')
+                    <a href="{{ route('admin.firebase.index') }}"
+                        class="subMenu {{ request()->routeIs('admin.firebase.*') ? 'active' : '' }}">
+                        {{ __('Firebase Notification') }}
+                    </a>
+                @endhasPermission
 
-    <!--            @hasPermission('admin.firebase.index')-->
-    <!--                <a href="{{ route('admin.firebase.index') }}"-->
-    <!--                    class="subMenu {{ request()->routeIs('admin.firebase.*') ? 'active' : '' }}">-->
-    <!--                    {{ __('Firebase Notification') }}-->
-    <!--                </a>-->
-    <!--            @endhasPermission-->
-
-    <!--            @hasPermission('admin.googleReCaptcha.index')-->
-    <!--                <a href="{{ route('admin.googleReCaptcha.index') }}"-->
-    <!--                    class="subMenu {{ request()->routeIs('admin.googleReCaptcha.*') ? 'active' : '' }}">-->
-    <!--                    {{ __('Google ReCaptcha') }}-->
-    <!--                </a>-->
-    <!--            @endhasPermission-->
-    <!--        </div>-->
-    <!--    </div>-->
-    <!--</li>-->
+                @hasPermission('admin.googleReCaptcha.index')
+                    <a href="{{ route('admin.googleReCaptcha.index') }}"
+                        class="subMenu {{ request()->routeIs('admin.googleReCaptcha.*') ? 'active' : '' }}">
+                        {{ __('Google ReCaptcha') }}
+                    </a>
+                @endhasPermission
+            </div>
+        </div>
+    </li>
 @endhasPermission
 
 <!--- roles and permissions --->
