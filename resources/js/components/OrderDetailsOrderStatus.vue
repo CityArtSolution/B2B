@@ -18,7 +18,7 @@
                 </div>
                 <div class="text-xs sm:text-sm font-normal px-2 py-1 rounded-[10px] inline-block  text-ellipsis overflow-hidden"
                     :class="order.order_status">
-                    {{ order.order_status }}
+                    {{ $t(order.order_status) }}
                 </div>
             </div>
         </div>

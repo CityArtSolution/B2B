@@ -16,8 +16,8 @@ class OrderResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $paymentMethod = $this->payment_method->value;
-        if ($this->payment_status->value == PaymentStatus::PENDING->value && $paymentMethod != PaymentMethod::NEW_CLIENT->value && $paymentMethod != PaymentMethod::PREVIOUS_CLIENT->value) {
+        $paymentMethod = $this->payment_method?->value;
+        if ($this->payment_status?->value == PaymentStatus::PENDING->value && $paymentMethod != PaymentMethod::NEW_CLIENT->value && $paymentMethod != PaymentMethod::PREVIOUS_CLIENT->value && $paymentMethod != PaymentMethod::OFFER_PRICE->value) {
             $paymentMethod = PaymentMethod::ONLINE->value;
         }
 

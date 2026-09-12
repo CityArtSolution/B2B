@@ -2,58 +2,55 @@
     <div>
 
         <!-- Header -->
-        <AuthPageHeader title="Order History" />
+        <AuthPageHeader :title="$t('Order History')" />
 
-        <!-- Order Status -->
-        <div class="bg-white p-4 overflow-x-auto">
-          <div class="flex items-center min-w-max relative">
-        
-        
-        <div
-          v-for="(status, index) in statuses"
-          :key="status.value"
-          class="flex items-center"
-        >
-          <div
-            class="flex flex-col items-center cursor-pointer"
-            @click="orderStatus = status.value"
-          >
-        
-            <!-- title -->
-            <span class="mb-2 text-sm font-medium"
-              :class="orderStatus === status.value ? 'text-primary' : 'text-slate-500'">
-              {{ $t(status.label) }}
-            </span>
-        
-            <!-- circle -->
+        <!-- Order Status Filter Bar -->
+        <div class="bg-white p-4 overflow-x-auto shadow-xs">
+          <div class="flex items-center gap-3 md:gap-4 min-w-max pb-1">
             <div
-              class="w-16 h-16 rounded-full flex items-center justify-center border-2 transition-all duration-300"
-              :class="index <= activeIndex
-                ? 'border-primary bg-primary/10'
-                : 'border-slate-300 bg-white'"
+              v-for="status in statuses"
+              :key="status.value"
+              class="flex flex-col items-center cursor-pointer p-3 rounded-2xl transition-all duration-300 min-w-[85px] border select-none"
+              :class="orderStatus === status.value
+                ? 'border-primary bg-primary/5 shadow-xs'
+                : 'border-slate-100 bg-slate-50/80 hover:bg-white hover:border-slate-300'"
+              @click="orderStatus = status.value"
             >
-              <component
-                :is="status.icon"
-                class="w-7 h-7"
-                :class="[
-                  index === activeIndex ? 'text-primary' : 'text-slate-400',
-                  index === activeIndex ? status.animate : ''
-                ]"
-              />
+              <!-- title -->
+              <span
+                class="mb-2 text-xs md:text-sm font-medium transition-colors whitespace-nowrap"
+                :class="orderStatus === status.value ? 'text-primary font-semibold' : 'text-slate-600'"
+              >
+                {{ $t(status.label) }}
+              </span>
+
+              <!-- circle -->
+              <div
+                class="w-14 h-14 rounded-full flex items-center justify-center border-2 transition-all duration-300"
+                :class="orderStatus === status.value
+                  ? 'border-primary bg-primary text-white shadow-md ring-4 ring-primary/20'
+                  : 'border-slate-200 bg-white text-slate-400'"
+              >
+                <component
+                  :is="status.icon"
+                  class="w-6 h-6 transition-transform"
+                  :class="[
+                    orderStatus === status.value ? 'text-white' : 'text-slate-400',
+                    orderStatus === status.value ? status.animate : ''
+                  ]"
+                />
+              </div>
+
+              <!-- count badge -->
+              <span
+                class="mt-2 text-xs font-bold px-2 py-0.5 rounded-full transition-colors min-w-[24px] text-center"
+                :class="orderStatus === status.value
+                  ? 'bg-primary text-white shadow-xs'
+                  : 'bg-slate-200 text-slate-600'"
+              >
+                {{ status.count ?? 0 }}
+              </span>
             </div>
-        
-            <!-- count -->
-            <span class="mt-2 text-sm text-slate-600">
-              {{ status.count }}
-            </span>
-          </div>
-        
-          <div
-            v-if="index < statuses.length - 1"
-            class="w-12 h-[2px] mx-2 transition-all duration-500"
-            :class="index < activeIndex ? 'bg-primary' : 'bg-slate-300'"
-          ></div>
-        </div>
           </div>
         </div>
 
@@ -67,8 +64,15 @@
                 </div>
 
                 <!-- Order list empty -->
-                <div v-if="orders.length == 0">
-                    <p>{{ $t('No Order Found') }}</p>
+                <div v-if="orders.length == 0" class="text-center py-12 flex flex-col items-center justify-center">
+                    <div class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-3 text-slate-400">
+                        <CubeIcon class="w-8 h-8" />
+                    </div>
+                    <p class="text-slate-700 font-semibold text-base mb-1">{{ $t('No Order Found') }}</p>
+                    <p class="text-slate-400 text-sm mb-4">{{ $t('There are no orders in this status currently.') }}</p>
+                    <router-link to="/products" class="bg-primary text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors shadow-xs">
+                        {{ $t('Start Shopping') }}
+                    </router-link>
                 </div>
 
             </div>
@@ -102,26 +106,27 @@ import {
   CogIcon,
   CubeIcon,
   TruckIcon,
-  XCircleIcon
-} from '@heroicons/vue/24/outline'
+  XCircleIcon,
+  Squares2X2Icon
+} from '@heroicons/vue/24/outline';
 
 const statuses = computed(() => [
+  { label: 'All'       , value: ''          ,icon: Squares2X2Icon   ,animate: ''                 ,count: statusWiseOrders.value.all },
   { label: 'Pending'   , value: 'Pending'   ,icon: ClockIcon        ,animate: 'animate-spin-slow',count: statusWiseOrders.value.pending },
   { label: 'Pickup'    , value: 'Pickup'    ,icon: CubeIcon         ,animate: 'animate-bounce'   ,count: statusWiseOrders.value.pickup },
   { label: 'Confirm'   , value: 'Confirm'   ,icon: CheckCircleIcon  ,animate: 'animate-check'    ,count: statusWiseOrders.value.confirm },
   { label: 'Processing', value: 'Processing',icon: CogIcon          ,animate: 'animate-spin'     ,count: statusWiseOrders.value.processing },
   { label: 'On The Way', value: 'On The Way',icon: TruckIcon        ,animate: 'animate-truck'    ,count: statusWiseOrders.value.on_the_way },
   { label: 'Delivered' , value: 'Delivered' ,icon: CheckCircleIcon  ,animate: 'animate-ping-once',count: statusWiseOrders.value.delivered },
-  { label: 'Cancelled' , value: 'cancelled' ,icon: XCircleIcon      ,animate: 'animate-shake'    ,count: statusWiseOrders.value.cancelled },
-  { label: 'All'       , value: ''          ,icon: CheckCircleIcon  ,animate: ''                 ,count: statusWiseOrders.value.all },
-])
+  { label: 'Cancelled' , value: 'Cancelled' ,icon: XCircleIcon      ,animate: 'animate-shake'    ,count: statusWiseOrders.value.cancelled },
+]);
 
 import { useRouter } from 'vue-router';
 const router = useRouter();
 
 import { useAuth } from '../stores/AuthStore';
 const authStore = useAuth();
-const orderStatus = ref('Pending');
+const orderStatus = ref('');
 
 const orders = ref([]);
 
@@ -139,16 +144,6 @@ const statusWiseOrders = ref({
     delivered: 0,
     cancelled: 0
 });
-
-const activeIndex = computed(() =>
-  statuses.value.findIndex(s => s.value === orderStatus.value)
-)
-
-const activeLineWidth = computed(() => {
-  const total = statuses.value.length - 1
-  if (activeIndex.value <= 0) return '0%'
-  return `${(activeIndex.value / total) * 100}%`
-})
 
 const onClickHandler = (page) => {
     currentPage.value = page;
@@ -179,12 +174,12 @@ const fetchOrders = async () => {
         orders.value = response.data.data.orders;
         statusWiseOrders.value = response.data.data.status_wise_orders;
     }).catch((error) => {
-        if (error.response.status === 401) {
+        if (error.response && error.response.status === 401) {
             authStore.token = null;
             authStore.user = null;
             authStore.addresses = [];
             authStore.favoriteProducts = 0;
-            router.push('/');
+            router.push('/login');
         }
     });
 };

@@ -16,7 +16,7 @@
                 <!-- Order Status -->
                 <div class="text-xs sm:text-sm font-normal px-1.5 py-0.5  rounded-[10px] inline-block lg:hidden text-ellipsis overflow-hidden"
                     :class="props.order?.order_status">
-                    {{ props.order?.order_status }}
+                    {{ $t(props.order?.order_status) }}
                 </div>
             </div>
 
@@ -48,7 +48,7 @@
             <div class="hidden lg:block xl:w-28">
                 <div class="text-sm font-normal px-1.5 py-0.5 rounded-[10px] inline-block"
                     :class="props.order?.order_status">
-                    {{ props.order?.order_status }}
+                    {{ $t(props.order?.order_status) }}
                 </div>
             </div>
 

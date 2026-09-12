@@ -217,7 +217,7 @@ const routes = [
         meta: {
             layout: authLayout,
             title: "Order History",
-            requiresAuth: false,
+            requiresAuth: true,
         },
     },
     {
@@ -227,7 +227,7 @@ const routes = [
         meta: {
             layout: authLayout,
             title: "Digital Product Order History",
-            requiresAuth: false,
+            requiresAuth: true,
         },
     },
     {
@@ -237,7 +237,7 @@ const routes = [
         meta: {
             layout: authLayout,
             title: "Order Details",
-            requiresAuth: false,
+            requiresAuth: true,
         },
     },
 
@@ -248,7 +248,7 @@ const routes = [
         meta: {
             layout: authLayout,
             title: "Return Products",
-            requiresAuth: false,
+            requiresAuth: true,
         },
     },
 
@@ -260,7 +260,7 @@ const routes = [
         meta: {
             layout: authLayout,
             title: "Return Order History",
-            requiresAuth: false,
+            requiresAuth: true,
         },
     },
     {
@@ -270,7 +270,7 @@ const routes = [
         meta: {
             layout: authLayout,
             title: "Return Order Details",
-            requiresAuth: false,
+            requiresAuth: true,
         },
     },
     {
