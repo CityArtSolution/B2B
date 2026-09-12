@@ -632,40 +632,50 @@
 @push('scripts')
     <!--translate-->
     <script>
+    let nameTranslateTimer;
     $(document).on('input', '#name_ar_input', function () {
+        clearTimeout(nameTranslateTimer);
         let value = $(this).val();
-    
-        $.ajax({
-            url: '/admin/translate',
-            method: 'GET',
-            data: {
-                text: value,
-                _token: $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-            $('#product_name').val(response.en);
-            $('#name_ur_input').val(response.ur);
-            $('#name_in_input').val(response.in);
-            }
-        });
+        if (!value.trim()) return;
+
+        nameTranslateTimer = setTimeout(function () {
+            $.ajax({
+                url: '/admin/translate',
+                method: 'GET',
+                data: {
+                    text: value,
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.en) $('#product_name').val(response.en);
+                    if (response.ur) $('#name_ur_input').val(response.ur);
+                    if (response.in) $('#name_in_input').val(response.in);
+                }
+            });
+        }, 500);
     });
 
+    let descTranslateTimer;
     $(document).on('input', '#short_description_ar', function () {
+        clearTimeout(descTranslateTimer);
         let value = $(this).val();
-    
-        $.ajax({
-            url: '/admin/translate',
-            method: 'GET',
-            data: {
-                text: value,
-                _token: $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-            $('#short_description').val(response.en);
-            $('#short_description_ur').val(response.ur);
-            $('#short_description_in').val(response.in);
-            }
-        });
+        if (!value.trim()) return;
+
+        descTranslateTimer = setTimeout(function () {
+            $.ajax({
+                url: '/admin/translate',
+                method: 'GET',
+                data: {
+                    text: value,
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.en) $('#short_description').val(response.en);
+                    if (response.ur) $('#short_description_ur').val(response.ur);
+                    if (response.in) $('#short_description_in').val(response.in);
+                }
+            });
+        }, 500);
     });
 
     </script>
