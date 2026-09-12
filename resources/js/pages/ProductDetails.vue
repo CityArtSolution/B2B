@@ -287,6 +287,22 @@
                             </div>
                         </div>
 
+                        <!-- Branch Selection Bar -->
+                        <div class="flex items-center justify-between p-3 rounded-[10px] bg-slate-50 border border-slate-200 my-4">
+                            <div class="flex items-center gap-2">
+                                <span class="text-slate-600 text-sm font-medium">{{ $t("Branch") }}:</span>
+                                <span v-if="authStore.selectedBranch" class="text-primary text-sm font-semibold">
+                                    {{ typeof authStore.selectedBranch.name === 'object' ? (authStore.selectedBranch.name[masterStore.locale || 'ar'] || authStore.selectedBranch.name['en'] || Object.values(authStore.selectedBranch.name)[0]) : authStore.selectedBranch.name }}
+                                </span>
+                                <span v-else class="text-red-500 text-sm font-medium">
+                                    {{ $t("Please select a branch first.") }}
+                                </span>
+                            </div>
+                            <button type="button" @click="authStore.openBranchModal()" class="text-xs text-primary font-medium hover:underline">
+                                {{ authStore.selectedBranch ? $t("Change Branch") : $t("Select Branch") }}
+                            </button>
+                        </div>
+
                         <div class="flex flex-wrap gap-4">
                             <!-- Quantity Increase Or Decrease -->
                             <div v-if="cartProduct"
@@ -644,13 +660,21 @@ const buyNow = () => {
     if (authStore.token === null) {
         return (authStore.loginModal = true);
     }
+    if (!authStore.selectedBranch) {
+        authStore.openBranchModal();
+        toast.error(masterStore.langDirection === 'rtl' ? "يرجى اختيار الفرع أولاً" : "Please select a branch first.", {
+            position: masterStore.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
+        });
+        return;
+    }
     basketStore.addToCart({
         product_id: formData.value.product_id,
         is_buy_now: true,
         quantity: 1,
         size: formData.value.size,
         color: formData.value.color,
-        unit: null
+        unit: null,
+        branch_id: authStore.selectedBranch.id
     }, product.value);
 
     basketStore.buyNowShopId = product.value?.shop.id;
@@ -689,6 +713,14 @@ const findProductInCart = (productId) => {
 };
 
 const addToCart = () => {
+    if (!authStore.selectedBranch) {
+        authStore.openBranchModal();
+        toast.error(masterStore.langDirection === 'rtl' ? "يرجى اختيار الفرع أولاً" : "Please select a branch first.", {
+            position: masterStore.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
+        });
+        return;
+    }
+    formData.value.branch_id = authStore.selectedBranch.id;
     basketStore.addToCart(formData.value, product.value);
     setTimeout(() => {
         findProductInCart(route.params.id);

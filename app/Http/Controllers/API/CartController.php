@@ -7,6 +7,8 @@ use App\Http\Requests\CartRequest;
 use App\Http\Requests\CheckoutRequest;
 use App\Repositories\CartRepository;
 use App\Repositories\ProductRepository;
+use App\Models\Branch;
+use Illuminate\Support\Facades\Cache;
 
 class CartController extends Controller
 {
@@ -61,7 +63,18 @@ class CartController extends Controller
         }
 
         // Check quantity based on selected branch
-        $selectedBranchId = $request->branch_id ?? session('selected_branch');
+        $user = auth()->user();
+        $selectedBranchId = $request->branch_id
+            ?? ($user ? Cache::get('selected_branch_' . $user->id) : null)
+            ?? $user?->selected_branch_id
+            ?? session('selected_branch');
+
+        if (!$selectedBranchId) {
+            $defaultBranch = Branch::where('status', 1)->first() ?? Branch::first();
+            if ($defaultBranch) {
+                $selectedBranchId = $defaultBranch->id;
+            }
+        }
 
         if (!$selectedBranchId) {
             return $this->json('Please select a branch first.', [], 422);

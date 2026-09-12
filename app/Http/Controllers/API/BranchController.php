@@ -44,11 +44,13 @@ class BranchController extends Controller
         // Also store in cache for API users (using user ID as key)
         if ($user) {
             Cache::put('selected_branch_' . $user->id, $branch->id, now()->addDays(7));
+            $user->update(['selected_branch_id' => $branch->id]);
+
+            $customer = $user->customer;
+            if ($customer) {
+                $customer->carts()->delete();
+            }
         }
-
-        $customer = auth()->user()->customer;
-
-        $cart = $customer->carts()->delete();
 
 
         // Debug logging

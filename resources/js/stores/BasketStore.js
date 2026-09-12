@@ -107,6 +107,22 @@ export const useBasketStore = defineStore("basketStore", {
          */
         addToCart(data, product) {
             const masterStore = useMaster();
+            const authStore = useAuth();
+
+            // Check if branch is selected, if not prompt user
+            if (!authStore.selectedBranch) {
+                authStore.openBranchModal();
+                toast.error(masterStore.langDirection === 'rtl' ? "يرجى اختيار الفرع أولاً" : "Please select a branch first.", {
+                    position: masterStore.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
+                });
+                return;
+            }
+
+            // Ensure branch_id is always passed to the backend
+            if (!data.branch_id && authStore.selectedBranch) {
+                data.branch_id = authStore.selectedBranch.id;
+            }
+
             if (data.product_id) {
                 this.isLoadingCart = true;
                 const content = {
@@ -115,7 +131,6 @@ export const useBasketStore = defineStore("basketStore", {
                         product: product,
                     },
                 };
-                const authStore = useAuth();
                 axios.post("/cart/store", data, {
                     headers: {
                         Authorization: authStore.token,
@@ -142,15 +157,17 @@ export const useBasketStore = defineStore("basketStore", {
                     }
                 }).catch((error) => {
                     this.isLoadingCart = false;
-                    if (error.response.status == 401) {
+                    if (error.response?.status == 401) {
                         toast.error("Please login first!", {
                             position: masterStore.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
                         });
-                        const authStore = useAuth();
                         authStore.logout();
                         authStore.showLoginModal();
                     } else {
-                        toast.error(error.response.data.message, {
+                        if (error.response?.data?.message?.toLowerCase().includes('branch')) {
+                            authStore.openBranchModal();
+                        }
+                        toast.error(error.response?.data?.message || "Error adding to cart", {
                             position: masterStore.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
                         });
                     }
