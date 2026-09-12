@@ -329,26 +329,28 @@
                 <i class="bi bi-geo-alt text-danger me-1"></i> {{ __('Address') }}
             </div>
             <div class="card-body p-3">
-                <div class="row g-2">
-                    @foreach($user->customer->addresses as $address)
-                    <div class="col-md-3 col-sm-6">
-                        <small class="text-muted d-block">{{ __('Neighborhood') }}</small>
-                        <span class="fw-semibold">{{ $address->neighborhood ?? '-' }}</span>
+                @foreach($user->customer->addresses as $address)
+                <div class="{{ !$loop->last ? 'border-bottom mb-2 pb-2' : '' }}">
+                    <div class="row g-2">
+                        <div class="col-md-3 col-sm-6">
+                            <small class="text-muted d-block">{{ __('Neighborhood') }}</small>
+                            <span class="fw-semibold">{{ $address->neighborhood ?? '-' }}</span>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <small class="text-muted d-block">{{ __('Area') }}</small>
+                            <span class="fw-semibold">{{ $address->area ?? '-' }}</span>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <small class="text-muted d-block">{{ __('Address Line 1') }}</small>
+                            <span class="fw-semibold">{{ $address->address_line ?? ($address->address_line2 ?? '-') }}</span>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <small class="text-muted d-block">{{ __('Postal Code') }}</small>
+                            <span class="fw-semibold">{{ $address->post_code ?? '-' }}</span>
+                        </div>
                     </div>
-                    <div class="col-md-3 col-sm-6">
-                        <small class="text-muted d-block">{{ __('Area') }}</small>
-                        <span class="fw-semibold">{{ $address->area ?? '-' }}</span>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <small class="text-muted d-block">{{ __('Address Line 1') }}</small>
-                        <span class="fw-semibold">{{ $address->address_line ?? '-' }}</span>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <small class="text-muted d-block">{{ __('Postal Code') }}</small>
-                        <span class="fw-semibold">{{ $address->post_code ?? '-' }}</span>
-                    </div>
-                    @endforeach
                 </div>
+                @endforeach
             </div>
         </div>
         @endif
