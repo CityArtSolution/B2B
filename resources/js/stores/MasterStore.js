@@ -23,6 +23,7 @@ export const useMaster = defineStore("masterStore", {
         multiVendor: true,
         paymentGateways: [],
         mobile: null,
+        whatsapp: null,
         showFooter: true,
         address: null,
         footerText: null,
@@ -32,6 +33,7 @@ export const useMaster = defineStore("masterStore", {
         socialLinks: [],
         basketCanvas: false,
         chatCanvas: false,
+        supportMenuOpen: false,
         search: null,
         categories: [],
         themeColors: {
@@ -96,6 +98,7 @@ export const useMaster = defineStore("masterStore", {
                 this.appStoreLink = data.app_store_link;
                 this.multiVendor = data.multi_vendor;
                 this.mobile = data.mobile;
+                this.whatsapp = data.whatsapp;
                 this.showFooter = data.web_show_footer;
                 this.address = data.address;
                 this.paymentGateways = data.payment_gateways;
@@ -169,6 +172,25 @@ export const useMaster = defineStore("masterStore", {
         },
         toggleChatCanvas() {
             this.chatCanvas = !this.chatCanvas;
+            if (this.chatCanvas) {
+                this.supportMenuOpen = false;
+            }
+        },
+        openChatCanvas() {
+            this.chatCanvas = true;
+            this.supportMenuOpen = false;
+        },
+        closeChatCanvas() {
+            this.chatCanvas = false;
+        },
+        toggleSupportMenu() {
+            this.supportMenuOpen = !this.supportMenuOpen;
+        },
+        openSupportMenu() {
+            this.supportMenuOpen = true;
+        },
+        closeSupportMenu() {
+            this.supportMenuOpen = false;
         },
     },
 

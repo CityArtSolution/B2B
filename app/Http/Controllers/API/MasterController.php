@@ -8,6 +8,7 @@ use App\Http\Resources\LanguageResource;
 use App\Http\Resources\MenuResource;
 use App\Http\Resources\PaymentGatewayResource;
 use App\Http\Resources\SocialLinkResource;
+use App\Models\ContactUs;
 use App\Models\Currency;
 use App\Models\Footer;
 use App\Models\Menu;
@@ -125,6 +126,7 @@ class MasterController extends Controller
             'payment_gateways' => PaymentGatewayResource::collection($paymentGateways),
             'multi_vendor' => (bool) ($shopType == 'multi' ? true : false),
             'mobile' => $generaleSetting?->footer_phone ?? '0550136556',
+            'whatsapp' => ContactUs::first()?->whatsapp ?? $generaleSetting?->footer_phone ?? '0550136556',
             'address' => $generaleSetting?->address ?? 'Dhaka, Bangladesh',
             'web_show_footer' => (bool) ($generaleSetting?->show_footer ?? true),
             'web_footer_text' => $generaleSetting?->footer_text ?? '',
