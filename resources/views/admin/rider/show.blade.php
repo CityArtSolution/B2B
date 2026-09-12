@@ -18,7 +18,7 @@
                         {{ __('ToDo Orders') }}
                     </h3>
                     <div class="icon">
-                        <i class="bi bi-bicycle"></i>
+                        <i class="bi bi-truck"></i>
                     </div>
                 </div>
             </div>

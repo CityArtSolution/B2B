@@ -854,6 +854,13 @@
                     </a>
                 @endhasPermission
 
+                @hasPermission('admin.verification.index')
+                    <a href="{{ route('admin.verification.index') }}"
+                        class="subMenu {{ request()->routeIs('admin.verification.*') ? 'active' : '' }}">
+                        {{ __('Verification OTP Settings') }}
+                    </a>
+                @endhasPermission
+
                 @hasPermission('admin.pusher.index')
                     <a href="{{ route('admin.pusher.index') }}"
                         class="subMenu {{ request()->routeIs('admin.pusher.*') ? 'active' : '' }}">
