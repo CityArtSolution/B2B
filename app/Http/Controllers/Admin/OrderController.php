@@ -22,7 +22,7 @@ class OrderController extends Controller
     /**
      * Display a order list with filter status.
      */
-    public function index(Request $request, $status = null , $co)
+    public function index(Request $request, $status = null, $co = null)
     {
 
         $status = $status ? str_replace('_', ' ', $status) : '';
@@ -112,7 +112,7 @@ class OrderController extends Controller
 
         $title = 'Order status updated';
         $message = 'Your order status updated to '.$request->status;
-        $deviceKeys = $order->customer->user->devices->pluck('key')->toArray();
+        $deviceKeys = $order->customer?->user?->devices?->pluck('key')?->toArray() ?? [];
 
         if ($request->status == OrderStatus::CANCELLED->value) {
             foreach ($order->products as $product) {
@@ -143,7 +143,7 @@ class OrderController extends Controller
         $notify = (object) [
             'title' => $title,
             'content' => $message,
-            'user_id' => $order->customer->user_id,
+            'user_id' => $order->customer?->user_id ?? $order->customer?->user?->id,
             'type' => 'order',
         ];
 
@@ -164,7 +164,7 @@ class OrderController extends Controller
 
         $title = 'Payment status updated';
         $message = __('Your payment status updated to paid. order code: ').$order->prefix.$order->order_code;
-        $deviceKeys = $order->customer->user->devices->pluck('key')->toArray();
+        $deviceKeys = $order->customer?->user?->devices?->pluck('key')?->toArray() ?? [];
 
         try {
             NotificationServices::sendNotification($message, $deviceKeys, $title);
@@ -174,7 +174,7 @@ class OrderController extends Controller
         $notify = (object) [
             'title' => $title,
             'content' => $message,
-            'user_id' => $order->customer->user_id,
+            'user_id' => $order->customer?->user_id ?? $order->customer?->user?->id,
             'type' => 'order',
         ];
 

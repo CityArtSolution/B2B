@@ -53,11 +53,11 @@
                             </div>
                             <div class="order-item">
                                 <label class="label">{{ __('Payment Status') }}:</label>
-                                <span class="value">{{ $order->payment_status }}</span>
+                                <span class="value">{{ __($order->payment_status?->value ?? $order->payment_status) }}</span>
                             </div>
                             <div class="order-item">
                                 <label class="label">{{ __('Payment Method') }}:</label>
-                                <span class="value">{{ $order->payment_method }}</span>
+                                <span class="value">{{ __($order->payment_method?->value ?? $order->payment_method) }}</span>
                             </div>
                         </div>
 
@@ -66,11 +66,11 @@
                         <div class="flex-grow-1">
                             <div class="order-item">
                                 <label class="label">{{ __('Order Status') }}:</label>
-                                <span class="value">{{ $order->order_status }}</span>
+                                <span class="value">{{ __($order->order_status?->value ?? $order->order_status) }}</span>
                             </div>
                             <div class="order-item">
                                 <label class="label">{{ __('Order Date') }}:</label>
-                                <span class="value">{{ $order->created_at->format('M d, Y') }}</span>
+                                <span class="value">{{ $order->created_at?->format('M d, Y') ?? '-' }}</span>
                             </div>
                             <div class="order-item">
                                 <label class="label">{{ __('Delivery Date') }}:</label>
@@ -113,7 +113,13 @@
                                         @if ($businessModel == 'multi')
                                             <td>{{ $product->shop?->name }}</td>
                                         @endif
-                                        <td>{{ optional(\App\Models\Branch::find($product->pivot->branch_id))->name[app()->getLocale()] ?? '-' }}</td>
+                                        @php
+                                            $branch = $product->pivot->branch_id ? \App\Models\Branch::find($product->pivot->branch_id) : null;
+                                            $branchName = is_array($branch?->name)
+                                                ? ($branch->name[app()->getLocale()] ?? reset($branch->name) ?? '-')
+                                                : ($branch?->name ?? '-');
+                                        @endphp
+                                        <td>{{ $branchName }}</td>
                                         <td>{{ $product->pivot->quantity }}</td>
                                         <td>{{ $product->pivot->size ?? '-' }}</td>
                                         <td>{{ $product->pivot->color ?? '-' }}</td>
@@ -218,9 +224,9 @@
                     <div class="dropdown">
                         <a class="btn border text-start dropdown-toggle" href="#" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            {{ $order->order_status->value }}
+                            {{ __($order->order_status?->value ?? $order->order_status) }}
                         </a>
-                        @if($order->order_status->value != 'Delivered' && $order->order_status->value != 'Cancelled')
+                        @if($order->order_status?->value != 'Delivered' && $order->order_status?->value != 'Cancelled')
                             @hasPermission(['admin.order.status.change'])
                                 <ul class="dropdown-menu order-status">
                                     @foreach ($orderStatus2 as $status)
@@ -242,9 +248,9 @@
                     <div class="dropdown">
                         <a class="btn border text-start dropdown-toggle" href="#" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            {{ $order->order_status->value }}
+                            {{ __($order->order_status?->value ?? $order->order_status) }}
                         </a>
-                        @if($order->order_status->value != 'Delivered' && $order->order_status->value != 'Cancelled')
+                        @if($order->order_status?->value != 'Delivered' && $order->order_status?->value != 'Cancelled')
                             @hasPermission(['admin.order.status.change'])
                                 <ul class="dropdown-menu order-status">
                                     @php
@@ -270,11 +276,11 @@
                 <div class="border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2 p-3">
                     <div class="text-color">{{ __('Payment Status') }}</div>
                     <div class="d-flex align-items-center gap-1">
-                        <span>{{ $order->payment_status }}</span>
+                        <span>{{ __($order->payment_status?->value ?? $order->payment_status) }}</span>
                         @hasPermission('admin.order.payment.status.toggle')
                             <label class="switch mb-0">
                                 <a href="{{ route('admin.order.payment.status.toggle', $order->id) }}">
-                                    <input type="checkbox" {{ $order->payment_status->value == 'Paid' ? 'checked' : '' }}>
+                                    <input type="checkbox" {{ $order->payment_status?->value == 'Paid' ? 'checked' : '' }}>
                                     <span class="slider round"></span>
                                 </a>
                             </label>
@@ -306,13 +312,20 @@
                             </div>
                         </div>
                     @endif
-                    @if ($order->order_status->value === 'Delivered To Shipping Company' )
+                    @if ($order->order_status?->value === 'Delivered To Shipping Company' )
                         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 p-3">
                             <div class="fw-medium text-color">{{ __('Attach the shipping invoice') }}</div>
                             <div class="d-flex align-items-center gap-1">
 
                                 @if ($order->delivered_invoice)
-                                    <span> {{ __('The invoice has been sent') }} </span>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">
+                                            {{ __('The invoice has been sent') }}
+                                        </span>
+                                        <a href="{{ Storage::url($order->delivered_invoice) }}" target="_blank" class="btn btn-sm btn-outline-primary py-1 px-2">
+                                            {{ __('View') }}
+                                        </a>
+                                    </div>
                                 @else
                                     <form action="{{ route('admin.order.uploadInvoice', $order->id) }}" method="POST" enctype="multipart/form-data">
                                         @csrf
@@ -522,13 +535,14 @@ $(document).ready(function () {
         const statusName = $(this).text().trim();
 
         Swal.fire({
-            title: "Are you sure?",
-            text: `Do you really want to mark this order as ${statusName}?`,
+            title: "{{ __('Are you sure?') }}",
+            text: `{{ __('Do you really want to mark this order as') }} ${statusName}?`,
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, proceed!"
+            confirmButtonText: "{{ __('Yes, proceed!') }}",
+            cancelButtonText: "{{ __('Cancel') }}"
         }).then((result) => {
             if (result.isConfirmed) {
                 window.location.href = url;
