@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\UserProductView;
 use App\Enums\Roles;
 use App\Models\User;
+use App\Models\Order;
+use App\Models\ReturnOrder;
+use App\Models\GeneraleSetting;
 
 class CustomerEngagementController extends Controller
 {
@@ -47,10 +50,71 @@ class CustomerEngagementController extends Controller
         return view('admin.CustomerEngagement.existingCustomers' ,  compact('users'));
     }
    
-    public function account_statement($id)
+    public function account_statement(Request $request, $id)
     {
-        $user = User::with(['customer.orders','customer.addresses','customer.returnOrders'])->role(Roles::CUSTOMER->value)->where('id' , $id)->first();
-        return view('admin.CustomerEngagement.account-statement' , compact('user'));
+        $user = User::with(['customer.addresses'])
+            ->role(Roles::CUSTOMER->value)
+            ->findOrFail($id);
+
+        $customer = $user->customer;
+
+        $ordersQuery = $customer ? $customer->orders()->latest() : Order::whereRaw('1=0');
+        $returnsQuery = $customer ? $customer->returnOrders()->latest() : ReturnOrder::whereRaw('1=0');
+
+        // Filter by dates if provided
+        if ($request->filled('from_date')) {
+            $ordersQuery->whereDate('created_at', '>=', $request->from_date);
+            $returnsQuery->whereDate('created_at', '>=', $request->from_date);
+        }
+
+        if ($request->filled('to_date')) {
+            $ordersQuery->whereDate('created_at', '<=', $request->to_date);
+            $returnsQuery->whereDate('created_at', '<=', $request->to_date);
+        }
+
+        // Filter by payment status if provided
+        if ($request->filled('payment_status')) {
+            if ($request->payment_status === 'Paid') {
+                $ordersQuery->where('payment_status', 'Paid');
+            } elseif (in_array($request->payment_status, ['Pending', 'Unpaid'])) {
+                $ordersQuery->where('payment_status', '!=', 'Paid');
+            }
+        }
+
+        $orders = $ordersQuery->get();
+        $returnOrders = $returnsQuery->get();
+
+        // Calculate financials accurately
+        $totalInvoicedAmount = (float) $orders->sum('payable_amount');
+
+        $totalPaidAmount = (float) $orders->filter(function ($order) {
+            $status = is_object($order->payment_status) ? $order->payment_status->value : $order->payment_status;
+            return strtolower((string) $status) === 'paid';
+        })->sum('payable_amount');
+
+        $totalUnpaidAmount = (float) $orders->filter(function ($order) {
+            $status = is_object($order->payment_status) ? $order->payment_status->value : $order->payment_status;
+            return strtolower((string) $status) !== 'paid';
+        })->sum('payable_amount');
+
+        $totalReturnsAmount = (float) $returnOrders->sum('amount');
+
+        // Net balance due (المتبقي المستحق = غير المدفوع - المرتجعات)
+        $balanceDue = max(0, $totalUnpaidAmount - $totalReturnsAmount);
+
+        $generaleSetting = GeneraleSetting::first();
+
+        return view('admin.CustomerEngagement.account-statement', compact(
+            'user',
+            'orders',
+            'returnOrders',
+            'totalInvoicedAmount',
+            'totalPaidAmount',
+            'totalUnpaidAmount',
+            'totalReturnsAmount',
+            'balanceDue',
+            'generaleSetting'
+        ));
     }
 
     public function update_limit(Request $request , $userId)
