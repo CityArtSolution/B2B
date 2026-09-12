@@ -15,7 +15,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use Stichoza\GoogleTranslate\GoogleTranslate;
+use GuzzleHttp\Client;
 
 #[ScopedBy([hasSubscription::class])]
 class Product extends Model
@@ -416,5 +419,149 @@ class Product extends Model
     public function favorites()
     {
         return $this->hasMany(Favorite::class);
+    }
+
+    /**
+     * Translate text between Arabic and English with caching and multiple fallbacks.
+     */
+    protected static function translateQueryText(string $text, string $targetLang): ?string
+    {
+        $cacheKey = 'search_trans_' . $targetLang . '_' . md5(mb_strtolower($text));
+
+        return Cache::remember($cacheKey, 86400, function () use ($text, $targetLang) {
+            // First attempt: Stichoza GoogleTranslate
+            try {
+                $tr = new GoogleTranslate($targetLang, null, [
+                    'timeout' => 2,
+                    'headers' => [
+                        'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                    ]
+                ]);
+                $result = $tr->translate($text);
+                if (!empty($result) && mb_strtolower($result) !== mb_strtolower($text)) {
+                    return $result;
+                }
+            } catch (\Throwable $e) {
+                // Silently try fallback
+            }
+
+            // Second attempt: MyMemory free API
+            try {
+                $sourceLang = ($targetLang === 'en') ? 'ar' : 'en';
+                $client = new Client(['timeout' => 2]);
+                $response = $client->get('https://api.mymemory.translated.net/get', [
+                    'query' => [
+                        'q' => $text,
+                        'langpair' => "{$sourceLang}|{$targetLang}"
+                    ]
+                ]);
+                $data = json_decode($response->getBody(), true);
+                $result = $data['responseData']['translatedText'] ?? null;
+                if (!empty($result) && mb_strtolower($result) !== mb_strtolower($text)) {
+                    return $result;
+                }
+            } catch (\Throwable $e) {
+                // Silently ignore
+            }
+
+            return null;
+        });
+    }
+
+    /**
+     * Scope a query to search products by name or code in Arabic and English (multilingual and translated).
+     */
+    public function scopeSearchTranslated(Builder $builder, string $search): Builder
+    {
+        $search = trim($search);
+        if ($search === '') {
+            return $builder;
+        }
+
+        // Detect if query contains Arabic characters
+        $isArabic = (bool) preg_match('/[\x{0600}-\x{06FF}\x{0750}-\x{077F}\x{08A0}-\x{08FF}\x{FB50}-\x{FDFF}\x{FE70}-\x{FEFF}]/u', $search);
+        $targetLang = $isArabic ? 'en' : 'ar';
+
+        // Translate if possible
+        $translated = self::translateQueryText($search, $targetLang);
+
+        $phrases = [$search];
+        if (!empty($translated)) {
+            $phrases[] = $translated;
+        }
+
+        // Arabic normalization helper function
+        $normalizeArabic = function (string $str): array {
+            $variants = [$str];
+
+            // Strip diacritics / tashkeel
+            $noTashkeel = preg_replace('/[\x{064B}-\x{065F}\x{0670}]/u', '', $str);
+            if ($noTashkeel !== $str) {
+                $variants[] = $noTashkeel;
+            }
+
+            // Normalize Alif forms (أ, إ, آ, ٱ -> ا)
+            $alifNorm = preg_replace('/[إأآٱ]/u', 'ا', $noTashkeel);
+            if ($alifNorm !== $noTashkeel) {
+                $variants[] = $alifNorm;
+            }
+
+            // Normalize Taa Marbuta & Haa (ة <-> ه)
+            if (str_contains($noTashkeel, 'ة')) {
+                $variants[] = str_replace('ة', 'ه', $noTashkeel);
+            } elseif (str_contains($noTashkeel, 'ه')) {
+                $variants[] = str_replace('ه', 'ة', $noTashkeel);
+            }
+
+            // Normalize Yaa & Alif Maqsura (ى <-> ي)
+            if (str_contains($noTashkeel, 'ى')) {
+                $variants[] = str_replace('ى', 'ي', $noTashkeel);
+            } elseif (str_contains($noTashkeel, 'ي')) {
+                $variants[] = str_replace('ي', 'ى', $noTashkeel);
+            }
+
+            return array_unique($variants);
+        };
+
+        // Gather all phrase variants
+        $allPhrases = [];
+        foreach ($phrases as $phrase) {
+            $allPhrases[] = $phrase;
+            if (preg_match('/[\x{0600}-\x{06FF}]/u', $phrase)) {
+                $allPhrases = array_merge($allPhrases, $normalizeArabic($phrase));
+            }
+        }
+        $allPhrases = array_values(array_unique(array_filter($allPhrases)));
+
+        return $builder->where(function (Builder $query) use ($allPhrases, $search) {
+            // Direct code match
+            $query->where('code', 'like', "%{$search}%");
+
+            // Match full phrases
+            foreach ($allPhrases as $phrase) {
+                $query->orWhere('name', 'like', "%{$phrase}%")
+                    ->orWhereHas('translations', function (Builder $tQuery) use ($phrase) {
+                        $tQuery->where('name', 'like', "%{$phrase}%");
+                    });
+            }
+
+            // Multi-word matching: if phrase has multiple words, match all words
+            foreach ($allPhrases as $phrase) {
+                $words = array_values(array_filter(preg_split('/\s+/u', $phrase), fn($w) => mb_strlen($w) >= 2));
+                if (count($words) > 1) {
+                    $query->orWhere(function (Builder $sub) use ($words) {
+                        foreach ($words as $word) {
+                            $sub->where(function (Builder $wQuery) use ($word) {
+                                $wQuery->where('name', 'like', "%{$word}%")
+                                    ->orWhere('code', 'like', "%{$word}%")
+                                    ->orWhereHas('translations', function (Builder $tQuery) use ($word) {
+                                        $tQuery->where('name', 'like', "%{$word}%");
+                                    });
+                            });
+                        }
+                    });
+                }
+            }
+        });
     }
 }

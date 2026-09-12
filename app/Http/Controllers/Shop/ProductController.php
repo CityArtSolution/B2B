@@ -53,7 +53,7 @@ class ProductController extends Controller
                 return $query->where('color_id', $color);
             });
         })->when($search, function ($query) use ($search) {
-            return $query->where('name', 'like', "%$search%");
+            return $query->searchTranslated($search);
         })->latest()->paginate(20)->withQueryString();
 
         // get brands, colors and categories
