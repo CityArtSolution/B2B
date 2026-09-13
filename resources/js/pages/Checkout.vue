@@ -47,7 +47,7 @@
                 <ShippingAddress />
                 
                 <!-- Shipping Method -->
-                <div v-if="basketStore.buyNowProduct?.products[0]?.is_digital !== true" class="p-6 mt-6 bg-white rounded-2xl border border-slate-200">
+                <div v-if="!isDigitalProduct" class="p-6 mt-6 bg-white rounded-2xl border border-slate-200">
                     <div class="text-slate-950 text-xl font-medium leading-7">
                         {{ $t('Shipping Method') }}
                         <span class="text-red-500">*</span>
@@ -95,31 +95,50 @@
                             {{ $t('Select Shipping Company') }}
                         </div>
                     
-                        <Combobox v-model="shippingCompany">
+                        <Combobox v-model="shippingCompany" v-slot="{ open }">
                             <div class="relative mt-1">
                     
                                 <ComboboxInput
-                                    class="form-input"
+                                    class="form-input pe-10"
                                     :displayValue="(company) => company?.name || ''"
                                     @change="shippingCompanyQuery = $event.target.value"
+                                    @input="shippingCompanyQuery = $event.target.value"
+                                    @focus="openShippingDropdown(open)"
+                                    @click="openShippingDropdown(open)"
                                     :placeholder="$t('Search company')"
                                 />
+
+                                <ComboboxButton
+                                    ref="comboboxButtonRef"
+                                    class="absolute inset-y-0 end-0 flex items-center pe-3 text-slate-400 hover:text-slate-600 cursor-pointer">
+                                    <ChevronUpDownIcon class="w-5 h-5" aria-hidden="true" />
+                                </ComboboxButton>
                     
                                 <ComboboxOptions
-                                    class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg bg-white border border-slate-200 shadow-lg">
+                                    class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg bg-white border border-slate-200 shadow-lg py-1">
                     
                                     <ComboboxOption
                                         v-for="company in filteredShippingCompanies"
                                         :key="company.id"
                                         :value="company"
-                                        class="cursor-pointer select-none p-3 hover:bg-primary-50 text-slate-700">
-                    
-                                        {{ company.name }}
+                                        v-slot="{ selected, active }"
+                                        as="template">
+                                        <li :class="[
+                                            active ? 'bg-primary-50 text-primary-900' : 'text-slate-900',
+                                            'relative cursor-pointer select-none py-2.5 ps-10 pe-4 flex items-center justify-between text-base'
+                                        ]">
+                                            <span :class="[selected ? 'font-semibold text-primary' : 'font-normal', 'block truncate']">
+                                                {{ company.name }}
+                                            </span>
+                                            <span v-if="selected" class="absolute inset-y-0 start-0 flex items-center ps-3 text-primary">
+                                                <CheckIcon class="w-5 h-5" aria-hidden="true" />
+                                            </span>
+                                        </li>
                                     </ComboboxOption>
                     
                                     <div
                                         v-if="filteredShippingCompanies.length === 0"
-                                        class="p-3 text-slate-400 text-sm">
+                                        class="p-3 text-slate-400 text-sm text-center">
                                         {{ $t('No results found') }}
                                     </div>
                     
@@ -141,7 +160,7 @@
                 </div>
 
                 <!-- Payment Method -->
-                <div class="p-6 mt-4 bg-white rounded-2xl border border-slate-200 w-full xl:w-[130%]">
+                <div class="p-6 mt-4 bg-white rounded-2xl border border-slate-200 w-full">
                     <div class="text-slate-950 text-xl font-medium leading-7">
                         {{ $t('Payment Method') }}
                     </div>
@@ -151,17 +170,16 @@
                         <label v-if="master.cashOnDelivery" for="Offer_Price" class="flex items-center gap-4 xl:min-w-80">
                             <input v-model="paymentType" id="Offer_Price" name="payment" type="radio" class="radioBtn2"
                                 value="Offer_Price" />
-                                <!-- :checked="basketStore.buyNowProduct?.products[0]?.is_digital == false"  -->
                             <div class="p-2 bg-white rounded-xl border border-slate-200">
-                                <img :src="'assets/icons/money-2.svg'" alt="" class="w-7 h-7">
+                                <img :src="'/assets/icons/money-2.svg'" alt="" class="w-7 h-7">
                             </div>
                             <span class="text-slate-500 text-base font-normal leading-normal">{{ $t('Offer Price') }}</span>
                         </label>
 
-                        <label v-if="master.cashOnDelivery && basketStore.buyNowProduct?.products[0]?.is_digital != true && confirmationData.payment_status == 'Previous_client'" class="flex items-center gap-4 xl:min-w-80">
+                        <label v-if="master.cashOnDelivery && !isDigitalProduct && confirmationData.payment_status == 'Previous_client'" class="flex items-center gap-4 xl:min-w-80">
                             <input v-model="paymentType" type="radio" class="radioBtn2" name="payment" value="Previous_client"/>
                             <div class="p-2 bg-white rounded-xl border border-slate-200">
-                                <img :src="'assets/icons/money-2.svg'" alt="" class="w-7 h-7">
+                                <img :src="'/assets/icons/money-2.svg'" alt="" class="w-7 h-7">
                             </div>
                             <span class="text-slate-500">{{ $t('Previous client') }}</span>
                         </label>
@@ -170,7 +188,7 @@
                             <input v-model="paymentType" id="card" name="payment" type="radio" class="radioBtn2"
                                 value="card"  />
                             <div class="p-2 bg-white rounded-xl border border-slate-200">
-                                <img :src="'assets/icons/card.svg'" alt="" class="w-7 h-7">
+                                <img :src="'/assets/icons/card.svg'" alt="" class="w-7 h-7">
                             </div>
                             <span class="text-slate-500 text-base font-normal leading-normal">
                                 {{ $t('Credit or Debit Card') }}
@@ -207,7 +225,7 @@
             </div>
 
             <!-- Order Summary -->
-            <CheckoutOrderSummary :note="note" :paymentMethod="paymentMethod"  :shippingType="shippingType" :shippingCompany="shippingCompany" :maxInvoiceLimit="confirmationData.max_invoice_limit" :maxInvoiceNow="confirmationData.max_invoice_now" />
+            <CheckoutOrderSummary :note="note" :paymentMethod="paymentMethod" :shippingType="shippingType" :shippingCompany="shippingCompany" :isDigitalProduct="isDigitalProduct" :maxInvoiceLimit="confirmationData.max_invoice_limit" :maxInvoiceNow="confirmationData.max_invoice_now" />
 
         </div>
 
@@ -215,8 +233,8 @@
 </template>
 
 <script setup>
-import { ChevronDownIcon, HomeIcon } from '@heroicons/vue/24/outline';
-import { Combobox, ComboboxInput, ComboboxOptions, ComboboxOption } from '@headlessui/vue'
+import { ChevronDownIcon, HomeIcon, ChevronUpDownIcon, CheckIcon } from '@heroicons/vue/24/outline';
+import { Combobox, ComboboxButton, ComboboxInput, ComboboxOptions, ComboboxOption } from '@headlessui/vue'
 
 import { onMounted, computed , ref, watch } from 'vue';
 
@@ -248,6 +266,13 @@ const shippingCompany = ref(null);
 const shippingCompanies = ref([]);
 const shippingCompanyQuery = ref('');
 
+const isDigitalProduct = computed(() => {
+    if (!basketStore.checkoutProducts || basketStore.checkoutProducts.length === 0) return false;
+    return basketStore.checkoutProducts.every(shop =>
+        shop.products && shop.products.length > 0 && shop.products.every(product => Boolean(product.is_digital))
+    );
+});
+
 const filteredShippingCompanies = computed(() => {
     if (!shippingCompanyQuery.value) return shippingCompanies.value;
 
@@ -258,6 +283,23 @@ const filteredShippingCompanies = computed(() => {
     );
 });
 
+const comboboxButtonRef = ref(null);
+let lastOpenDropdownTime = 0;
+
+const openShippingDropdown = (open) => {
+    shippingCompanyQuery.value = '';
+    const now = Date.now();
+    if (now - lastOpenDropdownTime < 300) return;
+    lastOpenDropdownTime = now;
+
+    if (!open) {
+        const btn = comboboxButtonRef.value?.$el || comboboxButtonRef.value;
+        if (btn && typeof btn.click === 'function') {
+            btn.click();
+        }
+    }
+};
+
 const checkPayment = master.cashOnDelivery ? 'Offer_Price' : master.onlinePayment ? 'card' : 'Previous_client' ;
 const paymentType = ref(checkPayment);
 const paymentMethod = ref(null);
@@ -265,7 +307,8 @@ const paymentMethod = ref(null);
 const paymentGateway = ref(null);
 
 const confirmationData = ref({
-    max_invoice: null,
+    max_invoice_limit: null,
+    max_invoice_now: 0,
     payment_status: null,
 });
 
@@ -290,8 +333,8 @@ const fetchConfirmationData = async () => {
         });
 
         if (res.data.success) {
-            confirmationData.value.max_invoice_limit = parseFloat(res.data.data.max_invoice_limit); // لو عايزها Number
-            confirmationData.value.max_invoice_now = parseFloat(res.data.data.max_invoice_now);
+            confirmationData.value.max_invoice_limit = res.data.data.max_invoice_limit != null ? parseFloat(res.data.data.max_invoice_limit) : null;
+            confirmationData.value.max_invoice_now = res.data.data.max_invoice_now != null ? parseFloat(res.data.data.max_invoice_now) : 0;
             confirmationData.value.payment_status = res.data.data.payment_status;
         }
     } catch (error) {
@@ -312,9 +355,20 @@ onMounted(() => {
     fetchConfirmationData(); 
 });
 
+watch(shippingCompany, () => {
+    shippingCompanyQuery.value = '';
+});
+
 watch(shippingType, (val) => {
     if (val != 'courier') {
         shippingCompany.value = null;
+        shippingCompanyQuery.value = '';
+    }
+});
+
+watch(() => [master.cashOnDelivery, master.onlinePayment], () => {
+    if (!paymentType.value || (paymentType.value === 'Previous_client' && confirmationData.value.payment_status !== 'Previous_client')) {
+        paymentType.value = master.cashOnDelivery ? 'Offer_Price' : master.onlinePayment ? 'card' : 'Previous_client';
     }
 });
 

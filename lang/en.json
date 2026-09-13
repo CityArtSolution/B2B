@@ -1,5 +1,9 @@
 {
     "Dashboard": "Dashboard",
+    "Please select shipping address": "Please select shipping address",
+    "Please select payment method": "Please select payment method",
+    "Please select payment option": "Please select payment option",
+    "Please select at least one product": "Please select at least one product",
     "Customer Engagement Management": "Customer Engagement Management",
     "User": "User",
     "Size from": "Size from",

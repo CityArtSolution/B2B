@@ -178,7 +178,7 @@ const props = defineProps({
     paymentMethod: String,
     isDigitalProduct: Boolean,
     shippingType: String,
-    shippingCompany: [Number, null],
+    shippingCompany: [Object, Number, String, null],
     maxInvoiceLimit: Number,
     maxInvoiceNow: Number,
 });
@@ -263,37 +263,44 @@ const isProcessing = ref(false);
 const processOrderConfirm = () => {
 
     if (!basketStore.address) {
-        toast.error("Please select shipping address");
+        toast.error(t("Please select shipping address"), {
+            position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
+        });
         return;
     }
 
     if (!props.isDigitalProduct) {
         if (!props.shippingType) {
-            toast.error(t("Please select shipping method"));
+            toast.error(t("Please select shipping method"), {
+                position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
+            });
             return;
         }
     
         if (props.shippingType == 'courier' && !props.shippingCompany) {
-            toast.error(t("Please select shipping company"));
+            toast.error(t("Please select shipping company"), {
+                position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
+            });
             return;
         }
     }
 
-    if(props.isDigitalProduct == true && props.paymentMethod == 'New_client' && props.paymentMethod == 'Previous_client') {
-        toast.error("Please select payment method", {
+    if(props.isDigitalProduct == true && (props.paymentMethod == 'New_client' || props.paymentMethod == 'Previous_client')) {
+        toast.error(t("Please select payment method"), {
             position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
         });
         return;
     }
 
     if (props.paymentMethod == null || props.paymentMethod == 'card') {
-        toast.error("Please select payment option", {
+        toast.error(t("Please select payment option"), {
             position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
         });
         return;
     }
     if(props.paymentMethod == 'New_client' || props.paymentMethod == 'Previous_client') {
-        if (props.maxInvoiceLimit <= props.maxInvoiceNow + basketStore.total_amount) {
+        const orderTotal = orderData.value?.total_amount || basketStore.total_amount || 0;
+        if (props.maxInvoiceLimit != null && !isNaN(props.maxInvoiceLimit) && props.maxInvoiceLimit <= (props.maxInvoiceNow || 0) + orderTotal) {
             toast.error(t('max_invoice_reached'), {
                 position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
             });
@@ -313,7 +320,7 @@ const processOrderConfirm = () => {
             is_buy_now: true,
             shipping_type: props.isDigitalProduct ? null : props.shippingType,
             shipping_company_id: props.shippingType == 'courier'
-                ? props.shippingCompany
+                ? (props.shippingCompany?.id ?? props.shippingCompany)
                 : null,
 
         }, {

@@ -1,5 +1,9 @@
 {
     "Dashboard": "لوحة القيادة",
+    "Please select shipping address": "يرجى اختيار عنوان الشحن",
+    "Please select payment method": "يرجى تحديد طريقة الدفع",
+    "Please select payment option": "يرجى تحديد خيار الدفع",
+    "Please select at least one product": "يرجى تحديد منتج واحد على الأقل",
     "Customer Engagement Management": "إدارة تفاعل العملاء",
     "User": "المستخدم",
     "Size from": "المقاس من",

@@ -178,8 +178,9 @@ const showVerifyOtpModal = ref(false);
 const props = defineProps({
     note: String,
     paymentMethod: String,
+    isDigitalProduct: Boolean,
     shippingType: String,
-    shippingCompany: [Number, null],
+    shippingCompany: [Object, Number, String, null],
     maxInvoiceLimit: Number,
     maxInvoiceNow: Number,
 });
@@ -213,7 +214,7 @@ const isProcessing = ref(false);
 const processOrderConfirm = () => {
 
     if (!basketStore.address) {
-        toast.error("Please select shipping address", {
+        toast.error(t("Please select shipping address"), {
             position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
         });
         return;
@@ -221,25 +222,29 @@ const processOrderConfirm = () => {
     
     if (!props.isDigitalProduct) {
         if (!props.shippingType) {
-            toast.error(t("Please select shipping method"));
+            toast.error(t("Please select shipping method"), {
+                position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
+            });
             return;
         }
     
         if (props.shippingType == 'courier' && !props.shippingCompany) {
-            toast.error(t("Please select shipping company"));
+            toast.error(t("Please select shipping company"), {
+                position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
+            });
             return;
         }
     }
     
     if (props.paymentMethod == null || props.paymentMethod == 'card') {
-        toast.error("Please select payment method", {
+        toast.error(t("Please select payment method"), {
             position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
         });
         return;
     }
     
     if(props.paymentMethod == 'Offer_Price' || props.paymentMethod == 'Previous_client') {
-        if (props.maxInvoiceLimit <= props.maxInvoiceNow + basketStore.total_amount) {
+        if (props.maxInvoiceLimit != null && !isNaN(props.maxInvoiceLimit) && props.maxInvoiceLimit <= (props.maxInvoiceNow || 0) + basketStore.total_amount) {
             toast.error(t('max_invoice_reached'), {
                 position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
             });
@@ -258,7 +263,7 @@ const processOrderConfirm = () => {
             note: props.note,
             shipping_type: props.isDigitalProduct ? null : props.shippingType,
             shipping_company_id: props.shippingType == 'courier'
-                ? props.shippingCompany
+                ? (props.shippingCompany?.id ?? props.shippingCompany)
                 : null,
         }, {
             headers: {
@@ -301,7 +306,7 @@ const processOrderConfirm = () => {
             isProcessing.value = false;
         })
     } else {
-        toast.error("Please select at least one product", {
+        toast.error(t("Please select at least one product"), {
             position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
         });
     }
