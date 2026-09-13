@@ -281,25 +281,24 @@ const processOrderConfirm = () => {
 
             basketStore.fetchCart();
 
-            toast(content, {
-                type: "default",
-                hideProgressBar: true,
-                icon: false,
-                position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
-                toastClassName: "vue-toastification-alert",
-                timeout: 2000,
-            });
-
             let paymentUrl = response.data.data.order_payment_url;
 
             if (paymentUrl != null) {
-                // openPaymentPopupWindow(paymentUrl);
+                openPaymentPopupWindow(paymentUrl);
                 return;
             } else {
-                basketStore.showOrderConfirmModal = true
+                toast(content, {
+                    type: "default",
+                    hideProgressBar: true,
+                    icon: false,
+                    position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
+                    toastClassName: "vue-toastification-alert",
+                    timeout: 2000,
+                });
+                basketStore.showOrderConfirmModal = true;
             }
         }).catch((error) => {
-            toast.error(error.response.data.message, {
+            toast.error(error?.response?.data?.message || 'Error creating order', {
                 position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
             });
 
@@ -313,6 +312,13 @@ const processOrderConfirm = () => {
 };
 
 const openPaymentPopupWindow = (url) => {
+    // If on mobile or small screen, redirect directly to avoid popup blockers and UI issues
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+    if (isMobile) {
+        window.location.href = url;
+        return;
+    }
+
     let winWidth = 700;
     let winHeight = 700;
     let left = (screen.width / 2) - (winWidth / 2);
@@ -320,40 +326,29 @@ const openPaymentPopupWindow = (url) => {
 
     let options = "popup,resizable,height=" + winHeight + ",width=" + winWidth + ",top=" + top + ",left=" + left;
 
-    let win = window.open(url, null, options);
+    let win = null;
+    try {
+        win = window.open(url, '_blank', options);
+    } catch (e) {}
 
-    win.title = "Payment Window Screen - Make Payment";
-
-    win.onload = () => {
-        win.title = "Payment Window Screen - Make Payment";
-        if (win.closed) {
-            console.log('close window');
-        }
-    };
-
-    win.focus();
-
-    if (win.closed) {
-        toast.error('Payment Canceled', {
-            position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
-        });
-        router.push({ name: 'home' });
-        return
+    // If popup was blocked by browser, redirect in same window
+    if (!win || win.closed || typeof win.closed === 'undefined') {
+        window.location.href = url;
+        return;
     }
+
+    try {
+        win.title = "Payment Window Screen - Make Payment";
+        win.focus();
+    } catch (e) {}
 
     var intervalID = setInterval(trackURLChanges, 1000);
     function trackURLChanges() {
         try {
             // check if the window is closed
-            if (win.closed || !win) {
+            if (!win || win.closed) {
                 clearInterval(intervalID);
-                win.close();
-                basketStore.orderPaymentCancelModal = true
-                toast.error('Payment Canceled', {
-                    position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
-                });
-                router.push({ name: 'home' });
-                return
+                return;
             }
 
             const pathname = win.location.pathname;
@@ -363,31 +358,33 @@ const openPaymentPopupWindow = (url) => {
             if (currentPath == '/payment/cancel') {
                 clearInterval(intervalID);
                 setTimeout(() => {
-                    win.close();
-                    basketStore.orderPaymentCancelModal = true
-                    toast.error('Payment Canceled', {
+                    try { win.close(); } catch (e) {}
+                    basketStore.orderPaymentCancelModal = true;
+                    toast.error(t('Payment Canceled'), {
                         position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
                     });
-                    router.push({ name: 'home' });
-                }, 8000);
-                return
+                }, 1500);
+                return;
             }
 
             if (currentPath == '/payment/success') {
-                win.close();
+                try { win.close(); } catch (e) {}
                 clearInterval(intervalID);
                 basketStore.showOrderConfirmModal = true;
-                return
+                return;
             }
         } catch (e) { }
     }
 
-    // payment close after 3 minutes
+    // payment cleanup after 5 minutes
     setTimeout(() => {
         clearInterval(intervalID);
-        win.close();
-    }, 180000);
-
+        try {
+            if (win && !win.closed) {
+                win.close();
+            }
+        } catch (e) {}
+    }, 300000);
 };
 
 const fetchCouponApply = () => {

@@ -338,7 +338,14 @@ const fetchConfirmationData = async () => {
 onMounted(() => {
     window.scrollTo(0, 0);
     basketStore.coupon_code = "";
-    paymentMethod.value = paymentType.value;
+    if (paymentType.value === 'card') {
+        if (!paymentGateway.value && master.paymentGateways && master.paymentGateways.length > 0) {
+            paymentGateway.value = master.paymentGateways[0].name;
+        }
+        paymentMethod.value = paymentGateway.value;
+    } else {
+        paymentMethod.value = paymentType.value;
+    }
     if (!AuthStore.user) {
         router.push({ name: 'home' });
     }
@@ -365,13 +372,23 @@ watch(
   { immediate: true }
 )
 
-watch(paymentType, () => {
-    if (paymentType.value === 'card') {
+watch(paymentType, (newType) => {
+    if (newType === 'card') {
+        if (!paymentGateway.value && master.paymentGateways && master.paymentGateways.length > 0) {
+            paymentGateway.value = master.paymentGateways[0].name;
+        }
         paymentMethod.value = paymentGateway.value;
     } else {
         paymentMethod.value = paymentType.value;
     }
 });
+
+watch(() => master.paymentGateways, (gateways) => {
+    if (paymentType.value === 'card' && !paymentGateway.value && gateways && gateways.length > 0) {
+        paymentGateway.value = gateways[0].name;
+        paymentMethod.value = paymentGateway.value;
+    }
+}, { deep: true, immediate: true });
 
 watch(paymentGateway, () => {
     if (paymentType.value === 'card') {
