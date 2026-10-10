@@ -19,6 +19,15 @@ foreach ($product->quantities as $q) {
     <form action="{{ route('shop.product.update', $product->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
+        @if ($errors->any())
+            <div class="alert alert-danger mt-3">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <div class="card mt-3">
             <div class="card-body">
                 <div  class="row">
@@ -156,7 +165,7 @@ foreach ($product->quantities as $q) {
                                         </option>
                                     @endforeach
                                 </select>
-                                @error('branch')
+                                @error('branches')
                                     <p class="text text-danger m-0">{{ $message }}</p>
                                 @enderror
                             </div>

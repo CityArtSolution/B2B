@@ -81,6 +81,7 @@ class ProductRequest extends FormRequest
             'name.required' => __('The name field is required.'),
             'name.max' => __('The name may not be greater than 191 characters.'),
             'description.required' => __('The description field is required.'),
+            'branches.required' => __('Please select at least one branch and enter its quantity.'),
             'short_description.required' => __('The short description field is required.'),
             'short_description.max' => __('The short description may not be greater than 191 characters.'),
             'category.required' => __('The category field is required.'),

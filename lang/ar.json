@@ -965,6 +965,7 @@
     "The name must be a string.": "يجب أن يكون الاسم سلسلة نصية.",
     "The name may not be greater than 255 characters.": "لا يجب أن يتجاوز الاسم 255 حرفًا.",
     "The thumbnail field is required.": "حقل الصورة المصغرة مطلوب.",
+    "Please select at least one branch and enter its quantity.": "يرجى اختيار فرع واحد على الأقل وإدخال كميته.",
     "The thumbnail must be an image.": "يجب أن تكون الصورة المصغرة صورة.",
     "The thumbnail must be a file of type: jpg, jpeg, png, gif.": "يجب أن تكون الصورة المصغرة ملف من النوع: jpg، jpeg، png، gif.",
     "The thumbnail may not be greater than 2048 kilobytes.": "لا يجب أن تتجاوز الصورة المصغرة 2048 كيلوبايت.",
