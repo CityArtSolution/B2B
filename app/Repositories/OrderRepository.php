@@ -85,7 +85,7 @@ class OrderRepository extends Repository
                 
                 
                 $product = $cart->product;
-                $price = $product->discount_price > 0 ? $product->discount_price : $product->price;
+                $price = $product->discount_price > 0 ? $product->discount_price : $product->carton_price;
 
                 $flashSale = $product->activeFlashSale($cart->branch_id);
                 $quantity = 0;
@@ -254,7 +254,7 @@ class OrderRepository extends Repository
             }
 
             $product = $cart->product;
-            $price = $product->discount_price > 0 ? $product->discount_price : $product->price;
+            $price = $product->discount_price > 0 ? $product->discount_price : $product->carton_price;
 
             $flashSale = $product->activeFlashSale($cart->branch_id);
             $quantity = 0;
@@ -268,10 +268,10 @@ class OrderRepository extends Repository
                     $price = $flashSale->pivot->price;
                 }
             }
-            $sizePrice = $product->sizes()?->where('id', $cart->size)->first()->pivot?->price ?? 0;
+            $sizePrice = $product->sizes()?->where('id', $cart->size)->first()?->pivot?->price ?? 0;
             $price = $price + $sizePrice;
 
-            $colorPrice = $product->colors()?->where('id', $cart->color)->first()->pivot?->price ?? 0;
+            $colorPrice = $product->colors()?->where('id', $cart->color)->first()?->pivot?->price ?? 0;
             $price = $price + $colorPrice;
 
             $totalAmount += ($price * $cart->quantity);

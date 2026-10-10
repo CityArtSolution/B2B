@@ -27,13 +27,17 @@ class PageController extends Controller
         $request->validate([
             'title' => 'required',
             'content' => 'required',
+            'title_en' => 'required',
+            'content_en' => 'required',
         ]);
 
         Page::create([
             'title' => $request->title,
-            'slug' => Str::slug($request->title),
-            'url' => 'page/' . Str::slug($request->title),
+            'title_en' => $request->title_en,
+            'slug' => Str::slug($request->title_en),
+            'url' => 'page/' . Str::slug($request->title_en),
             'description' => $request->content,
+            'description_en' => $request->content_en,
             'is_active' => true,
             'is_default' => false,
             'is_editable' => true,
@@ -65,6 +69,8 @@ class PageController extends Controller
         $request->validate([
             'title' => 'required',
             'content' => 'required',
+             'title_en' => 'required',
+            'content_en' => 'required',
         ]);
 
         if (! $page) {
@@ -73,9 +79,11 @@ class PageController extends Controller
 
         $page->update([
             'title' => $request->title,
-            'slug' => $page->is_default ? $page->slug : Str::slug($request->title),
-            'url' => $page->is_default ? $page->slug : 'page/' . Str::slug($request->title),
+            'title_en' => $request->title_en,
+            'slug' => $page->is_default ? $page->slug : Str::slug($request->title_en),
+            'url' => $page->is_default ? $page->slug : 'page/' . Str::slug($request->title_en),
             'description' => $request->content,
+              'description_en' => $request->content_en,
         ]);
 
         return to_route('admin.page.index')->withSuccess('updated successfully');

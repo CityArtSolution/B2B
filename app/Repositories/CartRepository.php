@@ -78,20 +78,7 @@ class CartRepository extends Repository
                 $carton_units_count=$product->carton_units_count;
 
 
-                // calculate vat taxes
-                $priceTaxAmount = 0;
-                $discountTaxAmount = 0;
-                foreach ($product->vatTaxes ?? [] as $tax) {
-                    if ($tax->percentage > 0) {
-                        $priceTaxAmount += $mainPrice * ($tax->percentage / 100);
-                        $discountPrice > 0 ? $discountTaxAmount += $discountPrice * ($tax->percentage / 100) : null;
-                    }
-                }
-
-                $mainPrice += $priceTaxAmount;
-                $discountPrice > 0 ? $discountPrice += $discountTaxAmount : null;
-
-                if ($discountPrice > 0) {
+                if ($discountPrice > 0 && $mainPrice > 0) {
                     $discountPercentage = ($mainPrice - $discountPrice) / $mainPrice * 100;
                 }
                 $lang = request()->header('accept-language') ?? 'en';
@@ -160,7 +147,7 @@ class CartRepository extends Repository
 
         if ($cart) {
             $cart->update([
-                'quantity' => $isBuyNow ? 1 : $cart->quantity + 1,
+                'quantity' => $isBuyNow ? ($request->quantity ?? 1) : $cart->quantity + ($request->quantity ?? 1),
                 'branch_id' => $selectedBranchId,
                 'size' => $request->size ?? $cart->size,
                 'color' => $request->color ?? $cart->color,
@@ -277,9 +264,8 @@ class CartRepository extends Repository
         // get order base tax
         $vatTaxes = VatTaxRepository::getActiveVatTaxes();
 
+        $thisFinalTax = [];
         foreach ($shopWiseTotalAmount as $shopId => $subtotal) {
-
-            $thisFinalTax = [];
 
             foreach ($vatTaxes as $vatTax) {
                 if ($vatTax->name && $vatTax->percentage > 0) {
@@ -296,15 +282,16 @@ class CartRepository extends Repository
                 }
             }
 
-            $vatTaxesArray = $vatTaxes->map(function ($vatTax) use ($thisFinalTax) {
-                return [
-                    'id' => $vatTax->id,
-                    'name' => $vatTax->name,
-                    'percentage' => $vatTax->percentage,
-                    'amount' => $thisFinalTax[$vatTax->id] ?? 0,
-                ];
-            })->toArray();
         }
+
+        $vatTaxesArray = $vatTaxes->map(function ($vatTax) use ($thisFinalTax) {
+            return [
+                'id' => $vatTax->id,
+                'name' => $vatTax->name,
+                'percentage' => $vatTax->percentage,
+                'amount' => $thisFinalTax[$vatTax->id] ?? 0,
+            ];
+        })->toArray();
 
         $payableAmount += $totalOrderTaxAmount;
 

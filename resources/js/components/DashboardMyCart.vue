@@ -17,7 +17,7 @@
                         {{ $t('Cart Amount') }}
                     </div>
                     <div class="text-slate-900 text-base md:text-lg font-bold leading-normal tracking-tight">
-                        {{ master.showCurrency(basketStore.total_amount) }}
+                        {{ master.showCurrency(basketStore.totalAmount) }}
                     </div>
                 </div>
                 <button

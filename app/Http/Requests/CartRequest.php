@@ -23,7 +23,7 @@ class CartRequest extends FormRequest
     {
         return [
             'product_id' => 'required|exists:products,id',
-            'quantity' => 'nullable|integer',
+            'quantity' => 'nullable|integer|min:1',
             'color' => 'nullable|exists:colors,id',
             'size' => 'nullable|exists:sizes,id',
             'unit' => 'nullable|string',

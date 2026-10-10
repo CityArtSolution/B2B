@@ -140,6 +140,7 @@ export const useBasketStore = defineStore("basketStore", {
                     if (!data.is_buy_now) {
                         this.total = response.data.data.total;
                         this.products = response.data.data.cart_items;
+                        this.fetchCheckoutProducts();
                         toast(content, {
                             type: "default",
                             hideProgressBar: true,
@@ -190,6 +191,7 @@ export const useBasketStore = defineStore("basketStore", {
                 }).then((response) => {
                     this.total = response.data.data.total;
                     this.products = response.data.data.cart_items;
+                    this.fetchCheckoutProducts();
 
                     if (response.data.data.info) {
                         toast.warning(response.data.data.info, {
@@ -395,6 +397,7 @@ export const useBasketStore = defineStore("basketStore", {
             if (authStore.token) {
                 axios.post("/cart/checkout", {
                     shop_ids: this.selectedShopIds,
+                    coupon_code: this.coupon_code,
                 }, {
                     headers: {
                         Authorization: authStore.token,

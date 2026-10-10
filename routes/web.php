@@ -90,7 +90,7 @@ Route::match(['get', 'post'], '/paytabs/{payment}/callback', [ProcessController:
 Route::match(['get', 'post'], '/subscription/payment/{payment}/success', [SubscriptionController::class, 'paymentSuccess'])->name('subscription.payment.success');
 Route::match(['get', 'post'], '/subscription/payment/{payment}/cancel', [SubscriptionController::class, 'paymentCancel'])->name('subscription.payment.cancel');
 
-Route::get('/tap/payment/callback/{payment}', [TapProcessController::class, 'callback'])->name('tap.payment.execute');
+Route::match(['get', 'post'], '/tap/payment/callback/{payment}', [TapProcessController::class, 'callback'])->name('tap.payment.execute');
 
 // check user is online or not
 Route::post('/update/last/seen', [CheckOnlineUserController::class, 'checkOnlineStatus']);

@@ -21,6 +21,11 @@
                         <x-input name='title' id="title" type="text" placeholder="Page Name" value=""
                             label="Page Name" />
                     </div>
+                    
+                     <div>
+                        <x-input name='title_en' id="title_en" type="text" placeholder="Page Name En" value=""
+                            label="Page Name En" />
+                    </div>
 
                     <div class="mt-3">
                         <label for="editor" class="fw-bold mb-2">{{ __('Content') }}</label>
@@ -33,6 +38,21 @@
                         </div>
                         <input type="hidden" id="description" name="content" value="{{ old('content') }}" />
                         @error('content')
+                            <p class="text text-danger m-0">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    
+                    <div class="mt-3">
+                        <label for="editor_en" class="fw-bold mb-2">{{ __('Content') }} En</label>
+                        @hasPermission('admin.page.generate.AI.data')
+                            <button class="btn btn-sm btn-primary rounded mb-1" id="generateAi_en" type="button">🧠 Generate Via
+                                Ai</button>
+                        @endhasPermission
+                        <div id="editor_en">
+                            {!! old('content_en') !!}
+                        </div>
+                        <input type="hidden" id="description_en" name="content_en" value="{{ old('content_en') }}" />
+                        @error('content_en')
                             <p class="text text-danger m-0">{{ $message }}</p>
                         @enderror
                     </div>
@@ -116,6 +136,53 @@
         quill.on('text-change', function(delta, oldDelta, source) {
             document.getElementById('description').value = correctULTagFromQuill(quill.root.innerHTML);
         });
+        
+        
+        const quill_en = new Quill('#editor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    [{
+                        'header': [1, 2, 3, 4, 5, 6, false]
+                    }],
+                    [{
+                        'font': []
+                    }],
+                    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                    [{
+                        'list': 'ordered'
+                    }, {
+                        'list': 'bullet'
+                    }],
+                    [{
+                        'align': []
+                    }],
+                    [{
+                        'script': 'sub'
+                    }, {
+                        'script': 'super'
+                    }],
+                    [{
+                        'indent': '-1'
+                    }, {
+                        'indent': '+1'
+                    }],
+                    [{
+                        'direction': 'rtl'
+                    }],
+                    [{
+                        'color': []
+                    }, {
+                        'background': []
+                    }],
+                    ['link', 'image', 'video', 'formula']
+                ]
+            }
+        });
+
+        quill_en.on('text-change', function(delta, oldDelta, source) {
+            document.getElementById('description_en').value = correctULTagFromQuill(quill_en.root.innerHTML);
+        });
     </script>
 
     <script>
@@ -161,6 +228,53 @@
                     }
                     $('#description').val("");
                     quill.setText("");
+                }
+            })
+        });
+        
+        
+        $(document).on('click', '#generateAi_en', function() {
+            var title_en = $('#title_en').val();
+            $('#description_en').val("Generating description... Please wait ⏳");
+            quill.clipboard.dangerouslyPasteHTML("<p><em>Generating description... Please wait ⏳</em></p>");
+            $.ajax({
+                url: "{{ route('admin.page.generate.AI.data') }}",
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    title: title_en
+                },
+                success: function(response) {
+                    $('#description_en').val("");
+                    quill_en.setText("");
+                    console.log(response);
+
+                    let lastResponse_en = "";
+                    let fullText_en = response;
+                    let index_en = 0;
+
+                    function typeStep_en() {
+                        if (index_en >= fullText_en.length) return;
+                        lastResponse_en += fullText_en[index++];
+                        $('#description_en').val(lastResponse_en);
+                        quill_en.clipboard.dangerouslyPasteHTML(lastResponse_en);
+                        quill_en.setSelection(quill_en.getLength(), 0);
+                        setTimeout(typeStep, 10); // 10ms delay per character
+                    }
+
+                    typeStep_en();
+                },
+                error: function(error) {
+                    if (error.responseJSON && error.responseJSON.errors) {
+                        let firstError = Object.values(error.responseJSON.errors)[0][0];
+                        toastr.error(firstError);
+                    } else if (error.responseJSON && error.responseJSON.message) {
+                        toastr.error(error.responseJSON.message);
+                    } else {
+                        toastr.error("Something went wrong");
+                    }
+                    $('#description_en').val("");
+                    quill_en.setText("");
                 }
             })
         });

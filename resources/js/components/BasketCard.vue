@@ -84,7 +84,7 @@
                                                 </div>
                                                 <div
                                                     class="text-slate-900 text-lg sm:text-2xl font-bold leading-normal">
-                                                    {{ master.showCurrency(BasketStore.total_amount) }}</div>
+                                                    {{ master.showCurrency(BasketStore.totalAmount) }}</div>
                                             </div>
                                             <button
                                                 class="py-2 sm:py-4 inline-flex gap-2 items-center justify-center px-3 sm:px-6 text-white bg-primary grow rounded-xl"
