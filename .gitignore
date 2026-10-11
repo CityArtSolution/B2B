@@ -161,3 +161,6 @@ temp/
 
 # Readme Files
 *.md
+
+/bootstrap/cache/*.php
+/yarn.lock
