@@ -20,12 +20,13 @@
     <meta name="description" content="">
 
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/arabic-font.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/login.css') }}">
 </head>
 <style>
     body {
-        font-family: "Almarai", serif;
+        font-family: "MochaYemen Sugar", "Almarai", serif;
     }
 
     .logo_right img {

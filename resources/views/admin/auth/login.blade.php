@@ -22,13 +22,14 @@
     <meta name="description" content="">
 
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/arabic-font.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/login.css') }}">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <style>
     body {
-        font-family: "Inter", serif;
+        font-family: "MochaYemen Sugar", "Inter", serif;
     }
 
     .logo_right img {

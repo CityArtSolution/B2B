@@ -386,7 +386,7 @@ async function sendCodeToBackend(code, provider = 'google', data = {}) {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    font-family: "Almarai", serif;
+    font-family: "MochaYemen Sugar", "Almarai", serif;
     padding: 40px;
 }
 

@@ -67,7 +67,7 @@ onMounted(() => {
 @import url("https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap");
 
 .about-page {
-  font-family: "Cairo", sans-serif;
+  font-family: "MochaYemen Sugar", "Cairo", sans-serif;
   background-color: #fafafa;
   color: #333;
   line-height: 1.8;

@@ -26,6 +26,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
 
     <!-- Font-Awesome--Min-Css-Link -->
+    <link rel="stylesheet" href="{{ asset('assets/css/arabic-font.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/font-awesome.min.css') }}">
 
     <!-- sweetalert css-->
@@ -58,6 +59,10 @@
     @stack('css')
 
     <style>
+        :root {
+            --bs-body-font-family: "MochaYemen Sugar", var(--bs-font-sans-serif);
+        }
+
         .has-passport.fixed-header .app-header {
             top: 55px;
         }

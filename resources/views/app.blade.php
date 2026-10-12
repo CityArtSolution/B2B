@@ -19,6 +19,7 @@
     <title>{{ $title }}</title>
     <link rel="shortcut icon" href="{{ $favicon }}" type="image/x-icon">
 
+    <link rel="stylesheet" href="{{ asset('assets/css/arabic-font.css') }}">
     @vite('resources/css/app.css')
 </head>
 

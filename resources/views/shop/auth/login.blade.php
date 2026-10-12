@@ -23,6 +23,7 @@
         content="{{ $generaleSetting?->name ?? config('app.name', 'ReadyEcommerce') }} shop pannel login">
 
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/arabic-font.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/login.css') }}">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
