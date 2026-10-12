@@ -374,7 +374,7 @@ async function sendCodeToBackend(code, provider = 'google', data = {}) {
 <style scoped>
 /* Import Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap');
 
 /* Login Page Wrapper - Matches body styling from login.css */
 .login-page-wrapper {
@@ -386,7 +386,7 @@ async function sendCodeToBackend(code, provider = 'google', data = {}) {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    font-family: "Almarai", serif;
+    font-family: "IBM Plex Sans Arabic", sans-serif;
     padding: 40px;
 }
 
