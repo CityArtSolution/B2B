@@ -20,10 +20,10 @@
     <meta name="robots" content="all,follow">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- Google fonts - Inter + IBM Plex Sans Arabic -->
+    <!-- Google fonts - Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
 
     <!-- Font-Awesome--Min-Css-Link -->
     <link rel="stylesheet" href="{{ asset('assets/css/font-awesome.min.css') }}">
@@ -58,10 +58,6 @@
     @stack('css')
 
     <style>
-        html[dir="rtl"] {
-            --bs-body-font-family: "IBM Plex Sans Arabic", var(--bs-font-sans-serif);
-        }
-
         .has-passport.fixed-header .app-header {
             top: 55px;
         }

@@ -28,7 +28,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    font-family: "Roboto", "IBM Plex Sans Arabic", sans-serif;
+    font-family: "Roboto", sans-serif;
     padding: 40px;
 }
 
