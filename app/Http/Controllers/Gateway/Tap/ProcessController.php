@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Gateway\Tap;
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
 use App\Models\PaymentGateway;
+use App\Models\ShopSubscription;
 use App\Enums\PaymentStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 
 class ProcessController extends Controller
 {
@@ -30,18 +30,8 @@ class ProcessController extends Controller
             return json_encode(['error' => 'Tap secret key is not configured']);
         }
         
-        $paymentToken = Str::uuid()->toString();
-        $payment->update(['payment_token' => $paymentToken]);
-
-        $successUrl = $cancelUrl = null;
-
-        if ($info && $info['type'] == 'subscription') {
-            $successUrl = route('subscription.payment.success', ['payment' => $payment, 'token' => $paymentToken]);
-            $cancelUrl = route('subscription.payment.cancel', ['payment' => $payment, 'token' => $paymentToken]);
-        } else {
-            $successUrl = route('tap.payment.execute', $payment->id);
-            $cancelUrl = route('payment.cancel', $payment->id);
-        }
+        // Tap redirects here for both success and failure; the callback verifies the charge
+        $successUrl = route('tap.payment.execute', $payment->id);
 
 
         try {
@@ -64,8 +54,8 @@ class ProcessController extends Controller
             }
 
             $payload = [
-                "amount" => floatval($payment->amount),
-                "currency" => $payment->currency ?: "SAR",
+                "amount" => round((float) $payment->amount, 2),
+                "currency" => self::currency($config),
                 "statement_descriptor" => "COQUI Store",
                 "customer" => $customer,
                 "source" => [
@@ -94,9 +84,7 @@ class ProcessController extends Controller
                 return json_encode(['error' => $data['response']['message'] ?? 'Tap did not return a payment URL']);
             }
 
-            if (isset($data['id']) && ! ($info && $info['type'] == 'subscription')) {
-                $payment->update(['payment_token' => $data['id']]);
-            }
+            $payment->update(['payment_token' => $data['id']]);
 
             return $data['transaction']['url'];
 
@@ -131,14 +119,26 @@ class ProcessController extends Controller
         }
 
         $valid = ($charge['id'] ?? null) === $chargeId
-            && strtoupper($charge['currency'] ?? '') === strtoupper($payment->currency ?: 'SAR')
+            && strtoupper($charge['currency'] ?? '') === self::currency($config)
             && isset($charge['amount'])
             && (int) round($charge['amount'] * 100) === (int) round($payment->amount * 100);
         if (! $valid) {
             abort(400, 'Tap payment details do not match');
         }
 
-        if (($charge['status'] ?? null) === 'CAPTURED') {
+        $captured = ($charge['status'] ?? null) === 'CAPTURED';
+
+        // Subscription payments are activated by SubscriptionController once the charge is verified
+        if (ShopSubscription::where('payment_id', $payment->id)->exists()) {
+            if ($request->isMethod('post')) {
+                return response()->json(['received' => true]);
+            }
+            $route = $captured ? 'subscription.payment.success' : 'subscription.payment.cancel';
+
+            return to_route($route, ['payment' => $payment, 'token' => $payment->payment_token]);
+        }
+
+        if ($captured) {
             $payment->orders()->update(['payment_status' => PaymentStatus::PAID->value]);
             $payment->update(['is_paid' => true]);
         }
@@ -154,5 +154,13 @@ class ProcessController extends Controller
             'response' => $charge['response'] ?? null]);
         return to_route('order.payment.cancel', ['payment' => $payment,
             'error' => $charge['response']['message'] ?? 'Payment has not been completed.']);
+    }
+
+    /**
+     * Charge currency: the gateway config `currency`, defaulting to SAR
+     */
+    private static function currency($config): string
+    {
+        return strtoupper($config->currency ?? 'SAR');
     }
 }

@@ -96,6 +96,18 @@ class PaymentGatewaySeeder extends Seeder
                 'alias' => 'PayTabs',
                 'is_active' => true,
             ],
+            [
+                'title' => 'Tap',
+                'name' => 'tap',
+                'config' => json_encode([
+                    'secret_key' => '',
+                    'public_key' => '',
+                    'currency' => 'SAR',
+                ]),
+                'mode' => 'live',
+                'alias' => 'Tap',
+                'is_active' => false,
+            ],
         ];
 
         PaymentGateway::insert($paymentMethods);
