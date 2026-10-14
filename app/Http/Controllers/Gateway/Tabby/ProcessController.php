@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Payment;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class ProcessController extends Controller
 {
@@ -17,13 +18,13 @@ class ProcessController extends Controller
     public static function process($paymentGateway, Payment $payment, ?array $info = null)
     {
         $config = json_decode($paymentGateway->config);
-        
-        $secretKey = $config->secret_key;
-        $merchantCode = $config->merchant_code;
+
+        $secretKey = $config->secret_key ?? null;
+        $merchantCode = $config->merchant_code ?? null;
         $baseUrl      = 'https://api.tabby.ai/api/v2/checkout';
 
         if (!$secretKey || !$merchantCode) {
-            throw new \Exception('Tabby configuration error');
+            return json_encode(['error' => 'Tabby secret key or merchant code is not configured']);
         }
         
         
@@ -48,8 +49,8 @@ class ProcessController extends Controller
                 "currency"    => "SAR",
                 "description" => "Invoice #{$payment->id}",
                 "buyer" => [
-                    "name"  => $payment->orders[0]->customer?->user?->name ?? 'Customer',
-                    "phone" => $payment->orders[0]->customer?->user?->phone ?? '0000000000',
+                    "name"  => $info['name'] ?? $payment->orders->first()?->customer?->user?->name ?? 'Customer',
+                    "phone" => $info['phone'] ?? $payment->orders->first()?->customer?->user?->phone ?? '0000000000',
                 ],
             ],
             "order" => [
@@ -72,13 +73,40 @@ class ProcessController extends Controller
 
             $data = $response->json();
 
-            if (isset($data['id']) && isset($data['configuration']['available_products'])) {
-                return $data['configuration']['available_products']['installments'][0]['web_url'] ?? null;
-            } else {
-                dd($data);
+            $webUrl = $data['configuration']['available_products']['installments'][0]['web_url'] ?? null;
+            if ($webUrl) {
+                return $webUrl;
             }
+
+            // Tabby created the session but rejected the buyer/amount, or the request itself failed
+            $rejectionReason = $data['configuration']['products']['installments']['rejection_reason'] ?? null;
+            Log::warning('Tabby checkout not available', [
+                'payment_id' => $payment->id,
+                'http_status' => $response->status(),
+                'status' => $data['status'] ?? null,
+                'rejection_reason' => $rejectionReason,
+                'error' => $data['error'] ?? $data['errors'] ?? null,
+            ]);
+
+            return json_encode(['error' => self::rejectionMessage($rejectionReason, $response->successful())]);
         } catch (\Throwable $th) {
-            return json_encode(['error' => $th->getMessage()]);
+            Log::error('Tabby request failed', ['payment_id' => $payment->id, 'exception' => get_class($th)]);
+            return json_encode(['error' => 'Unable to connect to Tabby. Please try again.']);
         }
+    }
+
+    /**
+     * Customer-facing message for a Tabby rejection reason
+     */
+    private static function rejectionMessage(?string $reason, bool $requestSucceeded): string
+    {
+        return match ($reason) {
+            'order_amount_too_high' => 'This purchase is above your current spending limit with Tabby, try a smaller cart or use another payment method.',
+            'order_amount_too_low' => 'The purchase amount is below the minimum amount required to use Tabby, try adding more items or use another payment method.',
+            'not_available' => 'Sorry, Tabby is unable to approve this purchase. Please use an alternative payment method for your order.',
+            default => $requestSucceeded
+                ? 'Sorry, Tabby is unable to approve this purchase. Please use an alternative payment method for your order.'
+                : 'Tabby could not create the payment. Please check the gateway settings.',
+        };
     }
 }

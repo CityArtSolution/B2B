@@ -39,6 +39,10 @@ class PaymentGatewayController extends Controller
 
         $url = $controller::process($paymentGateway, $payment);
 
+        if (! is_string($url) || $url === '') {
+            return to_route('order.payment.cancel', ['payment' => $payment, 'error' => 'Payment gateway did not return a payment link']);
+        }
+
         $error = json_decode($url);
         if ($error) {
             $error = $error->error ?? 'Payment gateway error occurred not configured correctly';
