@@ -45,15 +45,13 @@
                 <input type="hidden" name="primary_color" value="{{ $primary }}" id="primary_color" />
                 <input type="hidden" name="secondary_color" value="{{ $secondary }}" id="secondary_color" />
             </div>
-            @if (app()->environment('local'))
-                @hasPermission('admin.themeColor.update')
-                    <div class="card-footer d-flex justify-content-start">
-                        <button type="submit" class="btn btn-primary py-2.5 px-3">
-                            {{ __('Save And Update') }}
-                        </button>
-                    </div>
-                @endhasPermission
-            @endif
+            @hasPermission('admin.themeColor.update')
+                <div class="card-footer d-flex justify-content-start">
+                    <button type="submit" class="btn btn-primary py-2.5 px-3">
+                        {{ __('Save And Update') }}
+                    </button>
+                </div>
+            @endhasPermission
         </div>
     </form>
 

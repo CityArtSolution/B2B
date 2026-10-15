@@ -254,7 +254,7 @@ class OrderController extends Controller
 
         if ($order->order_status->value == OrderStatus::PENDING->value) {
 
-            // An unpaid Tap order never took stock, so there is nothing to give back
+            // An unpaid online order never took stock, so there is nothing to give back
             $stockTaken = OrderStockService::isTaken($order);
 
             // update order status

@@ -424,6 +424,8 @@ const openPaymentPopupWindow = (url) => {
             if (currentPath == '/payment/success') {
                 try { win.close(); } catch (e) {}
                 clearInterval(intervalID);
+                // The server empties the cart only once the payment is confirmed
+                basketStore.fetchCart();
                 basketStore.showOrderConfirmModal = true;
                 return;
             }

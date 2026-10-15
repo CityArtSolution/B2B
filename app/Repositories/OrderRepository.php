@@ -53,7 +53,7 @@ class OrderRepository extends Repository
 
         $shopProducts = $carts->groupBy('shop_id');
 
-        // Gateway orders (e.g. Tap) take stock when the payment is confirmed, not here
+        // Online orders (Tap, Tabby, ...) take stock when the payment is confirmed, not here
         $deferStock = OrderStockService::defersStock($paymentMethod);
 
         foreach ($shopProducts as $shopId => $cartProducts) {
@@ -198,7 +198,11 @@ class OrderRepository extends Repository
         $isBuyNow = $request->is_buy_now ?? false;
         $customer = auth()->user()->customer;
 
-        $customer->carts()->whereIn('shop_id', $request->shop_ids)->where('is_buy_now', $isBuyNow)->delete();
+        // Online orders keep the cart until the payment is confirmed (OrderStockService::clearCart),
+        // so a failed or abandoned payment leaves it for the customer to try again
+        if (! $deferStock) {
+            $customer->carts()->whereIn('shop_id', $request->shop_ids)->where('is_buy_now', $isBuyNow)->delete();
+        }
 
         return $payment;
     }
@@ -366,7 +370,7 @@ class OrderRepository extends Repository
                 ->where('branch_id', $product->pivot->branch_id ?? null)
                 ->first();
 
-            // Gateway orders (e.g. Tap) take stock when the payment is confirmed
+            // Online orders (Tap, Tabby, ...) take stock when the payment is confirmed
             if ($branchProduct && ! $deferStock) {
                 $branchProduct->decrement('qty', $qty);
             }

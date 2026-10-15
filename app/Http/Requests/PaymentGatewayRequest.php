@@ -23,7 +23,7 @@ class PaymentGatewayRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            'mode' => 'required',
+            'mode' => 'required|in:test,live',
             'config' => 'required|array',
             'logo' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
         ];

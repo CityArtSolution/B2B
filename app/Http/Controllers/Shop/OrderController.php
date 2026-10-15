@@ -64,7 +64,7 @@ class OrderController extends Controller
     {
         $request->validate(['status' => 'required']);
 
-        // Judge by the status before the change: an unpaid Tap order never took stock
+        // Judge by the status before the change: an unpaid online order never took stock
         $stockTaken = OrderStockService::isTaken($order);
 
         $order->update(['order_status' => $request->status]);

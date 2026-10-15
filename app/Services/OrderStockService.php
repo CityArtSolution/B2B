@@ -5,25 +5,31 @@ namespace App\Services;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentMethod;
 use App\Enums\PaymentStatus;
+use App\Models\Cart;
 use App\Models\FlashSale;
 use App\Models\Order;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Keeps branch stock, flash-sale sold counts and the shop's remaining sales in step with an order.
+ * Keeps branch stock, flash-sale sold counts, the shop's remaining sales and the customer's cart
+ * in step with an order.
  *
- * Orders paid through a gateway in DEFERRED_METHODS take nothing at checkout. Their stock is taken
- * when the order becomes Paid (see the Order model's updated event), so a failed or abandoned
- * payment leaves stock untouched. Other orders keep the existing rules: stock is taken at checkout,
- * or when an Offer Price order is accepted.
+ * Orders paid online (Tap, Tabby, Tamara, PayPal, ...) change nothing at checkout. When the order
+ * becomes Paid (see the Order model's updated event) its stock is taken and its cart lines are
+ * removed, so a failed or abandoned payment leaves stock and cart untouched.
+ * Offline orders keep the existing rules: stock is taken and the cart emptied at checkout,
+ * or for Offer Price, stock is taken when the order is accepted.
  */
 class OrderStockService
 {
-    public const DEFERRED_METHODS = [PaymentMethod::TAP];
+    /** Methods confirmed without an online payment */
+    public const OFFLINE_METHODS = [PaymentMethod::NEW_CLIENT, PaymentMethod::PREVIOUS_CLIENT, PaymentMethod::OFFER_PRICE];
 
     /**
-     * Whether this payment method waits for a confirmed payment before taking stock.
-     * Accepts the enum, its value ("Tap") or its name in any case ("tap").
+     * Whether this is an online payment method, which waits for a confirmed payment before
+     * taking stock and emptying the cart.
+     * Accepts the enum, its value ("Tap") or its name in any case ("tap", "Previous_client").
+     * An unknown method counts as offline, which keeps the old checkout behaviour.
      */
     public static function defersStock(PaymentMethod|string|null $method): bool
     {
@@ -32,7 +38,7 @@ class OrderStockService
                 ?? collect(PaymentMethod::cases())->first(fn ($case) => strcasecmp($case->name, $method) === 0);
         }
 
-        return in_array($method, self::DEFERRED_METHODS, true);
+        return $method !== null && ! in_array($method, self::OFFLINE_METHODS, true);
     }
 
     /**
@@ -91,6 +97,31 @@ class OrderStockService
                 $subscription->update(['remaining_sales' => $subscription->remaining_sales - 1]);
             }
         }
+    }
+
+    /**
+     * Remove a paid online order's lines from the customer's cart.
+     * Checkout orders a whole shop's cart, so the order's products in that shop and branch are its lines.
+     */
+    public static function clearCart(Order $order): void
+    {
+        $lines = $order->products->map(fn ($product) => [$product->id, $product->pivot->branch_id]);
+        if ($lines->isEmpty() || ! $order->customer_id) {
+            return;
+        }
+
+        Cart::query()
+            ->where('customer_id', $order->customer_id)
+            ->where('shop_id', $order->shop_id)
+            ->where(function ($query) use ($lines) {
+                foreach ($lines as [$productId, $branchId]) {
+                    $query->orWhere(function ($line) use ($productId, $branchId) {
+                        $line->where('product_id', $productId);
+                        $branchId === null ? $line->whereNull('branch_id') : $line->where('branch_id', $branchId);
+                    });
+                }
+            })
+            ->delete();
     }
 
     /**

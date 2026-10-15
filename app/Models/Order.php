@@ -113,8 +113,8 @@ class Order extends Model
         static::updated(function (Order $order) {
             self::clearOrderCache();
 
-            // Gateway orders (e.g. Tap) take stock only once they become Paid, from any path:
-            // the gateway callback, an admin or shop marking it paid, or delivery
+            // Online orders (Tap, Tabby, ...) take stock and empty the cart only once they become Paid,
+            // from any path: the gateway callback, an admin or shop marking it paid, or delivery
             if ($order->wasChanged('payment_status') && $order->payment_status === PaymentStatus::PAID
                 && OrderStockService::defersStock($order->payment_method)) {
                 if ($order->order_status === OrderStatus::CANCELLED) {
@@ -123,6 +123,7 @@ class Order extends Model
                     return;
                 }
                 OrderStockService::take($order);
+                OrderStockService::clearCart($order);
             }
         });
 

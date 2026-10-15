@@ -291,6 +291,8 @@ const openPaymentPopupWindow = (url) => {
             if (currentPath == '/payment/success') {
                 win.close();
                 clearInterval(intervalID);
+                // Paying an order removes its lines from the cart on the server
+                basketStore.fetchCart();
                 toast(content, {
                     type: "default",
                     hideProgressBar: true,
