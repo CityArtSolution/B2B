@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Enums\OrderStatus;
 use App\Enums\PaymentMethod;
+use App\Services\OrderStockService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
 use App\Http\Resources\OrderDetailsResource;
@@ -174,7 +175,7 @@ class OrderController extends Controller
 
             // Check product quantity
             foreach ($order->products as $product) {
-                if ($product->quantityBranch($product->pivot->branch_id) < $product->pivot->quantity) {
+                if (($product->quantityBranch($product->pivot->branch_id)?->qty ?? 0) < $product->pivot->quantity) {
                     return $this->json('Sorry, your product quantity out of stock', [], 422);
                 }
             }
@@ -192,7 +193,8 @@ class OrderController extends Controller
             // re-order
             $order = OrderRepository::reOrder($order, $payment);
 
-            if ($subscription) {
+            // Deferred gateway orders use up a sale when paid (OrderStockService::take)
+            if ($subscription && ! OrderStockService::defersStock($paymentMethod)) {
                 $subscription->update([
                     'remaining_sales' => $subscription->remaining_sales - 1,
                 ]);
@@ -252,27 +254,16 @@ class OrderController extends Controller
 
         if ($order->order_status->value == OrderStatus::PENDING->value) {
 
+            // An unpaid Tap order never took stock, so there is nothing to give back
+            $stockTaken = OrderStockService::isTaken($order);
+
             // update order status
             $order->update([
                 'order_status' => OrderStatus::CANCELLED->value,
             ]);
 
-            foreach ($order->products as $product) {
-                $qty = $product->pivot->quantity;
-
-                $product->update(['quantity' => $product->quantity + $qty]);
-
-                $flashSale = $product->activeFlashSale($product->pivot->branch_id);
-
-                if ($flashSale) {
-                    if ($product->pivot?->price) {
-                        if ($flashSale->pivot->sale_quantity >= $qty && ($product->pivot?->price == $flashSale->pivot->price)) {
-                            $flashSale->products()->updateExistingPivot($product->id, [
-                                'sale_quantity' => $flashSale->pivot->sale_quantity - $qty,
-                            ]);
-                        }
-                    }
-                }
+            if ($stockTaken) {
+                OrderStockService::release($order);
             }
 
             return $this->json('Order cancelled successfully', [

@@ -60,9 +60,18 @@ class PaymentGatewayController extends Controller
      */
     public function success(Request $request, Payment $payment)
     {
-        $payment->orders()->update([
-            'payment_status' => PaymentStatus::PAID->value,
-        ]);
+        // Tap payments are confirmed only by the Tap callback, which verifies the charge with Tap.
+        // This unverified route must never mark them paid.
+        if (strcasecmp((string) $payment->payment_method, 'tap') === 0) {
+            return to_route('order.payment.cancel', ['payment' => $payment, 'error' => 'Invalid payment confirmation']);
+        }
+
+        // Saved one by one so the Order updated event runs (it takes stock for orders placed with Tap)
+        foreach ($payment->orders as $order) {
+            if ($order->payment_status !== PaymentStatus::PAID) {
+                $order->update(['payment_status' => PaymentStatus::PAID->value]);
+            }
+        }
 
         $payment->update([
             'is_paid' => true,

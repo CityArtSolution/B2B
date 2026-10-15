@@ -7,12 +7,14 @@ use App\Enums\OrderStatus2;
 use App\Enums\PaymentMethod;
 use App\Enums\PaymentStatus;
 use App\Models\Scopes\PosOrderFalse;
+use App\Services\OrderStockService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class Order extends Model
@@ -108,8 +110,20 @@ class Order extends Model
             self::clearOrderCache();
         });
 
-        static::updated(function () {
+        static::updated(function (Order $order) {
             self::clearOrderCache();
+
+            // Gateway orders (e.g. Tap) take stock only once they become Paid, from any path:
+            // the gateway callback, an admin or shop marking it paid, or delivery
+            if ($order->wasChanged('payment_status') && $order->payment_status === PaymentStatus::PAID
+                && OrderStockService::defersStock($order->payment_method)) {
+                if ($order->order_status === OrderStatus::CANCELLED) {
+                    Log::warning('Cancelled order was paid; stock not taken, a refund may be needed', ['order_id' => $order->id]);
+
+                    return;
+                }
+                OrderStockService::take($order);
+            }
         });
 
         static::deleted(function () {

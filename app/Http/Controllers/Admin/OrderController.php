@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Repositories\NotificationRepository;
 use App\Repositories\OrderRepository;
 use App\Services\NotificationServices;
+use App\Services\OrderStockService;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -108,31 +109,17 @@ class OrderController extends Controller
     {
         $request->validate(['status' => 'required']);
 
+        // Judge by the status before the change: an unpaid Tap order never took stock
+        $stockTaken = OrderStockService::isTaken($order);
+
         $order->update(['order_status' => $request->status]);
 
         $title = 'Order status updated';
         $message = 'Your order status updated to '.$request->status;
         $deviceKeys = $order->customer?->user?->devices?->pluck('key')?->toArray() ?? [];
 
-        if ($request->status == OrderStatus::CANCELLED->value) {
-            foreach ($order->products as $product) {
-
-                $qty = $product->pivot->quantity;
-
-                $product->update(['quantity' => $product->quantity + $qty]);
-
-                $flashSale = $product->activeFlashSale($product->pivot->branch_id);
-
-                if ($flashSale) {
-                    if ($product->pivot?->price) {
-                        if ($flashSale->pivot->sale_quantity >= $qty && ($product->pivot?->price == $flashSale->pivot->price)) {
-                            $flashSale->products()->updateExistingPivot($product->id, [
-                                'sale_quantity' => $flashSale->pivot->sale_quantity - $qty,
-                            ]);
-                        }
-                    }
-                }
-            }
+        if ($request->status == OrderStatus::CANCELLED->value && $stockTaken) {
+            OrderStockService::release($order);
         }
 
         try {

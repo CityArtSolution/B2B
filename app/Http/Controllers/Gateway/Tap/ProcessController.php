@@ -8,8 +8,10 @@ use App\Models\PaymentGateway;
 use App\Models\ShopSubscription;
 use App\Enums\PaymentStatus;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\URL;
 
 class ProcessController extends Controller
 {
@@ -42,15 +44,16 @@ class ProcessController extends Controller
             if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $customer['email'] = $email;
             }
-            $phone = preg_replace('/\D/', '', $info['phone'] ?? $user?->phone ?? '');
-            if (str_starts_with($phone, '00966')) {
-                $phone = substr($phone, 5);
-            } elseif (str_starts_with($phone, '966')) {
-                $phone = substr($phone, 3);
+            $phone = self::customerPhone($info['phone'] ?? $user?->phone, $info['phone_code'] ?? $user?->phone_code);
+            if ($phone) {
+                $customer['phone'] = $phone;
             }
-            $phone = ltrim($phone, '0');
-            if (preg_match('/^5[0-9]{8}$/', $phone)) {
-                $customer['phone'] = ['country_code' => '966', 'number' => $phone];
+
+            // Tap rejects a charge that has neither an email nor a phone number
+            if (! isset($customer['email']) && ! isset($customer['phone'])) {
+                Log::warning('Tap charge skipped: customer has no valid email or phone', ['payment_id' => $payment->id]);
+
+                return json_encode(['error' => 'Please add a valid email or phone number to your account before paying with Tap.']);
             }
 
             $payload = [
@@ -66,7 +69,15 @@ class ProcessController extends Controller
                 ],
                 "post" => [
                     "url" => $successUrl
-                ]
+                ],
+                // Ties the charge to this payment, so the callback can accept any charge made for it
+                "reference" => [
+                    "transaction" => 'pay_'.$payment->id,
+                    "order" => (string) $payment->id,
+                ],
+                "metadata" => [
+                    "payment_id" => (string) $payment->id,
+                ],
             ];
 
             $response = Http::withToken($secretKey)->acceptJson()->timeout(30)
@@ -96,8 +107,7 @@ class ProcessController extends Controller
     public function callback(Request $request, Payment $payment)
     {
         $chargeId = $request->input('tap_id', $request->input('id'));
-        if (! is_string($chargeId) || ! str_starts_with($chargeId, 'chg_') ||
-            ! hash_equals((string) $payment->payment_token, $chargeId)) {
+        if (! is_string($chargeId) || ! preg_match('/^chg_[A-Za-z0-9]+$/', $chargeId)) {
             abort(400, 'Invalid Tap payment reference');
         }
 
@@ -118,7 +128,12 @@ class ProcessController extends Controller
             return to_route('order.payment.cancel', ['payment' => $payment, 'error' => 'Payment verification is temporarily unavailable.']);
         }
 
-        $valid = ($charge['id'] ?? null) === $chargeId
+        // The charge must belong to this payment: either the latest charge saved on it, or an earlier
+        // one created for it (customer opened Tap twice) as recorded by Tap in the charge metadata
+        $belongs = hash_equals((string) $payment->payment_token, $chargeId)
+            || (string) ($charge['metadata']['payment_id'] ?? '') === (string) $payment->id;
+
+        $valid = $belongs && ($charge['id'] ?? null) === $chargeId
             && strtoupper($charge['currency'] ?? '') === self::currency($config)
             && isset($charge['amount'])
             && (int) round($charge['amount'] * 100) === (int) round($payment->amount * 100);
@@ -128,19 +143,28 @@ class ProcessController extends Controller
 
         $captured = ($charge['status'] ?? null) === 'CAPTURED';
 
+        // Keep the paid charge as the payment's reference (the subscription pages check it)
+        if ($captured && $payment->payment_token !== $chargeId && ! $payment->is_paid) {
+            $payment->update(['payment_token' => $chargeId]);
+        }
+
         // Subscription payments are activated by SubscriptionController once the charge is verified
         if (ShopSubscription::where('payment_id', $payment->id)->exists()) {
             if ($request->isMethod('post')) {
                 return response()->json(['received' => true]);
             }
-            $route = $captured ? 'subscription.payment.success' : 'subscription.payment.cancel';
+            $params = ['payment' => $payment, 'token' => $payment->payment_token];
+            if (! $captured) {
+                return to_route('subscription.payment.cancel', $params);
+            }
 
-            return to_route($route, ['payment' => $payment, 'token' => $payment->payment_token]);
+            // Signed so the success page cannot be reached by editing the cancel URL
+            return redirect()->to(URL::temporarySignedRoute('subscription.payment.success', now()->addMinutes(30), $params));
         }
 
         if ($captured) {
-            $payment->orders()->update(['payment_status' => PaymentStatus::PAID->value]);
-            $payment->update(['is_paid' => true]);
+            self::markPaid($payment);
+            $payment->refresh();
         }
 
         if ($request->isMethod('post')) {
@@ -154,6 +178,63 @@ class ProcessController extends Controller
             'response' => $charge['response'] ?? null]);
         return to_route('order.payment.cancel', ['payment' => $payment,
             'error' => $charge['response']['message'] ?? 'Payment has not been completed.']);
+    }
+
+    /**
+     * Mark a verified payment and its orders as paid, exactly once.
+     * The browser redirect and Tap's server POST can arrive together, so the rows are locked.
+     * Each order is saved as a model so the Order updated event takes its stock.
+     */
+    private static function markPaid(Payment $payment): void
+    {
+        DB::transaction(function () use ($payment) {
+            $locked = Payment::whereKey($payment->id)->lockForUpdate()->first();
+            if (! $locked || $locked->is_paid) {
+                return;
+            }
+
+            foreach ($locked->orders()->lockForUpdate()->get() as $order) {
+                if ($order->payment_status !== PaymentStatus::PAID) {
+                    $order->update(['payment_status' => PaymentStatus::PAID->value]);
+                }
+            }
+
+            $locked->update(['is_paid' => true]);
+        });
+    }
+
+    /**
+     * Customer phone in Tap format, using the stored country code when there is one.
+     * Saudi (05xxxxxxxx) and Egyptian (01xxxxxxxxx) local numbers are recognised without it.
+     */
+    private static function customerPhone(?string $phone, $phoneCode): ?array
+    {
+        $digits = preg_replace('/\D/', '', (string) $phone);
+        if (str_starts_with($digits, '00')) {
+            $digits = substr($digits, 2);
+        }
+        $code = ltrim(preg_replace('/\D/', '', (string) $phoneCode), '0');
+
+        if ($code === '') {
+            if (preg_match('/^(966)?0?5[0-9]{8}$/', $digits)) {
+                $code = '966';
+            } elseif (preg_match('/^(20)?0?1[0-9]{9}$/', $digits)) {
+                $code = '20';
+            } else {
+                $code = '966';
+            }
+        }
+
+        if (str_starts_with($digits, $code) && strlen($digits) - strlen($code) >= 8) {
+            $digits = substr($digits, strlen($code));
+        }
+        $number = ltrim($digits, '0');
+
+        if (strlen($number) < 7 || strlen($number) > 12 || strlen($code) > 4) {
+            return null;
+        }
+
+        return ['country_code' => $code, 'number' => $number];
     }
 
     /**

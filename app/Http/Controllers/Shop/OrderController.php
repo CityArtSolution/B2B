@@ -12,6 +12,7 @@ use App\Repositories\OrderRepository;
 use App\Repositories\TransactionRepository;
 use App\Repositories\WalletRepository;
 use App\Services\NotificationServices;
+use App\Services\OrderStockService;
 use Endroid\QrCode\QrCode as EndroidQrCode;
 use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Http\Request;
@@ -63,31 +64,17 @@ class OrderController extends Controller
     {
         $request->validate(['status' => 'required']);
 
+        // Judge by the status before the change: an unpaid Tap order never took stock
+        $stockTaken = OrderStockService::isTaken($order);
+
         $order->update(['order_status' => $request->status]);
 
         if ($request->status == OrderStatus::DELIVERED->value) {
             $this->updateWalletAndTransaction($order);
         }
 
-        if ($request->status == OrderStatus::CANCELLED->value) {
-            foreach ($order->products as $product) {
-
-                $qty = $product->pivot->quantity;
-
-                $product->update(['quantity' => $product->quantity + $qty]);
-
-                $flashSale = $product->activeFlashSale($product->pivot->branch_id);
-
-                if ($flashSale) {
-                    if ($product->pivot?->price) {
-                        if ($flashSale->pivot->sale_quantity >= $qty && ($product->pivot?->price == $flashSale->pivot->price)) {
-                            $flashSale->products()->updateExistingPivot($product->id, [
-                                'sale_quantity' => $flashSale->pivot->sale_quantity - $qty,
-                            ]);
-                        }
-                    }
-                }
-            }
+        if ($request->status == OrderStatus::CANCELLED->value && $stockTaken) {
+            OrderStockService::release($order);
         }
 
         $title = 'Order status updated';

@@ -18,6 +18,7 @@ use App\Models\OrderVatTax;
 use App\Models\Payment;
 use App\Models\Shop;
 use App\Services\NotificationServices;
+use App\Services\OrderStockService;
 use Illuminate\Support\Facades\Auth;
 
 class OrderRepository extends Repository
@@ -52,6 +53,9 @@ class OrderRepository extends Repository
 
         $shopProducts = $carts->groupBy('shop_id');
 
+        // Gateway orders (e.g. Tap) take stock when the payment is confirmed, not here
+        $deferStock = OrderStockService::defersStock($paymentMethod);
+
         foreach ($shopProducts as $shopId => $cartProducts) {
 
             $shop = Shop::find($shopId);
@@ -76,7 +80,7 @@ class OrderRepository extends Repository
 //                if ($branchProduct) {
 //                    $branchProduct->decrement('qty', $cart->quantity);
 //                }
-                if ($paymentMethod->name !== 'OFFER_PRICE') {
+                if ($paymentMethod->name !== 'OFFER_PRICE' && ! $deferStock) {
                     if ($branchProduct) {
                         $branchProduct->decrement('qty', $cart->quantity);
                     }
@@ -101,9 +105,11 @@ class OrderRepository extends Repository
                         $price = $flashSale->pivot->price;
                         $saleQty += $flashSale->pivot->sale_quantity;
 
-                        $flashSale->products()->updateExistingPivot($product->id, [
-                            'sale_quantity' => $saleQty,
-                        ]);
+                        if (! $deferStock) {
+                            $flashSale->products()->updateExistingPivot($product->id, [
+                                'sale_quantity' => $saleQty,
+                            ]);
+                        }
                     }
                 }
 
@@ -222,7 +228,8 @@ class OrderRepository extends Repository
 
         $generalSetting = generaleSetting('setting');
 
-        if ($generalSetting?->business_based_on == 'subscription') {
+        // Deferred gateway orders use up a sale when paid (OrderStockService::take)
+        if ($generalSetting?->business_based_on == 'subscription' && ! OrderStockService::defersStock($paymentMethod)) {
             $subscription = $shop->currentSubscription;
 
             if ($subscription && $subscription->remaining_sales && $subscription->remaining_sales > 0) {
@@ -347,6 +354,8 @@ class OrderRepository extends Repository
             'payment_status' => PaymentStatus::PENDING->value,
         ]);
 
+        $deferStock = OrderStockService::defersStock($newOrder->payment_method);
+
         foreach ($order->products as $product) {
 
             $qty = $product->pivot->quantity;
@@ -357,7 +366,8 @@ class OrderRepository extends Repository
                 ->where('branch_id', $product->pivot->branch_id ?? null)
                 ->first();
 
-            if ($branchProduct) {
+            // Gateway orders (e.g. Tap) take stock when the payment is confirmed
+            if ($branchProduct && ! $deferStock) {
                 $branchProduct->decrement('qty', $qty);
             }
             $newOrder->products()->attach($product->id, [
@@ -424,7 +434,8 @@ class OrderRepository extends Repository
             }
         }
 
-        return $order;
+        // The caller attaches the payment to the returned order, so it must be the new one
+        return $newOrder;
     }
 
     /**
