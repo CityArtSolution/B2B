@@ -40,6 +40,10 @@ class ProcessController extends Controller
 
             $user = $payment->orders->first()?->customer?->user;
             $customer = ['first_name' => $info['name'] ?? $user?->name ?? 'Customer'];
+            $lastName = trim((string) ($info['last_name'] ?? $user?->last_name ?? ''));
+            if ($lastName !== '') {
+                $customer['last_name'] = $lastName;
+            }
             $email = $info['email'] ?? $user?->email;
             if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $customer['email'] = $email;
@@ -59,7 +63,15 @@ class ProcessController extends Controller
             $payload = [
                 "amount" => round((float) $payment->amount, 2),
                 "currency" => self::currency($config),
+                "customer_initiated" => true,
+                "threeDSecure" => true,
+                "save_card" => false,
+                "description" => $info['description'] ?? 'COQUI Store order payment',
                 "statement_descriptor" => "COQUI Store",
+                "receipt" => [
+                    "email" => true,
+                    "sms" => true,
+                ],
                 "customer" => $customer,
                 "source" => [
                     "id" => "src_all"
