@@ -287,6 +287,28 @@
                         @endhasPermission
                     </div>
                 </div>
+                @if (in_array($order->payment_method?->value, ['Tabby', 'Tamara'], true) && $order->payment_status?->value === 'Paid')
+                    @hasPermission('admin.order.gateway.refund')
+                        <form action="{{ route('admin.order.gateway.refund', $order->id) }}" method="POST"
+                            class="border-bottom p-3"
+                            onsubmit="return confirm('{{ __('Refund this amount to the customer through :gateway? This cannot be undone.', ['gateway' => $order->payment_method->value]) }}')">
+                            @csrf
+                            <div class="text-color mb-2">{{ __('Refund via :gateway', ['gateway' => $order->payment_method->value]) }}</div>
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <input type="number" name="amount" step="0.01" min="0.01"
+                                    max="{{ round($order->payable_amount, 2) }}"
+                                    value="{{ round($order->payable_amount, 2) }}" class="form-control"
+                                    style="max-width: 140px" required>
+                                <input type="text" name="reason" maxlength="255" class="form-control"
+                                    placeholder="{{ __('Reason (optional)') }}" style="max-width: 220px">
+                                <button type="submit" class="btn btn-outline-danger py-2">{{ __('Refund') }}</button>
+                            </div>
+                            @error('amount')
+                                <div class="text-danger small mt-1">{{ $message }}</div>
+                            @enderror
+                        </form>
+                    @endhasPermission
+                @endif
                 @hasPermission('admin.rider.assign.order')
                     @if ($order->order_status->value != 'Pending' && $order->shipping_type == 'courier')
                         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 p-3">

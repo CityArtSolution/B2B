@@ -12,6 +12,7 @@ use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\BannerController;
 use App\Http\Controllers\API\CouponController;
 use App\Http\Controllers\API\MasterController;
+use App\Http\Controllers\Gateway\Tamara\ProcessController as TamaraProcessController;
 use App\Http\Controllers\API\ReviewController;
 use App\Http\Controllers\API\AddressController;
 use App\Http\Controllers\API\CountryController;
@@ -81,6 +82,9 @@ Route::controller(SupportController::class)->group(function () {
 Route::controller(MasterController::class)->group(function () {
     Route::get('/master', 'index');
 });
+
+// Whether Tamara is offered to the signed-in customer, checked by the checkout page
+Route::middleware('auth:sanctum')->get('/tamara/eligibility', [TamaraProcessController::class, 'eligibility']);
 
 // home route
 Route::controller(HomeController::class)->group(function () {

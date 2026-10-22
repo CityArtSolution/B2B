@@ -108,6 +108,32 @@ class PaymentGatewaySeeder extends Seeder
                 'alias' => 'Tap',
                 'is_active' => false,
             ],
+            [
+                'title' => 'Tabby',
+                'name' => 'tabby',
+                'config' => json_encode([
+                    'secret_key' => '',
+                    'public_key' => '',
+                    'merchant_code' => '',
+                    'currency' => 'SAR',
+                ]),
+                'mode' => 'test',
+                'alias' => 'Tabby',
+                'is_active' => false,
+            ],
+            [
+                'title' => 'Tamara',
+                'name' => 'tamara',
+                'config' => json_encode([
+                    'api_token' => '',
+                    'webhook_token' => '',
+                    'public_key' => '',
+                    'currency' => 'SAR',
+                ]),
+                'mode' => 'test',
+                'alias' => 'Tamara',
+                'is_active' => false,
+            ],
         ];
 
         PaymentGateway::insert($paymentMethods);

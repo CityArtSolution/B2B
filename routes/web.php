@@ -14,6 +14,8 @@ use App\Http\Controllers\Gateway\Bkash\ExecutePaymentController;
 use App\Http\Controllers\API\ProductLicenseController;
 use App\Http\Controllers\Gateway\PayPal\ProcessController as PayPalProcessController;
 use App\Http\Controllers\Gateway\Tap\ProcessController as TapProcessController;
+use App\Http\Controllers\Gateway\Tabby\ProcessController as TabbyProcessController;
+use App\Http\Controllers\Gateway\Tamara\ProcessController as TamaraProcessController;
 
 /*
 |--------------------------------------------------------------------------
@@ -91,6 +93,14 @@ Route::match(['get', 'post'], '/subscription/payment/{payment}/success', [Subscr
 Route::match(['get', 'post'], '/subscription/payment/{payment}/cancel', [SubscriptionController::class, 'paymentCancel'])->name('subscription.payment.cancel');
 
 Route::match(['get', 'post'], '/tap/payment/callback/{payment}', [TapProcessController::class, 'callback'])->name('tap.payment.execute');
+
+// Tabby: customer redirect back from Tabby, and Tabby's server notifications
+Route::get('/tabby/payment/callback/{payment}', [TabbyProcessController::class, 'callback'])->name('tabby.payment.callback');
+Route::post('/tabby/webhook', [TabbyProcessController::class, 'webhook'])->name('tabby.webhook');
+
+// Tamara: customer redirect back from Tamara, and Tamara's server notifications
+Route::get('/tamara/payment/callback/{payment}', [TamaraProcessController::class, 'callback'])->name('tamara.payment.callback');
+Route::post('/tamara/webhook', [TamaraProcessController::class, 'webhook'])->name('tamara.webhook');
 
 // check user is online or not
 Route::post('/update/last/seen', [CheckOnlineUserController::class, 'checkOnlineStatus']);

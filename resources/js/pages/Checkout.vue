@@ -208,7 +208,7 @@
                                 {{ $t('Available Payment Gateways') }}
                             </span>
                             <div class="mt-3 flex flex-wrap gap-4">
-                                <label v-for="gateway in master.paymentGateways" :key="gateway.id" :for="gateway.name"
+                                <label v-for="gateway in visibleGateways" :key="gateway.id" :for="gateway.name"
                                     class="flex items-center gap-4 border relative has-[:checked]:border-primary has-[:checked]:shadow-lg p-2 rounded-md border-slate-200 cursor-pointer">
                                     <input v-model="paymentGateway" :id="gateway.name" name="paymentGateway"
                                         type="radio" class="sr-only" :value="gateway.name" />
@@ -400,6 +400,42 @@ watch(() => master.paymentGateways, (gateways) => {
 watch(paymentGateway, () => {
     if (paymentType.value === 'card') {
         paymentMethod.value = paymentGateway.value;
+    }
+});
+
+// Tamara asks to check the customer and amount before offering it; it is hidden when not eligible
+const tamaraEligible = ref(true);
+const visibleGateways = computed(() =>
+    (master.paymentGateways || []).filter((gateway) => gateway.name !== 'tamara' || tamaraEligible.value)
+);
+
+let tamaraCheckId = 0;
+const checkTamaraEligibility = async () => {
+    const amount = parseFloat(basketStore.payable_amount) || 0;
+    if (!AuthStore.token || amount <= 0 || !(master.paymentGateways || []).some((gateway) => gateway.name === 'tamara')) {
+        return;
+    }
+
+    const checkId = ++tamaraCheckId;
+    try {
+        const res = await axios.get('/tamara/eligibility', {
+            params: { amount },
+            headers: { Authorization: AuthStore.token },
+        });
+        if (checkId === tamaraCheckId) {
+            tamaraEligible.value = res.data?.data?.eligible !== false;
+        }
+    } catch (error) {
+        // The payment step checks again, so a failed check keeps Tamara visible
+        tamaraEligible.value = true;
+    }
+};
+
+watch(() => [basketStore.payable_amount, master.paymentGateways], checkTamaraEligibility, { immediate: true });
+
+watch(visibleGateways, (gateways) => {
+    if (paymentGateway.value && !gateways.some((gateway) => gateway.name === paymentGateway.value)) {
+        paymentGateway.value = gateways[0]?.name ?? null;
     }
 });
 </script>

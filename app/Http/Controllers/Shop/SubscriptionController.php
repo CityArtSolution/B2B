@@ -87,8 +87,8 @@ class SubscriptionController extends Controller
             return to_route('shop.subscription.index')->with('error', 'Invalid payment token');
         }
 
-        // Tap success links are signed by the Tap callback after it verifies the charge with Tap
-        if (strcasecmp((string) $payment->payment_method, 'tap') === 0 && ! $request->hasValidSignature()) {
+        // Tap, Tabby and Tamara success links are signed by their callback after it verifies the payment with the gateway
+        if (in_array(strtolower((string) $payment->payment_method), ['tap', 'tabby', 'tamara'], true) && ! $request->hasValidSignature()) {
             return to_route('shop.subscription.index')->with('error', 'Invalid payment token');
         }
 

@@ -60,9 +60,9 @@ class PaymentGatewayController extends Controller
      */
     public function success(Request $request, Payment $payment)
     {
-        // Tap payments are confirmed only by the Tap callback, which verifies the charge with Tap.
-        // This unverified route must never mark them paid.
-        if (strcasecmp((string) $payment->payment_method, 'tap') === 0) {
+        // Tap, Tabby and Tamara payments are confirmed only by their own callback, which verifies the
+        // payment with the gateway. This unverified route must never mark them paid.
+        if (in_array(strtolower((string) $payment->payment_method), ['tap', 'tabby', 'tamara'], true)) {
             return to_route('order.payment.cancel', ['payment' => $payment, 'error' => 'Invalid payment confirmation']);
         }
 

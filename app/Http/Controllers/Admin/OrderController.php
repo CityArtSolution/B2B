@@ -7,6 +7,8 @@ use App\Enums\OrderStatus2;
 use App\Enums\PaymentStatus;
 use App\Enums\Roles;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Gateway\Tabby\ProcessController as TabbyProcessController;
+use App\Http\Controllers\Gateway\Tamara\ProcessController as TamaraProcessController;
 use App\Models\Driver;
 use App\Models\GeneraleSetting;
 use App\Models\Setting;
@@ -142,6 +144,37 @@ class OrderController extends Controller
     /**
      * Update the payment status.
      */
+    /**
+     * Refund part or all of an order paid with Tabby or Tamara, through the gateway's API
+     */
+    public function gatewayRefund(Request $request, Order $order)
+    {
+        $data = $request->validate([
+            'amount' => 'required|numeric|min:0.01|max:'.round((float) $order->payable_amount, 2),
+            'reason' => 'nullable|string|max:255',
+        ]);
+
+        $payment = $order->payments()->where('is_paid', true)->latest('id')->first();
+        $gateway = strtolower((string) $payment?->payment_method);
+        if (! in_array($gateway, ['tabby', 'tamara'], true)) {
+            return back()->with('error', __('This order was not paid with Tabby or Tamara.'));
+        }
+
+        try {
+            if ($gateway === 'tabby') {
+                $result = TabbyProcessController::refund($payment, (float) $data['amount'], $data['reason'] ?? null);
+                $refunded = collect($result['refunds'] ?? [])->sum(fn ($refund) => (float) ($refund['amount'] ?? 0));
+            } else {
+                $result = TamaraProcessController::refund($payment, (float) $data['amount'], $data['reason'] ?? null);
+                $refunded = $result['refunded_total'];
+            }
+        } catch (\Throwable $th) {
+            return back()->with('error', $th instanceof \RuntimeException ? $th->getMessage() : __('Unable to connect to the payment gateway. Please try again.'));
+        }
+
+        return back()->with('success', __('Refund sent. Total refunded on this payment: :amount', ['amount' => number_format($refunded, 2)]));
+    }
+
     public function paymentStatusToggle(Order $order)
     {
         if ($order->payment_status->value == PaymentStatus::PAID->value) {

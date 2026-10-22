@@ -16,5 +16,7 @@ class VerifyCsrfToken extends Middleware
         'subscription/payment/*',
         'paytabs/*',
         'tap/*',
+        'tabby/*',
+        'tamara/*',
     ];
 }

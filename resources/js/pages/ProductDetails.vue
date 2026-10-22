@@ -244,6 +244,9 @@
                             </div>
                         </div>
 
+                        <!-- Tamara instalments widget (below the price, above add to cart) -->
+                        <TamaraWidget :amount="productPrice" />
+
                         <!-- Size -->
                         <div v-if="product.sizes?.length > 0 && product.is_digital == false" class="flex items-center gap-3 py-4">
                             <div class="w-[40px] md:w-[88px] text-slate-600 text-base font-normal leading-normal">
@@ -497,6 +500,7 @@ import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { useRoute, useRouter } from "vue-router";
 import { useMaster } from "../stores/MasterStore";
+import TamaraWidget from "../components/TamaraWidget.vue";
 
 import { HeartIcon, HomeIcon, MinusIcon, PlusIcon, ShareIcon } from "@heroicons/vue/24/outline";
 import { HeartIcon as HeartIconFill, StarIcon } from "@heroicons/vue/24/solid";

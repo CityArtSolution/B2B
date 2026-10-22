@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\FooterResource;
 use App\Http\Resources\LanguageResource;
 use App\Http\Resources\MenuResource;
+use App\Http\Controllers\Gateway\Tamara\ProcessController as TamaraProcessController;
 use App\Http\Resources\PaymentGatewayResource;
 use App\Http\Resources\SocialLinkResource;
 use App\Models\ContactUs;
@@ -124,6 +125,7 @@ class MasterController extends Controller
             'google_playstore_link' => $generaleSetting?->google_playstore_url ?? null,
             'app_store_link' => $generaleSetting?->app_store_url ?? null,
             'payment_gateways' => PaymentGatewayResource::collection($paymentGateways),
+            'tamara_widget' => $this->tamaraWidget($paymentGateways),
             'multi_vendor' => (bool) ($shopType == 'multi' ? true : false),
             'mobile' => $generaleSetting?->footer_phone ?? '0550136556',
             'whatsapp' => ContactUs::first()?->whatsapp ?? $generaleSetting?->footer_phone ?? '0550136556',
@@ -154,5 +156,28 @@ class MasterController extends Controller
             'return_order_within_days' => $generaleSetting?->return_order_within_days ?? 3,
             'baseUrl' => config('app.url'),
         ]);
+    }
+
+    /**
+     * Settings for the Tamara promo widget (product and cart pages), only while Tamara is active.
+     * Only the public key is shared; the API and notification tokens stay on the server.
+     */
+    private function tamaraWidget($paymentGateways): ?array
+    {
+        $gateway = collect($paymentGateways)->firstWhere('alias', 'Tamara');
+        if (! $gateway) {
+            return null;
+        }
+
+        $config = TamaraProcessController::config($gateway);
+        if (empty($config->public_key)) {
+            return null;
+        }
+
+        return [
+            'public_key' => $config->public_key,
+            'country' => $config->country,
+            'sandbox' => ! $config->live,
+        ];
     }
 }

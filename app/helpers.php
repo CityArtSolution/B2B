@@ -136,6 +136,46 @@ if (! function_exists('getDeliveryCharge')) {
     }
 }
 
+if (! function_exists('customerPhone')) {
+
+    /**
+     * Customer mobile number split into country code and local number, for payment gateways.
+     * Uses the stored country code when there is one; Saudi (05xxxxxxxx) and Egyptian (01xxxxxxxxx)
+     * local numbers are recognised without it.
+     *
+     * @return array{country_code: string, number: string}|null
+     */
+    function customerPhone(?string $phone, $phoneCode): ?array
+    {
+        $digits = preg_replace('/\D/', '', (string) $phone);
+        if (str_starts_with($digits, '00')) {
+            $digits = substr($digits, 2);
+        }
+        $code = ltrim(preg_replace('/\D/', '', (string) $phoneCode), '0');
+
+        if ($code === '') {
+            if (preg_match('/^(966)?0?5[0-9]{8}$/', $digits)) {
+                $code = '966';
+            } elseif (preg_match('/^(20)?0?1[0-9]{9}$/', $digits)) {
+                $code = '20';
+            } else {
+                $code = '966';
+            }
+        }
+
+        if (str_starts_with($digits, $code) && strlen($digits) - strlen($code) >= 8) {
+            $digits = substr($digits, strlen($code));
+        }
+        $number = ltrim($digits, '0');
+
+        if (strlen($number) < 7 || strlen($number) > 12 || strlen($code) > 4) {
+            return null;
+        }
+
+        return ['country_code' => $code, 'number' => $number];
+    }
+}
+
 if (! function_exists('permissionName')) {
 
     /**

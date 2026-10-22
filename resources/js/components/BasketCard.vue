@@ -74,6 +74,11 @@
                                             </div>
                                         </div>
 
+                                        <!-- Tamara instalments widget for the cart total -->
+                                        <div v-if="BasketStore.total > 0" class="px-6">
+                                            <TamaraWidget :amount="BasketStore.totalAmount" />
+                                        </div>
+
                                         <!-- Proceed to Checkout -->
                                         <div v-if="BasketStore.total > 0"
                                             class="flex gap-6 p-6 border-t border-slate-200">
@@ -116,6 +121,7 @@ import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import Basket from './Basket.vue';
+import TamaraWidget from './TamaraWidget.vue';
 
 import { useBasketStore } from '../stores/BasketStore';
 import { useMaster } from '../stores/MasterStore';
