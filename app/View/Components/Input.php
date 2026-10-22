@@ -23,7 +23,8 @@ class Input extends Component
         public bool $readonly = false,
         public ?string $id = null,
         public ?string $class = null,
-        public ?string $autocomplete = null
+        public ?string $autocomplete = null,
+        public int $maxlength = 255
     ) {}
 
     /**

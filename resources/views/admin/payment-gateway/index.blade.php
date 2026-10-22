@@ -61,9 +61,10 @@
                                         $label = ucwords(str_replace('_', ' ', $key));
                                     @endphp
                                     <div class="mt-3">
+                                        {{-- Gateway tokens (e.g. Tamara's) are long JWTs, well over 255 characters --}}
                                         <x-input :value="$value" name="config[{{ $key }}]" type="text"
                                             placeholder="{{ $label }}" label="{{ $label }}"
-                                            required="true"/>
+                                            required="true" :maxlength="4000"/>
                                     </div>
                                 @endforeach
 

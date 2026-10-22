@@ -125,7 +125,7 @@ class ProcessController extends Controller
 
             return json_encode(['error' => 'Tamara could not create the payment. Please use another payment method.']);
         } catch (\Throwable $th) {
-            Log::error('Tamara request failed', ['payment_id' => $payment->id, 'exception' => get_class($th)]);
+            Log::error('Tamara request failed', ['payment_id' => $payment->id, 'exception' => get_class($th), 'message' => $th->getMessage()]);
 
             return json_encode(['error' => 'Unable to connect to Tamara. Please try again.']);
         }
@@ -365,7 +365,8 @@ class ProcessController extends Controller
         ]);
 
         if (! $response->successful()) {
-            throw new \RuntimeException('Tamara eligibility check failed ('.$response->status().')');
+            // 401 "unauthorized" usually means the API token is wrong, cut off, or for the other Mode (test/live)
+            throw new \RuntimeException('Tamara eligibility check failed ('.$response->status().'): '.mb_substr($response->body(), 0, 200));
         }
 
         return (bool) $response->json('is_eligible');
