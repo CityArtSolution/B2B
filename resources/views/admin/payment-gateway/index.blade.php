@@ -61,10 +61,19 @@
                                         $label = ucwords(str_replace('_', ' ', $key));
                                     @endphp
                                     <div class="mt-3">
-                                        {{-- Gateway tokens (e.g. Tamara's) are long JWTs, well over 255 characters --}}
-                                        <x-input :value="$value" name="config[{{ $key }}]" type="text"
-                                            placeholder="{{ $label }}" label="{{ $label }}"
-                                            required="true" :maxlength="4000"/>
+                                        {{-- A textarea: gateway tokens (e.g. Tamara's) are long JWTs, well over 255 characters --}}
+                                        @php
+                                            $fieldId = $paymentGateway->name.'_'.$key;
+                                        @endphp
+                                        <label for="{{ $fieldId }}" class="form-label">{{ __($label) }} <span class="text-danger">*</span></label>
+                                        <textarea name="config[{{ $key }}]" id="{{ $fieldId }}" rows="{{ strlen((string) $value) > 60 ? 4 : 1 }}"
+                                            class="form-control @error('config.'.$key) is-invalid @enderror"
+                                            placeholder="{{ __($label) }}" maxlength="5000" spellcheck="false"
+                                            style="word-break: break-all; font-family: monospace; font-size: 13px;"
+                                            required>{{ old('config.'.$key, $value) }}</textarea>
+                                        @error('config.'.$key)
+                                            <p class="text text-danger m-0">{{ $message }}</p>
+                                        @enderror
                                     </div>
                                 @endforeach
 

@@ -23,7 +23,11 @@ class PaymentGatewayRepository extends Repository
      */
     public static function updateByRequest(PaymentGatewayRequest $request, PaymentGateway $paymentGateway): PaymentGateway
     {
-        $config = json_encode($request->config);
+        // Keys pasted into the textareas often bring a trailing space or a line break with them
+        $config = json_encode(array_map(
+            fn ($value) => is_string($value) ? str_replace(["\r", "\n"], '', trim($value)) : $value,
+            $request->config
+        ));
 
         $media = $paymentGateway->media;
 

@@ -25,6 +25,7 @@ class PaymentGatewayRequest extends FormRequest
             'title' => 'required|string|max:255',
             'mode' => 'required|in:test,live',
             'config' => 'required|array',
+            'config.*' => 'nullable|string|max:5000',
             'logo' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
         ];
     }
