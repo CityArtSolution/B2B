@@ -509,9 +509,9 @@ class ProcessController extends Controller
         $gateway ??= PaymentGateway::where('alias', 'Tamara')->first();
         $config = json_decode($gateway?->config ?? '{}') ?: (object) [];
 
-        $config->api_token = ($config->api_token ?? null) ?: env('TAMARA_SECRET_KEY');
-        $config->webhook_token = ($config->webhook_token ?? null) ?: env('TAMARA_NOTIFICATION_TOKEN');
-        $config->public_key = ($config->public_key ?? null) ?: env('TAMARA_PUBLIC_KEY');
+        $config->api_token = ($config->api_token ?? null) ?: config('services.tamara.secret_key');
+        $config->webhook_token = ($config->webhook_token ?? null) ?: config('services.tamara.notification_token');
+        $config->public_key = ($config->public_key ?? null) ?: config('services.tamara.public_key');
         $config->currency = strtoupper($config->currency ?? 'SAR');
         $config->country = ['AED' => 'AE', 'KWD' => 'KW', 'BHD' => 'BH', 'OMR' => 'OM'][$config->currency] ?? 'SA';
         $config->live = $gateway?->mode === 'live';

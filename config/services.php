@@ -31,4 +31,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'tamara' => [
+        'secret_key' => env('TAMARA_SECRET_KEY'),
+        'notification_token' => env('TAMARA_NOTIFICATION_TOKEN'),
+        'public_key' => env('TAMARA_PUBLIC_KEY'),
+    ],
+
 ];
