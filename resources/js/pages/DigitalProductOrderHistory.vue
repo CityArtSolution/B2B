@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- Header -->
-        <AuthPageHeader title="My Digital Products" />
+        <AuthPageHeader :title="$t('My Digital Products')" />
 
                 <!-- Order History -->
         <div class="px-2 pt-2 md:px-4 md:pt-4 lg:px-6 lg:pt-6">

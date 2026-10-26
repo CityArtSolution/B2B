@@ -6,9 +6,9 @@ use App\Events\ProductApproveEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Repositories\NotificationRepository;
+use App\Repositories\ProductRepository;
 use App\Repositories\ShopRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -78,23 +78,8 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $shopID = $product->shop_id;
-        if ($product->media && Storage::exists($product->media->src)) {
-            Storage::delete($product->media->src);
-        }
-        $product->media()->delete();
-        $product->sizes()->delete();
-        $product->colors()->delete();
-        $product->reviews()->delete();
-        $product->categories()->detach();
 
-        foreach ($product->medias as $media) {
-            if ($media && Storage::exists($media->src)) {
-                Storage::delete($media->src);
-            }
-            $media->delete();
-        }
-
-        $product->delete();
+        ProductRepository::destroy($product);
 
         // admin notification message
         $message = 'Product Deleted';

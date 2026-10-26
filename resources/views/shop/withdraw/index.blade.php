@@ -110,7 +110,7 @@
                                {{__('Withdraw Amount')}} <span class="text-danger">*</span>
                             </label>
                             <input type="text" name="amount" id="amount" class="form-control"
-                                placeholder="Enter amount"
+                                placeholder="{{ __('Enter amount') }}"
                                 oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
                                 required>
 
@@ -131,7 +131,7 @@
                                 {{__('Contact Number')}} <span class="text-danger">*</span>
                             </label>
                             <input type="text" name="contact_number" id="contact_number" class="form-control"
-                                placeholder="Enter contact number"
+                                placeholder="{{ __('Enter contact number') }}"
                                 oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
                                 required>
                             <span class="text-danger" id="contact_number-error"></span>
@@ -197,7 +197,7 @@
                 },
                 success: function(response) {
                     Swal.fire({
-                        title: "Success!",
+                        title: "{{ __('Success!') }}",
                         text: response.message,
                         icon: "success",
                         confirmButtonColor: "#3085d6",

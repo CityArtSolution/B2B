@@ -32,7 +32,7 @@
                             </td>
 
                             <td>
-                                {{ $record->product->translated_name->name ?? 'Deleted Product' }} RN{{ $record->product->code }}
+                                {{ $record->product->translated_name->name ?? 'Deleted Product' }} {{ $record->product->code }}
                             </td>
 
                             <td>
@@ -63,7 +63,7 @@
                     @empty
                         <tr>
                             <td colspan="6" class="text-center text-muted">
-                                No interested users yet
+                                {{ __('No interested users yet') }}
                             </td>
                         </tr>
                     @endforelse

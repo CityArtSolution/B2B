@@ -128,7 +128,7 @@
                     </h5>
                     <table class="table table-borderless mb-0 border-0">
                         <tr>
-                            <td class="ps-0 py-1">Price</td>
+                            <td class="ps-0 py-1">{{ __('Price') }}</td>
                             <td class="py-1">: {{ showCurrency($product->price) }}</td>
                         </tr>
                         <tr>

@@ -1,0 +1,441 @@
+/* Friendlier dashboard form fields: larger touch targets, softer borders, clear focus and error states.
+   Loaded after style.css so it refines the existing rules; dark theme rules in style.css still win (!important). */
+
+:root {
+    --field-height: 44px;
+    --field-radius: 10px;
+    --field-border: #d6dee8;
+    --field-border-hover: #b7c3d3;
+    --field-bg: #fbfcfd;
+    --field-placeholder: #9aa5b4;
+    --field-ring: rgba(104, 156, 65, 0.18);
+    --field-ring: color-mix(in srgb, var(--theme-color) 18%, transparent);
+    --field-error: #dc3545;
+}
+
+/* labels */
+.form-label,
+.card-body label:not([class]) {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #334155;
+    margin-bottom: 0.4rem;
+}
+
+.app-theme-dark .form-label,
+.app-theme-dark .card-body label:not([class]) {
+    color: #e2e8f0;
+}
+
+/* inputs, selects and textareas */
+.form-control,
+.form-select {
+    min-height: var(--field-height);
+    padding: 0.6rem 0.9rem;
+    font-size: 0.9rem;
+    border: 1px solid var(--field-border);
+    border-radius: var(--field-radius);
+    background-color: var(--field-bg);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+textarea.form-control {
+    min-height: 96px;
+    resize: vertical;
+    line-height: 1.7;
+}
+
+.form-control:hover,
+.form-select:hover {
+    border-color: var(--field-border-hover);
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: #fff;
+    border-color: var(--theme-color);
+    box-shadow: 0 0 0 4px var(--field-ring);
+    outline: 0;
+}
+
+.form-control::placeholder {
+    color: var(--field-placeholder);
+    opacity: 1;
+}
+
+.form-control:disabled,
+.form-control[readonly] {
+    background-color: #f1f4f8;
+    cursor: not-allowed;
+}
+
+/* error state */
+.form-control.is-invalid,
+.form-select.is-invalid {
+    border-color: var(--field-error);
+    background-image: none;
+    padding-inline-end: 0.9rem;
+}
+
+.form-control.is-invalid:focus {
+    box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.15);
+}
+
+.form-control.is-invalid + .text-danger,
+.form-control + .text.text-danger,
+.text.text-danger.m-0 {
+    font-size: 0.8rem;
+    margin-top: 0.3rem !important;
+}
+
+/* color picker next to inputs */
+.form-control-color {
+    width: 52px;
+    min-height: var(--field-height);
+    padding: 0.3rem;
+    cursor: pointer;
+}
+
+/* select2 (single and multiple) to match the inputs */
+.select2-container--default .select2-selection--single,
+.select2-container--default .select2-selection--multiple {
+    min-height: var(--field-height);
+    border: 1px solid var(--field-border);
+    border-radius: var(--field-radius);
+    background-color: var(--field-bg);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: calc(var(--field-height) - 2px);
+    padding-inline: 0.9rem 2rem;
+    font-size: 0.9rem;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: calc(var(--field-height) - 2px);
+}
+
+.select2-container--default .select2-selection--multiple {
+    padding: 4px 6px;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    margin-top: 3px;
+    padding: 2px 8px;
+    border: 0;
+    border-radius: 999px;
+    background-color: var(--field-ring);
+    color: #1f2937;
+    font-size: 0.82rem;
+}
+
+.select2-container--default .select2-selection--single:hover,
+.select2-container--default .select2-selection--multiple:hover {
+    border-color: var(--field-border-hover);
+}
+
+.select2-container--default.select2-container--focus .select2-selection--multiple,
+.select2-container--default.select2-container--open .select2-selection--single,
+.select2-container--default.select2-container--open .select2-selection--multiple {
+    border-color: var(--theme-color);
+    box-shadow: 0 0 0 4px var(--field-ring);
+}
+
+.select2-container--default .select2-search--inline .select2-search__field {
+    margin-top: 6px;
+    font-size: 0.9rem;
+}
+
+.select2-dropdown {
+    border-color: var(--field-border);
+    border-radius: var(--field-radius);
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+}
+
+.select2-results__option {
+    padding: 8px 12px;
+}
+
+/* quill editor box */
+.ql-toolbar.ql-snow {
+    border-color: var(--field-border);
+    border-radius: var(--field-radius) var(--field-radius) 0 0;
+    background: #f8fafc;
+}
+
+.ql-container.ql-snow {
+    border-color: var(--field-border);
+    border-radius: 0 0 var(--field-radius) var(--field-radius);
+    min-height: 160px;
+}
+
+/* keep the dark theme readable */
+.app-theme-dark .form-control:focus {
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08);
+}
+
+.app-theme-dark .select2-container--default .select2-selection--multiple .select2-selection__choice {
+    color: #f1f5f9;
+}
+
+.app-theme-dark .ql-toolbar.ql-snow {
+    background: #111;
+}
+
+/* inline validation messages (layouts/partials/form-errors.blade.php) */
+.field-error {
+    font-size: 0.8rem;
+    margin-top: 0.3rem !important;
+}
+
+.select2.is-invalid .select2-selection--single,
+.select2.is-invalid .select2-selection--multiple {
+    border-color: var(--field-error);
+}
+
+/* ---------- step-by-step forms (layouts/partials/form-steps.blade.php) ---------- */
+.form-steps .form-step {
+    display: none;
+    animation: stepIn 0.25s ease;
+}
+
+.form-steps .form-step.active {
+    display: block;
+}
+
+@keyframes stepIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: none; }
+}
+
+.steps-nav {
+    position: sticky;
+    top: 70px;
+    z-index: 20;
+    margin-bottom: 1rem;
+    padding: 0.9rem 1rem 0.75rem;
+    background: #fff;
+    border: 1px solid #e8edf3;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+}
+
+.steps-progress {
+    height: 4px;
+    margin-bottom: 0.75rem;
+    background: #eef2f6;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.steps-progress span {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--theme-color);
+    border-radius: inherit;
+    transition: width 0.3s ease;
+}
+
+.steps-list {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.steps-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1 0 auto;
+    padding: 0.45rem 0.75rem;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    color: #64748b;
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.steps-item:hover {
+    background: #f6f8fa;
+}
+
+.steps-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #eef2f6;
+    color: #475569;
+    font-size: 0.8rem;
+}
+
+.steps-item.active {
+    background: var(--field-ring);
+    color: #1f2937;
+}
+
+.steps-item.active .steps-num,
+.steps-item.done .steps-num {
+    background: var(--theme-color);
+    color: #fff;
+}
+
+.steps-item.has-error .steps-num {
+    background: var(--field-error);
+    color: #fff;
+}
+
+.step-head {
+    display: flex;
+    gap: 0.9rem;
+    align-items: flex-start;
+    margin-bottom: 1.25rem;
+    padding: 1rem 1.1rem;
+    background: linear-gradient(135deg, var(--field-ring), transparent 70%);
+    border: 1px dashed #dbe3ec;
+    border-radius: 12px;
+}
+
+.step-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--theme-color);
+    color: #fff;
+    font-size: 1.25rem;
+}
+
+.step-count {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--theme-color);
+}
+
+.step-head h5 {
+    margin: 0.1rem 0 0.25rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.step-head p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #64748b;
+    line-height: 1.7;
+}
+
+.form-steps .form-step > .card,
+.form-steps .form-step .card {
+    border-radius: 12px;
+    border-color: #edf1f5;
+}
+
+.steps-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(6px);
+    border: 1px solid #e8edf3;
+    border-radius: 14px;
+    box-shadow: 0 -6px 18px rgba(15, 23, 42, 0.05);
+}
+
+.steps-actions .steps-back {
+    margin-inline-end: auto;
+}
+
+@media (max-width: 575.98px) {
+    .steps-label { display: none; }
+    .steps-item.active .steps-label { display: inline; }
+    .steps-actions .btn-lg { padding-inline: 1rem !important; font-size: 0.95rem; }
+}
+
+.app-theme-dark .steps-nav,
+.app-theme-dark .steps-actions {
+    background: #111;
+    border-color: #2a2a2a;
+}
+
+.app-theme-dark .steps-item { color: #cbd5e1; }
+.app-theme-dark .steps-item:hover { background: #1c1c1c; }
+.app-theme-dark .step-head { border-color: #333; }
+.app-theme-dark .step-head p { color: #9ca3af; }
+
+/* ---------- product review step ---------- */
+.review-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1rem;
+}
+
+.review-section {
+    padding: 1rem 1.1rem;
+    border: 1px solid #edf1f5;
+    border-radius: 12px;
+    background: #fff;
+}
+
+.review-section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.6rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #f1f4f8;
+}
+
+.review-section-head h6 {
+    margin: 0;
+    font-weight: 700;
+}
+
+.review-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.35rem 0;
+    font-size: 0.875rem;
+}
+
+.review-label {
+    color: #64748b;
+    flex-shrink: 0;
+}
+
+.review-value {
+    font-weight: 600;
+    text-align: end;
+    word-break: break-word;
+}
+
+.review-thumb {
+    width: 84px;
+    height: 84px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #edf1f5;
+}
+
+.draft-bar {
+    border-radius: 12px;
+}
+
+.app-theme-dark .review-section {
+    background: #111;
+    border-color: #2a2a2a;
+}

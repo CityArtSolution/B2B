@@ -136,7 +136,7 @@
                                     </div>
                                 </label>
                                 <input type="email" id="email" v-model="formData.email" class="form-input"
-                                    placeholder="Enter email"
+                                    :placeholder="$t('Enter email')"
                                     :class="(errors && errors?.email) ? 'border-red-500' : 'border-slate-200'">
                                 <span v-if="errors && errors?.email" class="text-red-500 text-sm">
                                     {{ errors?.email[0] }}

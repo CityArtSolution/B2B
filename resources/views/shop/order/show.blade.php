@@ -88,7 +88,7 @@
                                                 <span>{{ $product->translated_name->name ?? $product->translated_name }}</span>
                                             </div>
                                         </td>
-                                        <td>RN{{ $product->code }}</td>
+                                        <td> {{ $product->code }}</td>
                                         @if ($businessModel == 'multi')
                                             <td>{{ $product->shop?->name }}</td>
                                         @endif
@@ -340,13 +340,13 @@ $(document).ready(function () {
         const statusName = $(this).text().trim();
 
         Swal.fire({
-            title: "Are you sure?",
+            title: "{{ __('Are you sure?') }}",
             text: `Do you really want to mark this order as ${statusName}?`,
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, proceed!"
+            confirmButtonText: "{{ __('Yes, proceed!') }}"
         }).then((result) => {
             if (result.isConfirmed) {
                 window.location.href = url;

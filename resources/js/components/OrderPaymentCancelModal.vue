@@ -22,7 +22,7 @@
                                     </div>
 
                                     <div class="mt-4 text-center text-gray-900 text-xl sm:text-3xl font-bold leading-9">
-                                        Your order has been placed but payment has been cancelled
+                                        {{ $t('Your order has been placed but payment has been cancelled') }}
                                     </div>
 
                                     <div
@@ -32,13 +32,13 @@
 
                                     <div
                                         class="mt-4 text-center text-slate-700 text-lg font-normal leading-7 tracking-tight">
-                                        You will receive an order confirmation email with details of your order.
+                                        {{ $t('You will receive an order confirmation email with details of your order.') }}
                                     </div>
 
                                     <div class="mt-4 w-full flex">
                                         <button @click="goToHomepage"
                                             class="w-full text-center px-6 py-4 bg-primary rounded-[10px] text-white text-base font-medium leading-normal">
-                                            Continue Shopping
+                                            {{ $t('Continue Shopping') }}
                                         </button>
                                     </div>
                                 </div>

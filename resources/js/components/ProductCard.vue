@@ -46,7 +46,7 @@
 
                         <div class="text-slate-950 text-base font-normal leading-normal truncate w-full"
                             :class="hasStock ? '' : 'opacity-30'">
-                            {{ props.product?.name }}  RN{{ props.product?.code }}
+                            {{ props.product?.name }}
                         </div>
                         <div class="text-black text-sm leading-tight flex items-center gap-1.5 flex-wrap">
                             {{ $t('Size from') }}:
@@ -56,19 +56,17 @@
                             </template>
                             <span v-if="!props.product?.sizes?.length">—</span>
                         </div>
-                        <div class="text-black text-sm leading-tight flex items-center gap-1.5 flex-wrap">
-<!--                            {{ $t('Shadd 36 Piece') }}-->
-                          {{$t('Units Per Carton')}} {{ props.product.carton_units_count }}
+                        <div v-if="props.product?.carton_units_count" class="text-black text-sm leading-tight flex items-center gap-1.5 flex-wrap">
+                            {{ $t('Units Per Carton') }}: {{ props.product.carton_units_count }} {{ $t('pieces') }}
                         </div>
-                        <div class="flex items-center gap-2" :class="hasStock ? '' : 'opacity-30'">
-                            <!-- price -->
+                        <!-- the customer pays per carton: show the carton price (after discount when there is one) -->
+                        <div class="flex items-center gap-2 flex-wrap" :class="hasStock ? '' : 'opacity-30'">
                             <div class="text-primary text-base font-bold leading-normal">
-                                {{ $t(props.product?.discount_price > 0 ? 'Carton Price' : 'Unit Price') }}: {{ masterStore.showCurrency(props.product?.discount_price > 0 ? props.product?.discount_price : props.product?.price) }}
+                                {{ $t('Carton Price') }}: {{ masterStore.showCurrency(props.product?.discount_price > 0 ? props.product?.discount_price : props.product?.carton_price) }}
                             </div>
-                            <!-- discount price -->
                             <div v-if="props.product?.discount_price > 0"
                                 class="text-slate-400 text-sm font-normal line-through leading-tight">
-                                {{ $t('Unit Price') }}: {{ masterStore.showCurrency(props.product?.price) }}
+                                {{ masterStore.showCurrency(props.product?.carton_price) }}
                             </div>
                         </div>
                         <div class="w-full text-end text-black font-bold text-xs mt-0.5">
@@ -93,14 +91,8 @@
                                 </div>
                             </div>
 
-                            <div class="h-3 w-[0px] border border-slate-200"></div>
-                            <!-- total sold -->
-                            <div v-if="hasStock"
-                                class="text-right text-slate-500 text-sm font-normal leading-tight">
-                                {{ props.product?.total_sold }} {{ $t('Sold') }}
-                            </div>
-                            <!-- Stock Out -->
-                            <div v-else class="text-right text-red-500 text-sm font-normal leading-tight">
+                            <!-- Stock Out (the number sold is not shown to customers) -->
+                            <div v-if="!hasStock" class="text-right text-red-500 text-sm font-normal leading-tight">
                                 {{ $t('Stock Out') }}
                             </div>
                         </div>

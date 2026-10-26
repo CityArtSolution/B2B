@@ -74,7 +74,7 @@
                     <div class="col-lg-4">
                         <label for="" class="form-label">{{ __('Commission') }}</label>
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Enter Commission" name="commission"
+                            <input type="text" class="form-control" placeholder="{{ __('Enter Commission') }}" name="commission"
                                 value="{{ $generaleSetting?->commission }}"
                                 oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
                             <span class="input-group-text" id="type">
@@ -116,7 +116,7 @@
                                 {{__('Enable POS in Shop Panel')}}
                             </span>
                             <label class="switch mb-0" data-bs-toggle="tooltip" data-bs-placement="left"
-                                data-bs-title="Enable/Disable">
+                                data-bs-title="{{ __('Enable/Disable') }}">
                                 <a href="{{ route('admin.business-setting.shop.toggle-pos') }}" class="confirm">
                                     <input type="checkbox" {{ $generaleSetting?->shop_pos ? 'checked' : '' }}>
                                     <span class="slider round"></span>
@@ -129,7 +129,7 @@
                         <div class="border rounded py-2.5 px-3 d-flex align-items-center justify-content-between">
                         <span>{{ __('Shop Registration') }}</span>
                             <label class="switch mb-0" data-bs-toggle="tooltip" data-bs-placement="left"
-                                data-bs-title="Enable/Disable">
+                                data-bs-title="{{ __('Enable/Disable') }}">
                                 <a href="{{ route('admin.business-setting.shop.toggle-register') }}" class="confirm">
                                     <input type="checkbox" {{ $generaleSetting?->shop_register ? 'checked' : '' }}>
                                     <span class="slider round"></span>
@@ -238,13 +238,13 @@
             e.preventDefault();
             const url = $(this).attr("href");
             Swal.fire({
-                title: "Are you sure?",
-                text: "You want to change status!",
+                title: "{{ __('Are you sure?') }}",
+                text: "{{ __('You want to change status!') }}",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
                 cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, Change it!",
+                confirmButtonText: "{{ __('Yes, Change it!') }}",
             }).then((result) => {
                 if (result.isConfirmed) {
                     window.location.href = url;

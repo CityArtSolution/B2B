@@ -142,13 +142,13 @@
             e.preventDefault();
             const url = $(this).attr("href");
             Swal.fire({
-                title: "Are you sure?",
-                text: "You want to approve this product",
+                title: "{{ __('Are you sure?') }}",
+                text: "{{ __('You want to approve this product') }}",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
                 cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, Approve it!",
+                confirmButtonText: "{{ __('Yes, Approve it!') }}",
             }).then((result) => {
                 if (result.isConfirmed) {
                     window.location.href = url;
@@ -160,13 +160,13 @@
             const form = document.getElementById('deleteForm');
             form.action = `{{ route('admin.product.destroy', ':id') }}`.replace(':id', id);
             Swal.fire({
-                title: "Are you sure?",
-                text: "You want to delete this product! If you confirm, it will be deleted permanently.",
+                title: "{{ __('Are you sure?') }}",
+                text: "{{ __('You want to delete this product! If you confirm, it will be deleted permanently.') }}",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#ef4444",
                 cancelButtonColor: "#64748b",
-                confirmButtonText: "Yes, Delete it!",
+                confirmButtonText: "{{ __('Yes, Delete it!') }}",
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();

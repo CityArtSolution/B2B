@@ -164,7 +164,7 @@
                             if (!response.data.users.length) {
                                 $('#notificationUsers').append(
                                     "<tr>\
-                                        <td colspan='100%'> User list is empty</td>\
+                                        <td colspan='100%'> {{ __('User list is empty') }}</td>\
                                     </tr>"
                                 );
                             }

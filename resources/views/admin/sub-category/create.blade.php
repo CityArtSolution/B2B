@@ -27,7 +27,7 @@
                                 {{ __('Select Category') }}
                                 <span class="text-danger">*</span>
                             </label>
-                            <select name="category[]" data-placeholder="Select Category" class="form-control select2"
+                            <select name="category[]" data-placeholder="{{ __('Select Category') }}" class="form-control select2"
                                 multiple style="width: 100%" required>
                                 <option value="" disabled>
                                     {{ __('Select Category') }}

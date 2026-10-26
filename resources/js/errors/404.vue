@@ -20,7 +20,7 @@
 
 <style scoped>
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
     margin: 0px;
     min-height: 100vh;
     max-height: 100vh;
@@ -58,7 +58,7 @@ main>section {
 }
 
 .title {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
     font-weight: 600;
     font-style: normal;
     /* Corrected font-style */
@@ -69,7 +69,7 @@ main>section {
 }
 
 .description {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
     font-weight: 400;
     font-style: normal;
     /* Corrected font-style */

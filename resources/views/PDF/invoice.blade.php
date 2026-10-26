@@ -499,7 +499,7 @@
                         @endphp
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td class="text-center">RN{{ $product->code}}</td>
+                            <td class="text-center"> {{ $product->code }}</td>
                             <td style="border: none !important">
                                 <table>
                                     <tr>

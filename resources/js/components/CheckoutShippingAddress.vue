@@ -74,20 +74,9 @@ const changeAddress = ref(false);
 
 const authStore = useAuth();
 
+// fetchAddresses also picks the address: the one already chosen if it still exists, else the default one
 onMounted(() => {
-    authStore.fetchAddresses()
-    fetchADefaultAddress()
+    authStore.fetchAddresses();
 })
-
-const fetchADefaultAddress = () => {
-    if (!basketStore.address) {
-        authStore.addresses.forEach((address) => {
-            if (address.is_default) {
-                basketStore.address = address
-                return true;
-            }
-        })
-    }
-}
 
 </script>

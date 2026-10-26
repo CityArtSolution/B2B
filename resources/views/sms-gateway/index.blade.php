@@ -33,7 +33,7 @@
                                                             {{ $twilio?->status == 1 ? 'checked' : '' }} value="1"
                                                             type="radio" name="status" id="twilioActive">
                                                         <label class="form-check-label" for="twilioActive">
-                                                            Active
+                                                            {{ __('Active') }}
                                                         </label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
@@ -41,7 +41,7 @@
                                                             {{ $twilio?->status == 0 ? 'checked' : '' }} value="0"
                                                             type="radio" name="status" id="twilioInactive">
                                                         <label class="form-check-label" for="twilioInactive">
-                                                            Inactive
+                                                            {{ __('Inactive') }}
                                                         </label>
                                                     </div>
                                                 </div>
@@ -92,7 +92,7 @@
                                                             {{ $telesign?->status == 1 ? 'checked' : '' }} value="1"
                                                             type="radio" name="status" id="teleSignActive">
                                                         <label class="form-check-label" for="teleSignActive">
-                                                            Active
+                                                            {{ __('Active') }}
                                                         </label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
@@ -100,7 +100,7 @@
                                                             {{ $telesign?->status == 0 ? 'checked' : '' }} value="0"
                                                             type="radio" name="status" id="teleSignInactive">
                                                         <label class="form-check-label" for="teleSignInactive">
-                                                            Inactive
+                                                            {{ __('Inactive') }}
                                                         </label>
                                                     </div>
                                                 </div>
@@ -146,7 +146,7 @@
                                                             {{ $nexmo?->status == 1 ? 'checked' : '' }} value="1"
                                                             type="radio" name="status" id="nexmoActive">
                                                         <label class="form-check-label" for="nexmoActive">
-                                                            Active
+                                                            {{ __('Active') }}
                                                         </label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
@@ -154,7 +154,7 @@
                                                             {{ $nexmo?->status == 0 ? 'checked' : '' }} value="0"
                                                             type="radio" name="status" id="nexmoInactive">
                                                         <label class="form-check-label" for="nexmoInactive">
-                                                            Inactive
+                                                            {{ __('Inactive') }}
                                                         </label>
                                                     </div>
                                                 </div>
@@ -205,7 +205,7 @@
                                                             value="1" type="radio" name="status"
                                                             id="messageBirdActive">
                                                         <label class="form-check-label" for="messageBirdActive">
-                                                            Active
+                                                            {{ __('Active') }}
                                                         </label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
@@ -214,7 +214,7 @@
                                                             value="0" type="radio" name="status"
                                                             id="messageBirdInactive">
                                                         <label class="form-check-label" for="messageBirdInactive">
-                                                            Inactive
+                                                            {{ __('Inactive') }}
                                                         </label>
                                                     </div>
                                                 </div>
@@ -255,11 +255,11 @@
                                                 <div class="col-md-12 mb-3">
                                                     <div class="form-check form-check-inline">
                                                         <input class="form-check-input" {{ $taqnyat?->status == 1 ? 'checked' : '' }} value="1" type="radio" name="status" id="taqnyatActive">
-                                                        <label class="form-check-label" for="taqnyatActive">Active</label>
+                                                        <label class="form-check-label" for="taqnyatActive">{{ __('Active') }}</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
                                                         <input class="form-check-input" {{ $taqnyat?->status == 0 ? 'checked' : '' }} value="0" type="radio" name="status" id="taqnyatInactive">
-                                                        <label class="form-check-label" for="taqnyatInactive">Inactive</label>
+                                                        <label class="form-check-label" for="taqnyatInactive">{{ __('Inactive') }}</label>
                                                     </div>
                                                 </div>
 

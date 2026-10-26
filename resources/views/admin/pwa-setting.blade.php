@@ -21,7 +21,7 @@
                         <div class="form-group">
                             <label>@lang('Name') <span class="text-danger">*</span></label>
                             <input type="text" name="name" class="form-control"
-                                value="{{ $pwaSetting?->name ?? config('app.name') }}" placeholder="Enter Name" />
+                                value="{{ $pwaSetting?->name ?? config('app.name') }}" placeholder="{{ __('Enter Name') }}" />
                         </div>
                     </div>
                     <div class="col-md-12">
@@ -31,7 +31,7 @@
                             </label>
                             <input type="text" name="short_name" class="form-control"
                                 value="{{ $pwaSetting?->short_name ?? config('app.name') }}"
-                                placeholder="Enter Short Name" />
+                                placeholder="{{ __('Enter Short Name') }}" />
                         </div>
                     </div>
                     <div class="col-md-12">
@@ -41,7 +41,7 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="text" name="description" class="form-control"
-                                value="{{ $pwaSetting?->description ?? 'swapdeal app' }}" placeholder="Enter Description" />
+                                value="{{ $pwaSetting?->description ?? 'swapdeal app' }}" placeholder="{{ __('Enter Description') }}" />
                         </div>
                     </div>
 

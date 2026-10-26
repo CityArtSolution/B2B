@@ -47,7 +47,7 @@
                             <label for="description" class="form-label">
                                 {{__('Description')}}
                             </label>
-                            <textarea name="description" class="form-control" rows="3" placeholder="Enter description"></textarea>
+                            <textarea name="description" class="form-control" rows="3" placeholder="{{ __('Enter description') }}"></textarea>
                         </div>
 
 

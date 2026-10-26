@@ -12,7 +12,7 @@
                     <div class="alert alert-danger alert-dismissible fade show rounded-md" role="alert">
                         <div class="fz-20">
                             <i class="fa-solid fa-triangle-exclamation"></i>
-                            <strong class="ms-0 fz-16">Error:</strong>
+                            <strong class="ms-0 fz-16">{{ __('Error:') }}</strong>
                         </div>
                         <div>
                             {{ session('messageError') }}
@@ -42,14 +42,14 @@
                                     </div>
 
                                     <div class="mt-3">
-                                        <label class="block text-gray-600 font-semibold mb-1">Message</label>
+                                        <label class="block text-gray-600 font-semibold mb-1">{{ __('Message') }}</label>
                                         <textarea name="message" rows="1" class="w-full form-control" placeholder="{{ __('Message to be sent') }}"
                                             required></textarea>
                                     </div>
 
                                     <div class="mt-3 d-flex justify-content-end">
                                         <button type="submit" class="btn btn-primary">
-                                            Send Email
+                                            {{ __('Send Email') }}
                                         </button>
                                     </div>
                                 </form>

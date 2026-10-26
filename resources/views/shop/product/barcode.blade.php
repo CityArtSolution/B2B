@@ -74,7 +74,7 @@
                                         <div class="price">
                                             {{ $generaleSetting?->currency ?? '$' }}{{ number_format($product->discount_price > 0 ? $product->discount_price : $product->price, 2) }}
                                         </div>
-                                        <img src="data:image/png;base64,{{ DNS1D::getBarcodePNG($product->code, 'I25', 3, 28) }}"
+                                        <img src="data:image/png;base64,{{ DNS1D::getBarcodePNG($product->code, 'C128', 3, 28) }}"
                                             alt="barcode" />
                                         <div class="code">{{ __('Code') }}: {{ $product->code }}</div>
                                     </div>

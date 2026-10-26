@@ -396,8 +396,6 @@ async function sendCodeToBackend(code, provider = 'google', data = {}) {
 
 <style scoped>
 /* Import Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap');
 
 .d-flex{
   display: flex;
@@ -412,7 +410,7 @@ async function sendCodeToBackend(code, provider = 'google', data = {}) {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  font-family: "Almarai", serif;
+  font-family: "IBM Plex Sans Arabic", sans-serif;
   padding: 40px;
 }
 
@@ -460,7 +458,7 @@ async function sendCodeToBackend(code, provider = 'google', data = {}) {
   text-transform: capitalize;
   text-align: center;
   letter-spacing: 0.5px;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
 }
 
 /* Card Styling - Direct from login.css */

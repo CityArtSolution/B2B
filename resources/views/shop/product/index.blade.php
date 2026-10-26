@@ -1,35 +1,41 @@
 @extends('layouts.app')
 @section('header-title', __('Product List'))
 
+@php
+    // the table is the default: it is the faster view to manage stock and prices
+    $viewType = request('view_type', 'list') == 'grid' ? 'grid' : 'list';
+    $query = request()->except('page');
+    $tabUrl = fn (array $change) => route('shop.product.index', array_filter(array_merge($query, ['status' => null, 'stock' => null], $change)));
+    $tabs = [
+        ['key' => 'all', 'label' => __('All'), 'params' => [], 'active' => !request('status') && !request('stock'), 'class' => ''],
+        ['key' => 'active', 'label' => __('Active'), 'params' => ['status' => 'active'], 'active' => request('status') == 'active', 'class' => 'st-delivered'],
+        ['key' => 'inactive', 'label' => __('Inactive'), 'params' => ['status' => 'inactive'], 'active' => request('status') == 'inactive', 'class' => ''],
+        ['key' => 'low', 'label' => __('Low stock'), 'params' => ['stock' => 'low'], 'active' => request('stock') == 'low', 'class' => 'st-pending'],
+        ['key' => 'out', 'label' => __('Out of stock'), 'params' => ['stock' => 'out'], 'active' => request('stock') == 'out', 'class' => 'st-cancelled'],
+    ];
+@endphp
+
 @section('content')
-    <div class="d-flex align-items-center flex-wrap gap-3 justify-content-between px-3 pb-3">
-        <h4 class="mb-0">
-            {{ __('Product List') }}
-        </h4>
-        <div class="d-flex align-items-center gap-2">
-            <div class="mt-2 mt-lg-0 d-flex gap-2 justify-content-end">
-                <a href=" {{ route('shop.product.index', ['view_type' => 'grid']) }}"
-                    class="btn {{ request('view_type') == 'list' ? 'btn-secondary' : 'btn-primary' }}"><i
-                        class="bi bi-grid"></i></a>
-                <a href=" {{ route('shop.product.index', ['view_type' => 'list']) }}"
-                    class="btn  {{ request('view_type') == 'list' ? 'btn-primary' : 'btn-secondary' }}"><i
-                        class="bi bi-list-ul"></i></a>
+    <div class="page-head">
+        <div>
+            <h4 class="page-head-title">{{ __('Product List') }}</h4>
+            <p class="page-head-sub">{{ __('Manage prices and stock from here. Click a price to change it directly.') }}</p>
+        </div>
+        <div class="page-head-actions">
+            <div class="btn-group">
+                <a href="{{ route('shop.product.index', array_merge($query, ['view_type' => 'list'])) }}"
+                    class="btn {{ $viewType == 'list' ? 'btn-primary' : 'btn-outline-secondary' }}" data-bs-toggle="tooltip" data-bs-title="{{ __('Table view') }}">
+                    <i class="bi bi-list-ul"></i>
+                </a>
+                <a href="{{ route('shop.product.index', array_merge($query, ['view_type' => 'grid'])) }}"
+                    class="btn {{ $viewType == 'grid' ? 'btn-primary' : 'btn-outline-secondary' }}" data-bs-toggle="tooltip" data-bs-title="{{ __('Grid view') }}">
+                    <i class="bi bi-grid"></i>
+                </a>
             </div>
             @hasPermission('shop.product.create')
-                <div class="custom-dropdown">
-                    <button class="custom-dropdown-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fa fa-plus-circle me-2"></i>
-                        {{ __('Add Product') }}
-                    </button>
-                    <ul class="custom-dropdown-menu dropdown-menu">
-                        <li>
-                            <a class="dropdown-item" href="{{ route('shop.product.create') }}">
-                                <i class="fa-solid fa-square-plus me-1"></i>
-                                {{ __('Add Product') }}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+                <a href="{{ route('shop.product.create') }}" class="btn btn-primary">
+                    <i class="bi bi-plus-lg"></i> {{ __('Add Product') }}
+                </a>
             @endhasPermission
         </div>
     </div>
@@ -67,7 +73,7 @@
                     </div>
                     @hasPermission('shop.flashSale.show')
                         <a href="{{ route('shop.flashSale.show', $flashSale->id) }}" class="btn btn-primary py-2.5 addBtn">
-                            Add Product
+                            {{ __('Add Product') }}
                         </a>
                     @endhasPermission
                 </div>
@@ -158,26 +164,44 @@
         </form>
         <!-- End Filter Product Modal -->
 
+        <!-- quick tabs -->
+        <div class="status-tabs mb-3">
+            @foreach ($tabs as $tab)
+                <a href="{{ $tabUrl($tab['params']) }}" class="status-tab {{ $tab['class'] }} {{ $tab['active'] ? 'active' : '' }}">
+                    @if ($tab['class'])
+                        <span class="status-dot"></span>
+                    @endif
+                    {{ $tab['label'] }}
+                    <span class="status-tab-count">{{ $tabCounts[$tab['key']] }}</span>
+                </a>
+            @endforeach
+        </div>
+
         <div class="mb-3 card">
             <div class="card-body">
-                <form action=""
-                    class="d-flex align-items-center justify-content-end gap-3 mb-3 border-bottom pb-3 flex-wrap">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#filterProductModal">
-                        {{ __('Filter') }}
-                    </button>
-
-                    <div class="input-group" style="max-width: 400px">
+                <form action="" class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+                    <div class="input-icon flex-grow-1" style="max-width: 420px">
+                        <i class="bi bi-search"></i>
                         <input type="text" name="search" class="form-control"
-                            placeholder="{{ __('Search by product name') }}" value="{{ request('search') }}">
-                        <input type="hidden" name="view_type" value="{{ request('view_type') }}">
-                        <button type="submit" class="input-group-text btn btn-primary">
-                            <i class="fa fa-search"></i> {{ __('Search') }}
-                        </button>
+                            placeholder="{{ __('Search by product name or code') }}" value="{{ request('search') }}">
                     </div>
+                    @foreach (request()->only(['view_type', 'status', 'stock', 'brand', 'category', 'color', 'branch']) as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> {{ __('Search') }}</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#filterProductModal">
+                        <i class="bi bi-funnel"></i> {{ __('Filter') }}
+                        @php $activeFilters = count(array_filter(request()->only(['brand', 'category', 'color', 'branch']))); @endphp
+                        @if ($activeFilters)
+                            <span class="badge bg-primary rounded-pill">{{ $activeFilters }}</span>
+                        @endif
+                    </button>
+                    @if (array_filter(request()->only(['search', 'brand', 'category', 'color', 'branch', 'status', 'stock'])))
+                        <a href="{{ route('shop.product.index', ['view_type' => $viewType]) }}" class="btn btn-link text-muted">{{ __('Clear filters') }}</a>
+                    @endif
                 </form>
 
-                @if (request('view_type') == 'list')
+                @if ($viewType == 'list')
                     @include('shop.product.listView')
                 @else
                     @include('shop.product.gridView')
@@ -189,21 +213,119 @@
             {{ $products->links() }}
         </div>
 
+        <form action="" method="POST" class="d-none" id="deleteProductForm">
+            @csrf
+            @method('DELETE')
+        </form>
+
     </div>
 @endsection
 @push('scripts')
     <script>
+        const confirmDeleteProduct = (id) => {
+            const form = document.getElementById('deleteProductForm');
+            form.action = `{{ route('shop.product.destroy', ':id') }}`.replace(':id', id);
+            Swal.fire({
+                title: "{{ __('Are you sure?') }}",
+                text: "{{ __('You will not be able to revert this!') }}",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#ef4444",
+                cancelButtonColor: "#64748b",
+                confirmButtonText: "{{ __('Yes, delete it!') }}",
+                cancelButtonText: "{{ __('Cancel') }}",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        }
+
+        // ---------- selection and bulk actions ----------
+        const updateBulkBar = () => {
+            const count = $('.row-check:checked').length;
+            $('#bulkCount').text(count);
+            $('#bulkForm').toggleClass('d-none', count === 0);
+            $('#selectAll').prop('checked', count > 0 && count === $('.row-check').length);
+        };
+        $(document).on('change', '#selectAll', function() {
+            $('.row-check').prop('checked', this.checked);
+            updateBulkBar();
+        });
+        $(document).on('change', '.row-check', updateBulkBar);
+
+        $('#bulkForm').on('submit', function(e) {
+            const button = e.originalEvent?.submitter;
+            if (!button || !button.hasAttribute('data-confirm-delete') || this.dataset.confirmed) return;
+            e.preventDefault();
+            const form = this;
+            Swal.fire({
+                title: "{{ __('Delete the selected products?') }}",
+                text: "{{ __('Products that have orders will be skipped and kept.') }}",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                confirmButtonText: "{{ __('Yes, delete it!') }}",
+                cancelButtonText: "{{ __('Cancel') }}",
+            }).then((result) => {
+                if (!result.isConfirmed) return;
+                form.dataset.confirmed = '1';
+                $('<input type="hidden" name="action" value="delete">').appendTo(form);
+                form.submit();
+            });
+        });
+
+        // ---------- change a price from the list ----------
+        $(document).on('click', '.price-edit', function() {
+            const btn = $(this);
+            Swal.fire({
+                title: "{{ __('Change price') }}",
+                html: `
+                    <div class="text-start">
+                        <label class="form-label">{{ __('Selling Price') }} <small class="text-muted">({{ __('per piece') }})</small></label>
+                        <input id="qpPrice" type="number" min="0" step="0.01" class="form-control mb-3" value="${btn.data('price')}">
+                        <label class="form-label">{{ __('Carton price after discount') }} <small class="text-muted">({{ __('optional') }})</small></label>
+                        <input id="qpDiscount" type="number" min="0" step="0.01" class="form-control" value="${btn.data('discount') || ''}">
+                        <small class="text-muted d-block mt-2">{{ __('The carton price is updated too when it was calculated automatically.') }}</small>
+                    </div>`,
+                showCancelButton: true,
+                confirmButtonText: "{{ __('Save') }}",
+                cancelButtonText: "{{ __('Cancel') }}",
+                focusConfirm: false,
+                didOpen: () => document.getElementById('qpPrice').select(),
+                preConfirm: () => {
+                    const price = document.getElementById('qpPrice').value;
+                    const discount = document.getElementById('qpDiscount').value;
+                    return $.post(btn.data('url'), { _token: '{{ csrf_token() }}', price, discount_price: discount })
+                        .then((response) => ({ ...response, newPrice: price, newDiscount: discount }))
+                        .catch((xhr) => {
+                            const errors = xhr.responseJSON?.errors;
+                            Swal.showValidationMessage(errors ? Object.values(errors)[0][0] : "{{ __('Something went wrong') }}");
+                        });
+                },
+            }).then((result) => {
+                if (!result.isConfirmed || !result.value) return;
+                const data = result.value;
+                const row = btn.closest('tr');
+                btn.data('price', data.newPrice).data('discount', data.newDiscount);
+                btn.find('.price-main').text(data.price);
+                row.find('.carton-price').text(data.discount_price || data.carton_price || '-');
+                row.find('.carton-old').text(data.carton_price || '').toggleClass('d-none', !data.discount_price);
+                toastr.success(data.message);
+            });
+        });
+
         $(".confirmApprove").on("click", function(e) {
             e.preventDefault();
             const url = $(this).attr("href");
             Swal.fire({
-                title: "Are you sure?",
-                text: "You want to approve this product",
+                title: "{{ __('Are you sure?') }}",
+                text: "{{ __('You want to approve this product') }}",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
                 cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, Approve it!",
+                confirmButtonText: "{{ __('Yes, Approve it!') }}",
             }).then((result) => {
                 if (result.isConfirmed) {
                     window.location.href = url;

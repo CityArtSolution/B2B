@@ -107,7 +107,7 @@
         $(document).ready(function() {
             $(".selectTags").select2({
                 tags: true,
-                placeholder: "Write tag and Press enter to add tags"
+                placeholder: "{{ __('Write tag and Press enter to add tags') }}"
             })
         });
     </script>
@@ -198,7 +198,7 @@
                     } else if (error.responseJSON && error.responseJSON.message) {
                         toastr.error(error.responseJSON.message);
                     } else {
-                        toastr.error("Something went wrong");
+                        toastr.error("{{ __('Something went wrong') }}");
                     }
                     $('#description').val("");
                     quill.setText("");

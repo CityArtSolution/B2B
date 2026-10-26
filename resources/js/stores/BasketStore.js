@@ -427,6 +427,39 @@ export const useBasketStore = defineStore("basketStore", {
             }
         },
 
+        /**
+         * Loads the cart straight from the server for the checkout page (e.g. after a refresh),
+         * selects the cart's shops when none of them is selected, then loads the checkout totals.
+         * Before, the checkout only filled in once the basket had been opened.
+         */
+        async loadCheckout() {
+            const authStore = useAuth();
+            if (!authStore.token) return;
+
+            this.isLoadingCart = true;
+            try {
+                const response = await axios.get("/carts", {
+                    headers: { Authorization: authStore.token },
+                });
+                this.total = response.data.data.total;
+                this.products = response.data.data.cart_items;
+
+                const cartShopIds = this.products.map((shop) => shop.shop_id).filter(Boolean);
+                if (!this.selectedShopIds.some((id) => cartShopIds.includes(id))) {
+                    this.selectedShopIds = cartShopIds;
+                }
+
+                this.fetchCheckoutProducts();
+            } catch (error) {
+                if (error.response?.status === 401) {
+                    authStore.token = null;
+                    authStore.user = null;
+                }
+            } finally {
+                this.isLoadingCart = false;
+            }
+        },
+
         checkShopIsSelected(shopId) {
             return this.selectedShopIds.includes(shopId);
         },

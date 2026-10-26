@@ -16,7 +16,7 @@
                             <div class="mb-3 border rounded p-2 d-flex align-items-center gap-2">
                                 <label class="m-0 fw-bold">{{ __('Enable Google ReCaptcha') }}</label>
                                 <label class="switch mb-0" data-bs-toggle="tooltip" data-bs-placement="left"
-                                    data-bs-title="Toggle">
+                                    data-bs-title="{{ __('Toggle') }}">
                                     <input name="is_active" type="checkbox" {{ $reCaptcha?->is_active ? 'checked' : '' }} />
                                     <span class="slider round"></span>
                                 </label>

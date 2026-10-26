@@ -83,7 +83,7 @@
                                 @hasPermission('admin.rider.index')
                                 <td>
                                     <label class="switch mb-0" data-bs-toggle="tooltip" data-bs-placement="left"
-                                        data-bs-title="Change Active Status">
+                                        data-bs-title="{{ __('Change Active Status') }}">
                                         <a href="{{ route('admin.rider.toggle', $user->id) }}" class="confirm">
                                             <input type="checkbox" {{ $user->is_active ? 'checked' : '' }}>
                                             <span class="slider round"></span>
@@ -130,13 +130,13 @@
             e.preventDefault();
             const url = $(this).attr("href");
             Swal.fire({
-                title: "Are you sure?",
-                text: "You want to change active status!",
+                title: "{{ __('Are you sure?') }}",
+                text: "{{ __('You want to change active status!') }}",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
                 cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, Change it!",
+                confirmButtonText: "{{ __('Yes, Change it!') }}",
             }).then((result) => {
                 if (result.isConfirmed) {
                     window.location.href = url;

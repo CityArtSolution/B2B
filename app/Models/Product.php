@@ -87,7 +87,20 @@ class Product extends Model
     {
         return $this->productBranches()->where('branch_id', $branchId)->first();
     }
-    
+
+    /**
+     * The price of one carton as sold: the saved carton price, or piece price x carton pack
+     * when no carton price was entered (otherwise the product would be sold for 0).
+     */
+    public function getSaleCartonPriceAttribute(): float
+    {
+        if ($this->carton_price > 0) {
+            return (float) $this->carton_price;
+        }
+
+        return (float) $this->price * max(1, (int) $this->carton_units_count);
+    }
+
     public function getTranslatedNameAttribute()
     {
         $lang = app()->getLocale();

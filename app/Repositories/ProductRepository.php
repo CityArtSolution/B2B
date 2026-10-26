@@ -400,6 +400,33 @@ class ProductRepository extends Repository
         return $product;
     }
 
+    /**
+     * Delete the product with its images and related rows.
+     */
+    public static function destroy(Product $product): void
+    {
+        if ($product->media && Storage::exists($product->media->src)) {
+            Storage::delete($product->media->src);
+        }
+        $product->media()->delete();
+        $product->sizes()->detach();
+        $product->colors()->detach();
+        $product->reviews()->delete();
+        $product->categories()->detach();
+        $product->subcategories()->detach();
+        $product->translations()->delete();
+        $product->productBranches()->delete();
+
+        foreach ($product->medias as $media) {
+            if ($media && Storage::exists($media->src)) {
+                Storage::delete($media->src);
+            }
+            $media->delete();
+        }
+
+        $product->delete();
+    }
+
     private static function videoCreateOrUpdate($request, $product = null): ?Media
     {
         $media = $product?->videoMedia;

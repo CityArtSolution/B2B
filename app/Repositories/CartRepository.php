@@ -74,7 +74,7 @@ class CartRepository extends Repository
                 }
 
 //                $mainPrice = $product->price + $extraPrice;
-                $mainPrice=$product->carton_price + $extraPrice; //change price from one item to one unit
+                $mainPrice=$product->sale_carton_price + $extraPrice; //change price from one item to one unit
                 $carton_units_count=$product->carton_units_count;
 
 
@@ -192,7 +192,7 @@ class CartRepository extends Repository
             $quantity = null;
 
 //            $price = $product->discount_price > 0 ? $product->discount_price : $product->price;
-            $price = $product->discount_price > 0 ? $product->discount_price :$product->carton_price;
+            $price = $product->discount_price > 0 ? $product->discount_price : $product->sale_carton_price;
 
             if ($flashSale) {
                 $quantity = $flashSale->pivot->quantity - $flashSale->pivot->sale_quantity;

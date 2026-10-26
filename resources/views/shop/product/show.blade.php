@@ -47,7 +47,7 @@
                 <!-- Product Details Section -->
                 <div class="col-lg-7">
                     <span class="badge bg-primary">{{ $product->brand?->name }}</span>
-                    <h2 class="mt-3">{{ $product->translated_name->name ?? $product->name }} RN{{ $product->code }}</h2>
+                    <h2 class="mt-3">{{ $product->translated_name->name ?? $product->name }} {{ $product->code }}</h2>
                     <p class="text-muted">
                         {{ $product->translated_name->short_description ?? $product->short_description }}
                     </p>
@@ -76,7 +76,7 @@
                     </div>
                     <!-- Size Selection -->
                     <div class="mb-3">
-                        <label class="fw-bold">Size</label>
+                        <label class="fw-bold">{{ __('Size') }}</label>
                         <div class="d-flex gap-2">
                             @foreach ($product->sizes as $size)
                                 <input type="radio" class="btn-check" name="size" id="size{{ $size->id }}">
@@ -88,7 +88,7 @@
 
                     <!-- Color Selection -->
                     <div class="mb-3">
-                        <label class="fw-bold">Color</label>
+                        <label class="fw-bold">{{ __('Color') }}</label>
                         <div class="d-flex gap-2">
                             @foreach ($product->colors as $color)
                                 <input type="radio" class="btn-check" name="color" id="color{{ $color->id }}">
@@ -99,7 +99,7 @@
                     </div>
                     <!-- Quantity Selection -->
                     <div class="mb-3">
-                        <label class="fw-bold">Quantity:</label>
+                        <label class="fw-bold">{{ __('Quantity:') }}</label>
                         @foreach($product->quantities as $row)
                             <br> <span>-- {{ $row->branch->name[app()->getLocale() ?? 'en'] }} ({{ $row->qty }})</span>
                         @endforeach

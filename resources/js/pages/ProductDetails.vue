@@ -138,7 +138,7 @@
 
                         <!-- Title -->
                         <div class="mt-3 text-slate-950 text-2xl font-medium leading-normal">
-                            {{ product?.name }}  RN{{ product?.code }}
+                            {{ product?.name }}
                         </div>
 
                         <!-- Short Description -->
@@ -163,12 +163,6 @@
                                 </div>
                             </div>
 
-                            <div class="w-[1px] h-4 bg-slate-200"></div>
-
-                            <!-- Sold -->
-                            <div class="text-slate-800 text-base font-normal leading-normal">
-                                {{ product.total_sold }} {{ $t("Sold") }}
-                            </div>
 
                             <div class="w-[1px] h-4 bg-slate-200"></div>
 
@@ -224,9 +218,12 @@
                             </button>
                         </div>
 
-                        <!-- Price part -->
+                        <!-- Price part: the customer pays per carton -->
                         <div class="flex items-center gap-3 py-4 border-b border-slate-200 flex-wrap">
-                            <!-- discount Price -->
+                            <div class="w-full text-slate-500 text-sm">
+                                {{ $t("Carton Price") }}
+                                <span v-if="product.carton_units_count"> · {{ $t("Units Per Carton") }}: {{ product.carton_units_count }} {{ $t("pieces") }}</span>
+                            </div>
                             <div class="text-primary text-3xl font-bold leading-9">
                                 {{ masterStore.showCurrency(parseFloat(productPrice).toFixed(2)) }}
                             </div>
@@ -651,9 +648,9 @@ const calculateProductPrice = () => {
 
     if (product.value.discount_price > 0) {
         productPrice.value = product.value.discount_price + colorPrice + sizePrice;
-        mainPrice.value = product.value.price + colorPrice + sizePrice;
+        mainPrice.value = product.value.carton_price + colorPrice + sizePrice;
     } else {
-        productPrice.value = product.value.price + colorPrice + sizePrice;
+        productPrice.value = product.value.carton_price + colorPrice + sizePrice;
         mainPrice.value = productPrice.value;
     }
 

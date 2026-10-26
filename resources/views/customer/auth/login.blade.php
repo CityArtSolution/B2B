@@ -10,7 +10,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Almarai:wght@300;400;700;800&amp;display=swap" rel="stylesheet">
     <!-- App favicon -->
     <link rel="shortcut icon" type="image/png" href="{{ $generaleSetting?->favicon ?? asset('assets/favicon.png') }}" />
 
@@ -26,7 +26,7 @@
 </head>
 <style>
     body {
-        font-family: "MochaYemen Sugar", "Almarai", serif;
+        font-family: "IBM Plex Sans Arabic", "Almarai", serif;
     }
 
     .logo_right img {
@@ -52,7 +52,7 @@
         text-transform: capitalize;
         text-align: center;
         letter-spacing: 0.5px;
-        font-family: 'Poppins', sans-serif;
+        font-family: 'IBM Plex Sans Arabic', sans-serif;
     }
     .eye {
         right: unset;
@@ -96,7 +96,7 @@
                     <div class="mb-3">
                         <label for="email">البريد الالكتروني</label>
                         <input type="email" value="{{ old('email') }}" name="phone" id="email"
-                            class="form-control" placeholder="Enter Email Address">
+                            class="form-control" placeholder="{{ __('Enter Email Address') }}">
 
                         @error('phone')
                             <span class="text text-danger" role="alert">
@@ -109,7 +109,7 @@
                         <label for="password">كلمة المرور</label>
                         <div class="position-relative passwordInput">
                             <input type="password" name="password" id="password" class="form-control"
-                                placeholder="Enter Password">
+                                placeholder="{{ __('Enter Password') }}">
                             <span class="eye" onclick="showHidePassword()">
                                 <i class="fa fa-eye-slash" id="togglePassword"></i>
                             </span>

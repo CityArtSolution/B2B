@@ -233,7 +233,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button type="button" class="btn btn-primary py-2.5" id="nextBtn">Next</button>
+                            <button type="button" class="btn btn-primary py-2.5" id="nextBtn">{{ __('Next') }}</button>
                         </div>
                         <div class="step" id="step2" style="display: none">
                             <div class="information">
@@ -283,7 +283,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary py-2.5">Submit</button>
+                            <button type="submit" class="btn btn-primary py-2.5">{{ __('Submit') }}</button>
                         </div>
                     </form>
                 </div>

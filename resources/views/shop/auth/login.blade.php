@@ -10,7 +10,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 
     <!-- App favicon -->
     <link rel="shortcut icon" type="image/png" href="{{ $generaleSetting?->favicon ?? asset('assets/favicon.png') }}" />
@@ -48,12 +48,12 @@
 
                 <div class="page-content text-center mb-4">
                     <p class="pagePera my-3">
-                        Welcome to
+                        {{ __('Welcome to') }}
                         <span
                             class="fw-bold text-primary">{{ $generaleSetting?->name ?? config('app.name', 'Laravel') }}</span>
                     </p>
 
-                    <h2 class="pageTitle">Login To Shop</h2>
+                    <h2 class="pageTitle">{{ __('Login To Shop') }}</h2>
                 </div>
 
                 <hr>
@@ -61,9 +61,9 @@
                 <form action="{{ route('shop.login.submit') }}" method="POST">
                     @csrf
                     <div class="mb-3">
-                        <label for="email">Enter Address</label>
+                        <label for="email">{{ __('Enter Address') }}</label>
                         <input type="email" value="{{ old('email') }}" name="email" id="email"
-                            class="form-control" placeholder="Enter Email Address" value="{{ old('email') }}">
+                            class="form-control" placeholder="{{ __('Enter Email Address') }}" value="{{ old('email') }}">
 
                         @error('email')
                             <span class="text text-danger" role="alert">
@@ -73,10 +73,10 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="password">Password</label>
+                        <label for="password">{{ __('Password') }}</label>
                         <div class="position-relative passwordInput">
                             <input type="password" name="password" id="password" class="form-control"
-                                placeholder="Enter Password" value="{{ old('password') }}">
+                                placeholder="{{ __('Enter Password') }}" value="{{ old('password') }}">
                             <span class="eye" onclick="showHidePassword()">
                                 <i class="fa fa-eye-slash" id="togglePassword"></i>
                             </span>
@@ -97,12 +97,12 @@
                         @enderror
                     @endif
 
-                    <button class="btn loginButton" type="submit">Login</button>
+                    <button class="btn loginButton" type="submit">{{ __('Login') }}</button>
 
                     @if (!app()->isLocal())
                         <div class="mt-2 d-flex justify-content-between align-items-center flex-wrap gap-2">
                             <a href="{{ route('shop.register') }}"
-                                class="btn btn-sm btn-outline-primary text-decoration-none">Register As Seller</a>
+                                class="btn btn-sm btn-outline-primary text-decoration-none">{{ __('Register As Seller') }}</a>
                         </div>
                     @endif
                 </form>
@@ -157,7 +157,7 @@
             if (!sessionStorage.getItem('fromAdmin')) {
                 Toast.fire({
                     icon: 'success',
-                    title: 'Shop Credentials Copied'
+                    title: '{{ __("Shop Credentials Copied") }}'
                 });
             }
         }
@@ -174,7 +174,7 @@
         <script>
             Swal.fire({
                 icon: 'success',
-                title: 'Registration Successful',
+                title: '{{ __("Registration Successful") }}',
                 text: "{{ session('successAlert') }}"
             });
         </script>
@@ -184,7 +184,7 @@
         <script>
             Swal.fire({
                 icon: 'error',
-                title: "Oops...",
+                title: "{{ __('Oops...') }}",
                 text: "{{ session('error') }}"
             });
         </script>

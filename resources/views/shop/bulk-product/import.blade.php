@@ -22,7 +22,7 @@
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel">Bulk import instrctions</h5>
+            <h5 class="modal-title" id="staticBackdropLabel">{{ __('Bulk import instrctions') }}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -159,7 +159,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Understood</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{{ __('Understood') }}</button>
             </div>
         </div>
         </div>
@@ -173,7 +173,7 @@
                 <div class="d-flex gap-2 pb-2">
                     <h5>
                         <i class="fa-solid fa-file-import"></i>
-                        Export CSV Template
+                        {{ __('Export CSV Template') }}
                     </h5>
                 </div>
 
@@ -181,7 +181,7 @@
                     <button data-bs-toggle="modal" data-bs-target="#exampleModal"
                         class="btn py-2 btn-primary d-inline-flex gap-2 align-items-center">
                         <i class="fa-solid fa-file-csv fs-3"></i>
-                        Make CSV Template
+                        {{ __('Make CSV Template') }}
                     </button>
 
                 </div>
@@ -303,7 +303,7 @@
                             {{ __('how many products you want to import?') }}
                         </label>
                         <input type="number" class="form-control" name="quantity" value="" required
-                            placeholder="Enter quantity" />
+                            placeholder="{{ __('Enter quantity') }}" />
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">

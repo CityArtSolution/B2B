@@ -150,7 +150,7 @@
                         {{ __('Show/Hide Website Navigation Download App') }}
                     </label>
                     <label class="switch mb-0" data-bs-toggle="tooltip" data-bs-placement="left"
-                        data-bs-title="Show/Hide">
+                        data-bs-title="{{ __('Show/Hide') }}">
                         <input id="toggle" type="checkbox" {{ $generaleSetting?->show_download_app ? 'checked' : '' }}
                             name="show_download_app">
                         <span class="slider round"></span>
@@ -164,14 +164,14 @@
                             {{ __('Google PlayStore App Link') }}
                         </label>
                         <textarea name="google_playstore_url" class="form-control" rows="3"
-                            placeholder="Enter Google PlayStore App Link">{{ $generaleSetting?->google_playstore_url }}</textarea>
+                            placeholder="{{ __('Enter Google PlayStore App Link') }}">{{ $generaleSetting?->google_playstore_url }}</textarea>
                     </div>
 
                     <div class="col-md-6">
                         <label for="" class="mb-1">
                             {{ __('Apple Store App Link') }}
                         </label>
-                        <textarea name="app_store_url" class="form-control" rows="3" placeholder="Enter Apple Store App Link">{{ $generaleSetting?->app_store_url }}</textarea>
+                        <textarea name="app_store_url" class="form-control" rows="3" placeholder="{{ __('Enter Apple Store App Link') }}">{{ $generaleSetting?->app_store_url }}</textarea>
                     </div>
 
                 </div>
@@ -193,7 +193,7 @@
                         {{ __('Show/Hide Admin Bottom Footer Section') }}
                     </label>
                     <label class="switch mb-0" data-bs-toggle="tooltip" data-bs-placement="left"
-                        data-bs-title="Show/Hide">
+                        data-bs-title="{{ __('Show/Hide') }}">
                         <input id="toggle" type="checkbox" {{ $generaleSetting?->show_footer ? 'checked' : '' }}
                             name="show_footer">
                         <span class="slider round"></span>
@@ -282,7 +282,7 @@
         <script>
             Swal.fire({
                 icon: "error",
-                title: "Oops...",
+                title: "{{ __('Oops...') }}",
                 html: `@foreach (session('runUpdateScriptError') as $error)
                     {{ $error }} <br><br>
                 @endforeach`,

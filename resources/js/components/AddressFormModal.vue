@@ -162,12 +162,14 @@ import { XMarkIcon } from '@heroicons/vue/24/solid';
 import { ref } from 'vue';
 
 import { useAuth } from '../stores/AuthStore';
+import { useBasketStore } from '../stores/BasketStore';
 import { useToast } from 'vue-toastification';
 import { useMaster } from '../stores/MasterStore';
 
 const masterStore = useMaster();
 const toast = useToast();
 const authStore = useAuth();
+const basketStore = useBasketStore();
 
 const formData = ref({
     name: '',
@@ -194,6 +196,10 @@ const addressFormSubmit = () => {
         toast.success(response.data.message, {
            position: masterStore.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
         });
+        // the address just added becomes the delivery address
+        if (response.data.data?.address) {
+            basketStore.address = response.data.data.address;
+        }
         authStore.fetchAddresses();
         authStore.showAddressModal = false
         authStore.showChangeAddressModal = true

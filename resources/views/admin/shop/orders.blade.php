@@ -41,7 +41,7 @@
                                     <td>{{ $order->payment_method }}</td>
                                     <td>
                                         <a href="{{ route('admin.order.show', $order->id) }}" data-bs-toggle="tooltip"
-                                            data-bs-placement="top" data-bs-title="view order details"
+                                            data-bs-placement="top" data-bs-title="{{ __('view order details') }}"
                                             class="circleIcon svg-bg">
                                             <img src="{{ asset('assets/icons-admin/eye.svg') }}" alt="icon"
                                                 loading="lazy" />

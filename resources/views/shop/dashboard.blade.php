@@ -279,7 +279,7 @@
                                     {{ __('Withdraw Amount') }} <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" name="amount" id="amount" class="form-control"
-                                    placeholder="Enter amount"
+                                    placeholder="{{ __('Enter amount') }}"
                                     oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
                                     required>
 
@@ -291,7 +291,7 @@
                                     {{ __('Name') }} <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" name="name" id="name" class="form-control"
-                                    placeholder="Enter name" required>
+                                    placeholder="{{ __('Enter name') }}" required>
                                 <span class="text-danger" id="name-error"></span>
                             </div>
 
@@ -300,7 +300,7 @@
                                     {{ __('Contact Number') }} <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" name="contact_number" id="contact_number" class="form-control"
-                                    placeholder="Enter contact number"
+                                    placeholder="{{ __('Enter contact number') }}"
                                     oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
                                     required>
                                 <span class="text-danger" id="contact_number-error"></span>
@@ -308,7 +308,7 @@
 
                             <div class="mt-3">
                                 <label class="form-label">{{ __('Any message') }}</label>
-                                <textarea name="message" placeholder="Enter message" class="form-control"></textarea>
+                                <textarea name="message" placeholder="{{ __('Enter message') }}" class="form-control"></textarea>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -368,13 +368,13 @@
                                 </td>
                                 <td class="tableAction">
                                     <a href="{{ route('shop.order.show', $order->id) }}" data-bs-toggle="tooltip"
-                                        data-bs-placement="left" data-bs-title="Order details"
+                                        data-bs-placement="left" data-bs-title="{{ __('Order details') }}"
                                         class="circleIcon btn-sm btn-outline-primary svg-bg">
                                         <img src="{{ asset('assets/icons-admin/eye.svg') }}" alt="icon"
                                             loading="lazy">
                                     </a>
                                     <a href="{{ route('shop.download-invoice', $order->id) }}" data-bs-toggle="tooltip"
-                                        data-bs-placement="left" data-bs-title="Download Invoice"
+                                        data-bs-placement="left" data-bs-title="{{ __('Download Invoice') }}"
                                         class="circleIcon btn-outline-secondary btn-sm">
                                         <img src="{{ asset('assets/icons-admin/download-alt.svg') }}" alt="icon"
                                             loading="lazy">
@@ -519,7 +519,7 @@
                 },
                 success: function(response) {
                     Swal.fire({
-                        title: "Success!",
+                        title: "{{ __('Success!') }}",
                         text: response.message,
                         icon: "success",
                         confirmButtonColor: "#3085d6",

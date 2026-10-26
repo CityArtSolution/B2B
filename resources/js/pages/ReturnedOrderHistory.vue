@@ -2,7 +2,7 @@
     <div>
 
         <!-- Header -->
-        <AuthPageHeader title="Return Orders" />
+        <AuthPageHeader :title="$t('Return Orders')" />
 
 
         <!-- Order History -->

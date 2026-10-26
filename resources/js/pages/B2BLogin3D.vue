@@ -27,7 +27,7 @@
           <input
             v-model="form.email"
             type="email"
-            placeholder="example@company.com"
+            :placeholder="$t('example@company.com')"
             required
             class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#537d34]/40"
           />

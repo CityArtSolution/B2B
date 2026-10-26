@@ -8,7 +8,7 @@
             <span>/ {{ $t('Change Password') }}</span>
         </div>
         <!-- Header -->
-        <AuthPageHeader title="Change Password" />
+        <AuthPageHeader :title="$t('Change Password')" />
 
         <div class="p-3 md:p-4 xl:p-6">
 

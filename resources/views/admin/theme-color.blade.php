@@ -114,7 +114,7 @@
                                             class="border" value="{{ $primary }}">
                                     </span>
                                 </div>
-                                <input type="text" class="form-control" placeholder="Enter hex code e.g. #EE456B"
+                                <input type="text" class="form-control" placeholder="{{ __('Enter hex code e.g. #EE456B') }}"
                                     id="colorInput" value="{{ $primary }}">
                             </div>
                         </div>

@@ -28,26 +28,26 @@
                     @endif
                     <div class="w-100">
                         <div style="align-self: stretch; padding-left: 24px; padding-right: 24px; padding-top: 32px; padding-bottom: 12px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 16px; display: flex">
-                            <div style="color: white; font-size: 16px; font-family: Inter; font-weight: 600; letter-spacing: 0.32px; word-wrap: break-word">{{ $subscriptionPlan->name }}</div>
+                            <div style="color: white; font-size: 16px; font-family: 'IBM Plex Sans Arabic'; font-weight: 600; letter-spacing: 0.32px; word-wrap: break-word">{{ $subscriptionPlan->name }}</div>
                             <div style="align-self: stretch; justify-content: flex-start; align-items: center; gap: 8px; display: inline-flex">
-                                <div style="color: white; font-size: 36px; font-family: Inter; font-weight: 800; letter-spacing: 0.72px; word-wrap: break-word">{{ showCurrency($subscriptionPlan->price + 0) }}</div>
+                                <div style="color: white; font-size: 36px; font-family: 'IBM Plex Sans Arabic'; font-weight: 800; letter-spacing: 0.72px; word-wrap: break-word">{{ showCurrency($subscriptionPlan->price + 0) }}</div>
                                 <div style="flex-direction: column; justify-content: center; align-items: flex-start; gap: 2px; display: inline-flex">
-                                    <div style="color: white; font-size: 12px; font-family: Inter; font-weight: 400; word-wrap: break-word">{{ $subscriptionPlan->duration ? daysToLargestUnit($subscriptionPlan->duration) : 'Unlimited' }}</div>
+                                    <div style="color: white; font-size: 12px; font-family: 'IBM Plex Sans Arabic'; font-weight: 400; word-wrap: break-word">{{ $subscriptionPlan->duration ? daysToLargestUnit($subscriptionPlan->duration) : 'Unlimited' }}</div>
                                 </div>
                             </div>
                         </div>
                         @if ($subscriptionPlan->is_popular)
                             <div style="padding-left: 8px; padding-right: 8px; padding-top: 6px; padding-bottom: 6px; right: 24px; top: 24px; position: absolute; background: rgba(255, 255, 255, 0.09); border-radius: 8px; justify-content: center; align-items: center; gap: 4px; display: inline-flex">
-                                <div style="text-align: center; color: #FFC107; font-size: 12px; font-family: Inter; font-weight: 500; letter-spacing: 0.24px; word-wrap: break-word">Most Popular</div>
+                                <div style="text-align: center; color: #FFC107; font-size: 12px; font-family: 'IBM Plex Sans Arabic'; font-weight: 500; letter-spacing: 0.24px; word-wrap: break-word">{{ __('Most Popular') }}</div>
                             </div>
                         @endif
                         <div class="w-100 px-4 d-flex gap-3 justify-content-between text-white">
                             <div class="plan-info-box">
-                                <span class="label">Sale limit</span>
+                                <span class="label">{{ __('Sale limit') }}</span>
                                 <span class="value">{{ $subscriptionPlan->sale_limit ?? 'Unlimited' }}</span>
                             </div>
                             <div class="plan-info-box">
-                                <span class="label">Duration</span>
+                                <span class="label">{{ __('Duration') }}</span>
                                 <span class="value">{{ $subscriptionPlan->duration ? daysToLargestUnit($subscriptionPlan->duration) : 'Unlimited' }}</span>
                             </div>
                         </div>
@@ -58,11 +58,11 @@
                     <div class="w-100">
                         <div style="align-self: stretch; padding-bottom: 32px; padding-left: 24px; padding-right: 24px; justify-content: space-between; align-items: center; gap: 10px; display: flex">
                             <a class="btn btn-info btn-sm text-capitalize w-100" href="{{ route('admin.subscription-plan.edit', $subscriptionPlan->id) }}">
-                                Edit
+                                {{ __('Edit') }}
                             </a>
                             <a href="{{ route('admin.subscription-plan.destroy', $subscriptionPlan->id) }}"
                                 class="btn btn-danger btn-sm text-capitalize confirmDelete w-100" data-bs-toggle="tooltip">
-                                Delete
+                                {{ __('Delete') }}
                             </a>
                         </div>
                     </div>
@@ -172,13 +172,13 @@
             deleteForm.attr('action', url);
 
             Swal.fire({
-                title: "Are you sure?",
-                text: "You want to delete this plan!",
+                title: "{{ __('Are you sure?') }}",
+                text: "{{ __('You want to delete this plan!') }}",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
                 cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, Delete it!",
+                confirmButtonText: "{{ __('Yes, Delete it!') }}",
             }).then((result) => {
                 if (result.isConfirmed) {
                     deleteForm.submit();

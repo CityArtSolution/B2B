@@ -43,7 +43,7 @@
 
                                 @hasPermission('admin.ad.toggle')
                                 <td class="text-center">
-                                    <label class="switch mb-0" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Status Toggle">
+                                    <label class="switch mb-0" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="{{ __('Status Toggle') }}">
                                         <a href="{{ route('admin.ad.toggle', $ad->id) }}">
                                             <input type="checkbox" {{ $ad->status ? 'checked' : '' }}>
                                             <span class="slider round"></span>

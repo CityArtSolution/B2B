@@ -228,7 +228,7 @@
                     } else if (error.responseJSON && error.responseJSON.message) {
                         toastr.error(error.responseJSON.message);
                     } else {
-                        toastr.error("Something went wrong");
+                        toastr.error("{{ __('Something went wrong') }}");
                     }
                     $('#description').val("");
                     quill.setText("");
@@ -274,7 +274,7 @@
                     } else if (error.responseJSON && error.responseJSON.message) {
                         toastr.error(error.responseJSON.message);
                     } else {
-                        toastr.error("Something went wrong");
+                        toastr.error("{{ __('Something went wrong') }}");
                     }
                     $('#description_en').val("");
                     quill_en.setText("");

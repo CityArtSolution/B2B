@@ -213,7 +213,8 @@ class POSController extends Controller
                 $query->where('branch_id', $branch);
             });
         })->when($search, function ($query) use ($search) {
-            return $query->where('name', 'like', '%' . $search . '%');
+            // a scanned barcode is the exact product code
+            return $query->where(fn ($q) => $q->where('name', 'like', '%' . $search . '%')->orWhere('code', trim($search)));
         })->isActive();
         $total = $products->count();
         $products = $products->skip($skip)->take($perPage)->get();

@@ -122,13 +122,13 @@
             e.preventDefault();
             const url = $(this).attr("href");
             Swal.fire({
-                title: "Are you sure?",
-                text: "You want to approve this Subscription",
+                title: "{{ __('Are you sure?') }}",
+                text: "{{ __('You want to approve this Subscription') }}",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
                 cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, Approve it!",
+                confirmButtonText: "{{ __('Yes, Approve it!') }}",
             }).then((result) => {
                 if (result.isConfirmed) {
                     window.location.href = url;

@@ -10,7 +10,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 
     <!-- App favicon -->
     <link rel="shortcut icon" type="image/png" href="{{ $generaleSetting?->favicon ?? asset('assets/favicon.png') }}" />
@@ -29,7 +29,7 @@
 </head>
 <style>
     body {
-        font-family: "MochaYemen Sugar", "Inter", serif;
+        font-family: "IBM Plex Sans Arabic", "Inter", serif;
     }
 
     .logo_right img {
@@ -55,7 +55,7 @@
         text-transform: capitalize;
         text-align: center;
         letter-spacing: 0.5px;
-        font-family: 'Poppins', sans-serif;
+        font-family: 'IBM Plex Sans Arabic', sans-serif;
     }
 </style>
 
@@ -83,13 +83,13 @@
 
                 <div class="page-content text-center mb-4">
                     <p class="pagePera my-3">
-                        Welcome to
+                        {{ __('Welcome to') }}
                         <span class="fw-bold text-primary text-capitalize">
                             {{ $generaleSetting?->name ?? config('app.name', 'Laravel') }}
                         </span>
                     </p>
 
-                    <h2 class="pageTitle">Login To Admin</h2>
+                    <h2 class="pageTitle">{{ __('Login To Admin') }}</h2>
                 </div>
 
                 <hr>
@@ -97,9 +97,9 @@
                 <form action="{{ route('admin.login.submit') }}" method="POST">
                     @csrf
                     <div class="mb-3">
-                        <label for="email">Enter Address</label>
+                        <label for="email">{{ __('Enter Address') }}</label>
                         <input type="email" value="{{ old('email') }}" name="email" id="email"
-                            class="form-control" placeholder="Enter Email Address">
+                            class="form-control" placeholder="{{ __('Enter Email Address') }}">
 
                         @error('email')
                             <span class="text text-danger" role="alert">
@@ -109,10 +109,10 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="password">Password</label>
+                        <label for="password">{{ __('Password') }}</label>
                         <div class="position-relative passwordInput">
                             <input type="password" name="password" id="password" class="form-control"
-                                placeholder="Enter Password">
+                                placeholder="{{ __('Enter Password') }}">
                             <span class="eye" onclick="showHidePassword()">
                                 <i class="fa fa-eye-slash" id="togglePassword"></i>
                             </span>
@@ -133,7 +133,7 @@
                         @enderror
                     @endif
 
-                    <button class="btn loginButton" type="submit">Login</button>
+                    <button class="btn loginButton" type="submit">{{ __('Login') }}</button>
 
                 </form>
             </div>
@@ -180,7 +180,7 @@
             if (!sessionStorage.getItem('fromShop')) {
                 Toast.fire({
                     icon: 'success',
-                    title: 'Admin Credentials Copied'
+                    title: '{{ __("Admin Credentials Copied") }}'
                 });
             }
         }

@@ -49,7 +49,7 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <textarea required name="description" class="form-control @error('description') is-invalid @enderror"
-                                rows="3" placeholder="Enter short description">{{ old('description') }}</textarea>
+                                rows="3" placeholder="{{ __('Enter short description') }}">{{ old('description') }}</textarea>
                             @error('description')
                                 <p class="text text-danger m-0">{{ $message }}</p>
                             @enderror
@@ -60,7 +60,7 @@
                         <div>
                             <h5>
                                 {{ __('Thumbnail') }}
-                                <span class="text-primary bg-light">Ratio 3:2 (600 x 400 px)</span>
+                                <span class="text-primary bg-light">{{ __('Ratio 3:2 (600 x 400 px)') }}</span>
                                 <span class="text-danger">*</span>
                             </h5>
                             @error('thumbnail')

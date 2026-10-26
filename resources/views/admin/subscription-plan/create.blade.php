@@ -23,7 +23,7 @@
                         {{ __('Short Description') }}
                     </label>
                     <textarea name="short_description" class="form-control @error('short_description') is-invalid @enderror"
-                        rows="2" placeholder="Enter short description">{{ old('short_description') }}</textarea>
+                        rows="2" placeholder="{{ __('Enter short description') }}">{{ old('short_description') }}</textarea>
                     @error('short_description')
                         <p class="text text-danger m-0">{{ $message }}</p>
                     @enderror

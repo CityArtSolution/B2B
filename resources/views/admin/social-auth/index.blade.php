@@ -94,13 +94,13 @@
             e.preventDefault();
             const url = $(this).attr("href");
             Swal.fire({
-                title: "Are you sure?",
-                text: "You want to change status!",
+                title: "{{ __('Are you sure?') }}",
+                text: "{{ __('You want to change status!') }}",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
                 cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, Change it!",
+                confirmButtonText: "{{ __('Yes, Change it!') }}",
             }).then((result) => {
                 if (result.isConfirmed) {
                     window.location.href = url;

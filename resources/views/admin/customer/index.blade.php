@@ -1,62 +1,121 @@
 @extends('layouts.app')
-@section('content')
-    <div class="d-flex align-items-center flex-wrap gap-3 justify-content-between px-3">
-        <h4>{{ __('All Customers') }}</h4>
+@php
+    $segments = [
+        'all' => ['label' => __('All'), 'class' => ''],
+        'new' => ['label' => __('New (no orders yet)'), 'class' => 'st-confirm'],
+        'regular' => ['label' => __('Regular (3+ orders)'), 'class' => 'st-delivered'],
+        'inactive' => ['label' => __('Inactive (60+ days)'), 'class' => 'st-pending'],
+    ];
+    $currentSegment = request('segment', 'all');
+@endphp
 
+@section('content')
+    <div class="page-head">
+        <div>
+            <h4 class="page-head-title">{{ __('All Customers') }}</h4>
+            <p class="page-head-sub">{{ __('See what each customer buys and find customers who stopped ordering, to contact them with an offer.') }}</p>
+        </div>
         @hasPermission('admin.customer.create')
-            <a href="{{ route('admin.customer.create') }}" class="btn py-2 btn-primary">
-                <i class="bi bi-patch-plus"></i>
-                {{ __('Add Customer') }}
-            </a>
+            <div class="page-head-actions">
+                <a href="{{ route('admin.customer.create') }}" class="btn btn-primary">
+                    <i class="bi bi-person-plus"></i> {{ __('Add Customer') }}
+                </a>
+            </div>
         @endhasPermission
     </div>
 
-    <div class="container-fluid mt-3">
+    <div class="status-tabs mb-3">
+        @foreach ($segments as $key => $segment)
+            <a href="{{ route('admin.customer.index', array_filter(['segment' => $key === 'all' ? null : $key, 'search' => request('search')])) }}"
+                class="status-tab {{ $segment['class'] }} {{ $currentSegment === $key ? 'active' : '' }}">
+                @if ($segment['class'])
+                    <span class="status-dot"></span>
+                @endif
+                {{ $segment['label'] }}
+                <span class="status-tab-count">{{ $segmentCounts[$key] }}</span>
+            </a>
+        @endforeach
+    </div>
+
+    <div class="container-fluid p-0">
 
         <div class="mb-3 card">
-            <div class="card-body">
+            <div class="card-body p-0">
+                <form method="GET" class="d-flex gap-2 flex-wrap p-3 border-bottom">
+                    <div class="input-icon flex-grow-1" style="max-width: 420px">
+                        <i class="bi bi-search"></i>
+                        <input type="text" name="search" value="{{ request('search') }}" class="form-control"
+                            placeholder="{{ __('Name, phone or commercial register') }}">
+                    </div>
+                    @if (request('segment'))
+                        <input type="hidden" name="segment" value="{{ request('segment') }}">
+                    @endif
+                    <button class="btn btn-primary"><i class="bi bi-search"></i> {{ __('Search') }}</button>
+                    @if (request('search'))
+                        <a href="{{ route('admin.customer.index', array_filter(['segment' => request('segment')])) }}" class="btn btn-link text-muted">{{ __('Clear filters') }}</a>
+                    @endif
+                </form>
                 <div class="table-responsive">
-                    <table class="table border table-responsive-lg">
+                    <table class="table table-modern cards-on-mobile mb-0">
                         <thead>
                             <tr>
-                                <th class="text-center">{{ __('SL') }}.</th>
-                                <th>{{ __('Profile') }}</th>
-                                <th style="min-width: 150px">{{ __('Name') }}</th>
-                                <th style="min-width: 100px">{{ __('Phone') }}</th>
+                                <th style="min-width: 220px">{{ __('Customer') }}</th>
                                 <th>{{ __('Commercial register') }}</th>
-                                <th class="text-center">{{ __('Tax number') }}</th>
-                                <!--<th class="text-center">{{ __('Date of Birth') }}</th>-->
-                                <th class="text-center">{{ __('Action') }}</th>
+                                <th class="text-center">{{ __('Orders') }}</th>
+                                <th>{{ __('Total purchases') }}</th>
+                                <th>{{ __('Last order') }}</th>
+                                <th class="text-end">{{ __('Action') }}</th>
                             </tr>
                         </thead>
+                        <tbody>
                         @forelse($customers as $key => $customer)
+                            @php
+                                $profile = $customer->customer;
+                                $ordersCount = (int) ($profile?->orders_count ?? 0);
+                                $lastOrder = $profile?->last_order_at ? \Carbon\Carbon::parse($profile->last_order_at) : null;
+                                $segmentKey = $ordersCount === 0 ? 'new' : ($lastOrder && $lastOrder->lt($inactiveSince) ? 'inactive' : ($ordersCount >= 3 ? 'regular' : null));
+                            @endphp
                             <tr>
-                                <td class="text-center">{{ ++$key }}</td>
-
-                                <td>
-                                    <img src="{{ $customer->thumbnail }}" width="50">
+                                <td data-label="{{ __('Customer') }}">
+                                    <div class="d-flex align-items-center gap-2 text-start">
+                                        <img src="{{ $customer->thumbnail }}" width="42" height="42" class="rounded-circle object-fit-cover flex-shrink-0" alt="" loading="lazy">
+                                        <div class="min-w-0">
+                                            <div class="fw-semibold">
+                                                {{ Str::limit($customer->fullName, 40, '...') }}
+                                                @if ($segmentKey)
+                                                    <span class="status-badge {{ $segments[$segmentKey]['class'] }} ms-1" style="font-size: .7rem">{{ ['new' => __('New customer'), 'regular' => __('Regular customer'), 'inactive' => __('Inactive customer')][$segmentKey] }}</span>
+                                                @endif
+                                            </div>
+                                            <div class="text-muted small" dir="ltr">{{ $customer->phone ?? '--' }}</div>
+                                        </div>
+                                    </div>
                                 </td>
-
-                                <td>{{ Str::limit($customer->fullName, 50, '...') }}</td>
-
-                                <td>
-                                    {{ $customer->phone ?? '--' }}
-                                </td>
-
-                                <td>
+                                <td data-label="{{ __('Commercial register') }}">
                                     {{ $customer->Commercial_register ?? '--' }}
+                                    @if ($customer->Tax_number)
+                                        <div class="text-muted small">{{ __('Tax number') }}: {{ $customer->Tax_number }}</div>
+                                    @endif
+                                </td>
+                                <td data-label="{{ __('Orders') }}" class="text-center fw-bold">{{ $ordersCount }}</td>
+                                <td data-label="{{ __('Total purchases') }}" class="fw-bold">{{ showCurrency($profile?->total_spent ?? 0) }}</td>
+                                <td data-label="{{ __('Last order') }}">
+                                    @if ($lastOrder)
+                                        {{ $lastOrder->diffForHumans() }}
+                                        <div class="text-muted small">{{ $lastOrder->format('d M Y') }}</div>
+                                    @else
+                                        <span class="text-muted">--</span>
+                                    @endif
                                 </td>
 
-                                <td class="text-center">
-                                    {{ $customer->Tax_number ?? '--' }}
-                                </td>
-
-                                <!--<td class="text-center">-->
-                                <!--    {{ $customer->date_of_birth ?? '--' }}-->
-                                <!--</td>-->
-
-                                <td class="text-center">
-                                    <div class="d-flex gap-2 justify-content-center">
+                                <td class="text-end">
+                                    <div class="d-flex gap-2 justify-content-end">
+                                        @hasPermission('admin.customer.account-statement')
+                                            <a href="{{ route('admin.customer.account-statement', $customer->id) }}"
+                                                class="btn btn-outline-secondary circleIcon" data-bs-toggle="tooltip"
+                                                data-bs-placement="left" data-bs-title="{{ __('View Account Statement') }}">
+                                                <i class="bi bi-file-earmark-text"></i>
+                                            </a>
+                                        @endhasPermission
                                         @hasPermission('admin.customer.edit')
                                             <a href="{{ route('admin.customer.edit', $customer->id) }}"
                                                 class="btn btn-outline-primary circleIcon" data-bs-toggle="tooltip"
@@ -89,7 +148,13 @@
                             </tr>
                         @empty
                             <tr>
-                                <td class="text-center" colspan="100%">{{ __('No Data Found') }}</td>
+                                <td colspan="100%">
+                                    <div class="empty-state">
+                                        <i class="bi bi-people"></i>
+                                        <h6>{{ __('No customers found') }}</h6>
+                                        <p>{{ __('Try changing or clearing the filters.') }}</p>
+                                    </div>
+                                </td>
                             </tr>
                         @endforelse
                         </tbody>
@@ -118,7 +183,7 @@
                                 </label>
                                 <div class="position-relative passwordInput">
                                     <input type="password" name="password" id="password1" class="form-control"
-                                        required="true" placeholder="Enter Password">
+                                        required="true" placeholder="{{ __('Enter Password') }}">
                                     <span class="eye" onclick="showHidePassword(1)">
                                         <i class="fa fa-eye-slash" id="togglePassword1"></i>
                                     </span>
@@ -134,7 +199,7 @@
                                 </label>
                                 <div class="position-relative passwordInput">
                                     <input type="password" name="password_confirmation" id="password2" class="form-control"
-                                        required="true" placeholder="Enter Password again">
+                                        required="true" placeholder="{{ __('Enter Password again') }}">
                                     <span class="eye" onclick="showHidePassword(2)">
                                         <i class="fa fa-eye-slash" id="togglePassword2"></i>
                                     </span>

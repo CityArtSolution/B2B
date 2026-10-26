@@ -190,7 +190,7 @@
                                                                             data-bs-target="#collapse{{ $menu->id }}"
                                                                             aria-expanded="false"
                                                                             aria-controls="collapse{{ $menu->id }}">
-                                                                            Cancel
+                                                                            {{ __('Cancel') }}
                                                                         </a>
                                                                     </div>
                                                                 </div>

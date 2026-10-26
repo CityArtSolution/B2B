@@ -57,7 +57,7 @@
                                             </td>
                                             @hasPermission('shop.voucher.toggle')
                                             <td>
-                                                <label class="switch mb-0" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Status Update">
+                                                <label class="switch mb-0" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="{{ __('Status Update') }}">
                                                     <a href="{{ route('shop.voucher.toggle', $coupon->id) }}">
                                                         <input type="checkbox" {{ $coupon->is_active ? 'checked' : '' }}>
                                                         <span class="slider round"></span>
@@ -67,12 +67,12 @@
                                             @endhasPermission
                                             <td>
                                                 @hasPermission('shop.voucher.edit')
-                                                <a href="{{ route('shop.voucher.edit', $coupon->id) }}" class="btn btn-outline-info circleIcon" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Edit">
+                                                <a href="{{ route('shop.voucher.edit', $coupon->id) }}" class="btn btn-outline-info circleIcon" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="{{ __('Edit') }}">
                                                     <img src="{{ asset('assets/icons-admin/edit.svg') }}" alt="edit" loading="lazy" />
                                                 </a>
                                                 @endhasPermission
                                                 @hasPermission('shop.voucher.destroy')
-                                                <a href="{{ route('shop.voucher.destroy', $coupon->id) }}" class="btn btn-outline-danger circleIcon deleteConfirm" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Delete">
+                                                <a href="{{ route('shop.voucher.destroy', $coupon->id) }}" class="btn btn-outline-danger circleIcon deleteConfirm" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="{{ __('Delete') }}">
                                                     <img src="{{ asset('assets/icons-admin/trash.svg') }}" alt="trash" loading="lazy">
                                                 </a>
                                                 @endhasPermission

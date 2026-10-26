@@ -40,9 +40,9 @@
                             {{__('Min Day Withdraw Request')}}
                         </label>
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Enter min day" name="withdraw_request"
+                            <input type="text" class="form-control" placeholder="{{ __('Enter min day') }}" name="withdraw_request"
                                 value="{{ $generaleSetting?->withdraw_request }}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
-                            <span class="input-group-text">Days</span>
+                            <span class="input-group-text">{{ __('Days') }}</span>
                         </div>
                     </div>
                 </div>
@@ -59,13 +59,13 @@
                 <div>
                     <p><strong>{{__('Minimum Withdrawal Amount')}}:</strong></p>
                     <ul>
-                        <li>Enter the minimum amount that can be withdrawn. This value must be a numerical figure.</li>
+                        <li>{{ __('Enter the minimum amount that can be withdrawn. This value must be a numerical figure.') }}</li>
                         <li>Example: If the minimum withdrawal amount is set to $10, users cannot withdraw any amount less than $10.</li>
                     </ul>
 
                     <p><strong>{{__('Maximum Withdrawal Amount')}}:</strong></p>
                     <ul>
-                        <li>Enter the maximum amount that can be withdrawn at a time. This value must be a numerical figure.</li>
+                        <li>{{ __('Enter the maximum amount that can be withdrawn at a time. This value must be a numerical figure.') }}</li>
                         <li>Example: If the maximum withdrawal amount is set to $1,000, users cannot withdraw more than $1,000 in a single transaction.</li>
                     </ul>
 
@@ -73,8 +73,8 @@
                         {{__('Minimum Days Between Withdrawal Requests')}}:
                     </strong></p>
                     <ul>
-                        <li>Specify the minimum number of days required between withdrawal requests. This value should be an integer.</li>
-                        <li>Example: If set to 7 days, after a seller sends a withdrawal request, they must wait at least 7 days before sending another request.</li>
+                        <li>{{ __('Specify the minimum number of days required between withdrawal requests. This value should be an integer.') }}</li>
+                        <li>{{ __('Example: If set to 7 days, after a seller sends a withdrawal request, they must wait at least 7 days before sending another request.') }}</li>
                     </ul>
                 </div>
             </div>
@@ -116,13 +116,13 @@
             e.preventDefault();
             const url = $(this).attr("href");
             Swal.fire({
-                title: "Are you sure?",
-                text: "You want to change status!",
+                title: "{{ __('Are you sure?') }}",
+                text: "{{ __('You want to change status!') }}",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
                 cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, Change it!",
+                confirmButtonText: "{{ __('Yes, Change it!') }}",
             }).then((result) => {
                 if (result.isConfirmed) {
                     window.location.href = url;

@@ -73,7 +73,7 @@
             <form @submit.prevent="sendMessage">
                 <div class="p-3 flex items-center gap-2">
                     <div class="flex items-center gap-2 w-full border rounded-lg py-3 px-3">
-                        <textarea type="text" rows="1" placeholder="Type a message" v-model="message"
+                        <textarea type="text" rows="1" :placeholder="$t('Type a message')" v-model="message"
                             @keydown.enter.exact.prevent="sendMessage" @keydown.shift.enter=""
                             class="flex-1 border-0 rounded-lg text-sm focus:outline-none resize-none break-words"></textarea>
                         <button type="submit" class="text-white mr-3">

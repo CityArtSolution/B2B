@@ -51,22 +51,42 @@ class OrderController extends Controller
 
         if ($co === 'courier') {
             $query->whereIn('shipping_type', ['courier', 'private']);
-        } else {
+        } elseif ($co) {
             $query->where('shipping_type', $co);
         }
 
         if ($shop) {
             $query->where('shop_id', $shop->id);
         }
-        
+
+        // search by order code (with or without its prefix), customer name or phone
+        $search = trim((string) $request->search);
+        $query->when($search !== '', function ($query) use ($search) {
+            $code = preg_replace('/^\D+/', '', $search);
+            $query->where(function ($query) use ($search, $code) {
+                $query->when($code !== '', fn ($q) => $q->where('order_code', 'like', "%{$code}%"))
+                    ->orWhereHas('customer.user', function ($user) use ($search) {
+                        $user->where('name', 'like', "%{$search}%")->orWhere('phone', 'like', "%{$search}%");
+                    });
+            });
+        })
+            ->when($request->payment_status, fn ($q, $value) => $q->where('payment_status', $value))
+            ->when($request->payment_method, fn ($q, $value) => $q->where('payment_method', $value))
+            ->when($request->from, fn ($q, $value) => $q->whereDate('created_at', '>=', $value))
+            ->when($request->to, fn ($q, $value) => $q->whereDate('created_at', '<=', $value));
+
+        // counts per status for the tabs, with the same filters
+        $statusCounts = (clone $query)->reorder()->selectRaw('order_status, count(*) as total')
+            ->groupBy('order_status')->pluck('total', 'order_status');
+
         if (!empty($status) && $status !== '0' && $status !== 0) {
             $query->where('order_status', $status);
         }
-        
-        
-        $orders = $query->latest('id')->paginate(20);
 
-        return view('admin.order.index', compact('orders', 'status' , 'co'));
+        $orders = $query->latest('id')->paginate(20)->withQueryString();
+        $paymentMethods = \DB::table('orders')->whereNotNull('payment_method')->distinct()->pluck('payment_method');
+
+        return view('admin.order.index', compact('orders', 'status', 'co', 'statusCounts', 'paymentMethods'));
     }
 
 

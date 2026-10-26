@@ -63,26 +63,26 @@
                     @endif
                     <div class="w-100">
                         <div style="align-self: stretch; padding-left: 24px; padding-right: 24px; padding-top: 32px; padding-bottom: 12px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 16px; display: flex">
-                            <div style="color: white; font-size: 16px; font-family: Inter; font-weight: 600; letter-spacing: 0.32px; word-wrap: break-word">{{ $subscriptionPlan->name }}</div>
+                            <div style="color: white; font-size: 16px; font-family: 'IBM Plex Sans Arabic'; font-weight: 600; letter-spacing: 0.32px; word-wrap: break-word">{{ $subscriptionPlan->name }}</div>
                             <div style="align-self: stretch; justify-content: flex-start; align-items: center; gap: 8px; display: inline-flex">
-                                <div style="color: white; font-size: 36px; font-family: Inter; font-weight: 800; letter-spacing: 0.72px; word-wrap: break-word">{{ showCurrency($subscriptionPlan->price + 0) }}</div>
+                                <div style="color: white; font-size: 36px; font-family: 'IBM Plex Sans Arabic'; font-weight: 800; letter-spacing: 0.72px; word-wrap: break-word">{{ showCurrency($subscriptionPlan->price + 0) }}</div>
                                 <div style="flex-direction: column; justify-content: center; align-items: flex-start; gap: 2px; display: inline-flex">
-                                    <div style="color: white; font-size: 12px; font-family: Inter; font-weight: 400; word-wrap: break-word">{{ $subscriptionPlan->duration ? daysToLargestUnit($subscriptionPlan->duration) : 'Unlimited' }}</div>
+                                    <div style="color: white; font-size: 12px; font-family: 'IBM Plex Sans Arabic'; font-weight: 400; word-wrap: break-word">{{ $subscriptionPlan->duration ? daysToLargestUnit($subscriptionPlan->duration) : 'Unlimited' }}</div>
                                 </div>
                             </div>
                         </div>
                         @if ($subscriptionPlan->is_popular)
                             <div style="padding-left: 8px; padding-right: 8px; padding-top: 6px; padding-bottom: 6px; right: 24px; top: 24px; position: absolute; background: rgba(255, 255, 255, 0.09); border-radius: 8px; justify-content: center; align-items: center; gap: 4px; display: inline-flex">
-                                <div style="text-align: center; color: #FFC107; font-size: 12px; font-family: Inter; font-weight: 500; letter-spacing: 0.24px; word-wrap: break-word">Most Popular</div>
+                                <div style="text-align: center; color: #FFC107; font-size: 12px; font-family: 'IBM Plex Sans Arabic'; font-weight: 500; letter-spacing: 0.24px; word-wrap: break-word">{{ __('Most Popular') }}</div>
                             </div>
                         @endif
                         <div class="w-100 px-4 d-flex gap-3 justify-content-between text-white">
                             <div class="plan-info-box">
-                                <span class="label">Sale limit</span>
+                                <span class="label">{{ __('Sale limit') }}</span>
                                 <span class="value">{{ $subscriptionPlan->sale_limit ?? 'Unlimited' }}</span>
                             </div>
                             <div class="plan-info-box">
-                                <span class="label">Duration</span>
+                                <span class="label">{{ __('Duration') }}</span>
                                 <span class="value">{{ $subscriptionPlan->duration ? daysToLargestUnit($subscriptionPlan->duration) : 'Unlimited' }}</span>
                             </div>
                         </div>
@@ -126,7 +126,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content rounded-12">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="choosePlanModalLabel">Select Payment Method</h5>
+                    <h5 class="modal-title" id="choosePlanModalLabel">{{ __('Select Payment Method') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="{{ route('shop.subscription.purchase') }}" method="POST">
@@ -137,7 +137,7 @@
                         <p class="mb-3" id="modalPlanInfo"></p>
 
                         <div class="mb-3">
-                            <label for="payment_method" class="form-label">Payment Method</label>
+                            <label for="payment_method" class="form-label">{{ __('Payment Method') }}</label>
                             <select name="payment_method" id="payment_method" class="form-select" required>
                                 @foreach ($paymentGateways as $gateway)
                                     <option value="{{ $gateway->name }}">{{ $gateway->alias }}</option>
@@ -147,7 +147,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Proceed to Pay</button>
+                        <button type="submit" class="btn btn-primary">{{ __('Proceed to Pay') }}</button>
                     </div>
                 </form>
             </div>

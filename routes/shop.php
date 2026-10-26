@@ -147,6 +147,8 @@ Route::name('shop.')->group(function () {
             Route::put('/product/{product}/update', 'update')->name('product.update');
             Route::get('/product/{product}/show', 'show')->name('product.show');
             Route::get('/product/{product}/toggle', 'statusToggle')->name('product.toggle');
+            Route::post('/product/{product}/quick-update', 'quickUpdate')->name('product.quickUpdate');
+            Route::post('/products/bulk-update', 'bulkUpdate')->name('product.bulkUpdate');
             Route::delete('/product/{product}/destroy', 'destroy')->name('product.destroy');
             Route::get('/product/{product}/thumbnail/{media}/delete', 'thumbnailDestroy')->name('product.remove.thumbnail');
             Route::get('/product/{product}/attachment/{media}/delete', 'attachmentDestroy')->name('product.remove.attachment');

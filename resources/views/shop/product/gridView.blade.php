@@ -1,7 +1,12 @@
 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xxl-4 g-4">
     @forelse($products as $key => $product)
         <div class="col">
-            <div class="card shadow-sm d-flex flex-column h-100">
+            @php
+                $stock = (int) $product->stock_total;
+                $stockClass = $stock <= 0 ? 'out' : ($stock <= $lowStock ? 'low' : 'ok');
+            @endphp
+            <div class="card shadow-sm d-flex flex-column h-100 position-relative">
+                <span class="stock-badge {{ $stockClass }} position-absolute m-2" style="z-index: 1">{{ $stock }} {{ __('cartons') }}</span>
                 <img src="{{ $product->thumbnail }}" alt="" class="card-img-top" loading="lazy" width="100%"
                     style="height: 200px; object-fit: cover" />
                 <div class="card-body h-100">
@@ -35,10 +40,18 @@
                                     <img src="{{ asset('assets/icons-admin/edit.svg') }}" alt="icon" loading="lazy" />
                                 </a>
                             @endhasPermission
+                            @hasPermission('shop.product.destroy')
+                                <button type="button" class="btn btn-outline-danger circleIcon btn-sm"
+                                    data-bs-toggle="tooltip" data-bs-placement="left"
+                                    data-bs-title="{{ __('Delete Product') }}"
+                                    onclick="confirmDeleteProduct({{ $product->id }})">
+                                    <img src="{{ asset('assets/icons-admin/trash.svg') }}" alt="icon" loading="lazy" />
+                                </button>
+                            @endhasPermission
                         </div>
                     </div>
                     <div class="mt-3">
-                        <h5 class="card-title">{{ Str::limit($product->translated_name->name ?? $product->translated_name, 50, '...') }} RN{{ $product->code }}</h5>
+                        <h5 class="card-title">{{ Str::limit($product->translated_name->name ?? $product->translated_name, 50, '...') }} {{ $product->code }}</h5>
 
                         <p>
                             {{ $product->translated_name->short_description ?? $product->short_description }}

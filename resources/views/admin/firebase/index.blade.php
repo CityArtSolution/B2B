@@ -23,7 +23,7 @@
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel">FCM setup instrctions</h5>
+            <h5 class="modal-title" id="staticBackdropLabel">{{ __('FCM setup instrctions') }}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -35,23 +35,23 @@
                                 <div>
                                     <h3 class="fz-20 text-dark">Step 1</h3>
                                     <div>
-                                        Login to your firebase account
+                                        {{ __('Login to your firebase account') }}
                                     </div>
                                 </div>
                                 <img src="{{ asset('assets/images/firebase-login.png') }}" alt="" width="60">
                             </div>
 
-                            <h4 class="mt-3 text-dark fz-20">Instruction</h4>
+                            <h4 class="mt-3 text-dark fz-20">{{ __('Instruction') }}</h4>
 
                             <ul class="m-0 pl-4">
                                 <li>
-                                    First of all, login to your firebase account.
+                                    {{ __('First of all, login to your firebase account.') }}
                                 </li>
                                 <li>
-                                    Then, create a new project in firebase or select an existing project.
+                                    {{ __('Then, create a new project in firebase or select an existing project.') }}
                                 </li>
                                 <li>
-                                    Then, go to project settings.
+                                    {{ __('Then, go to project settings.') }}
                                 </li>
                             </ul>
                         </div>
@@ -64,23 +64,23 @@
                                 <div>
                                     <h3 class="fz-20 text-dark">Step 2</h3>
                                     <div>
-                                        Generate new private key
+                                        {{ __('Generate new private key') }}
                                     </div>
                                 </div>
                                 <img src="{{ asset('assets/images/firebase-download.png') }}" alt="" width="60">
                             </div>
 
-                            <h4 class="mt-3 text-dark fz-20">Instruction</h4>
+                            <h4 class="mt-3 text-dark fz-20">{{ __('Instruction') }}</h4>
 
                             <ul class="m-0 pl-4">
                                 <li>
-                                    Go to <strong>Service account</strong> in project settings."
+                                    Go to <strong>{{ __('Service account') }}</strong> in project settings."
                                 </li>
                                 <li>
-                                    Click on <strong>Generate new private key</strong> button.
+                                    Click on <strong>{{ __('Generate new private key') }}</strong> button.
                                 </li>
                                 <li>
-                                    Then, click on <strong>Generate key</strong> button.
+                                    Then, click on <strong>{{ __('Generate key') }}</strong> button.
                                 </li>
                             </ul>
                         </div>
@@ -93,20 +93,20 @@
                                 <div>
                                     <h3 class="fz-20 text-dark">Step 3</h3>
                                     <div>
-                                        Upload firebase Credential
+                                        {{ __('Upload firebase Credential') }}
                                     </div>
                                 </div>
                                 <img src="{{ asset('assets/images/firebase-upload.png') }}" alt="" width="60">
                             </div>
 
-                            <h4 class="mt-3 text-dark fz-20">Instruction</h4>
+                            <h4 class="mt-3 text-dark fz-20">{{ __('Instruction') }}</h4>
 
                             <ul class="m-0 pl-4">
                                 <li>
-                                    Select or drag and drop your generate private key file here.
+                                    {{ __('Select or drag and drop your generate private key file here.') }}
                                 </li>
                                 <li>
-                                    Then, click on <strong>Upload</strong> button.
+                                    Then, click on <strong>{{ __('Upload') }}</strong> button.
                                 </li>
                             </ul>
                         </div>
@@ -114,7 +114,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Understood</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{{ __('Understood') }}</button>
             </div>
         </div>
         </div>

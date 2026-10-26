@@ -13,7 +13,7 @@
                     <div ref="shopContainer" class="bg-white rounded-2xl h-full max-h-[90vh] overflow-y-auto">
                         <!-- Search and Sellers List -->
                         <div class="p-2 lg:p-4 border-b relative">
-                            <input type="text" placeholder="Search Seller" @keyup="searchShops($event)"
+                            <input type="text" :placeholder="$t('Search Seller')" @keyup="searchShops($event)"
                                 class="w-full pl-10 py-3 md:py-4 pr-4 border rounded-lg text-sm md:text-base" />
                             <img src="/public/assets/icons/shop-chat/search.svg" alt="search"
                                 class="w-5 h-5 lg:w-6 lg:h-6 absolute top-[50%] translate-y-[-50%] left-4 lg:left-8">
@@ -130,7 +130,7 @@
                         <form @submit.prevent="sendMessage">
                             <div class="p-3 flex items-center gap-2">
                                 <div class="flex items-center gap-2 w-full border rounded-lg py-3 px-3">
-                                    <textarea type="text" rows="1" placeholder="Type a message" v-model="message"
+                                    <textarea type="text" rows="1" :placeholder="$t('Type a message')" v-model="message"
                                         @keydown.enter.exact.prevent="sendMessage" @keydown.shift.enter=""
                                         class="flex-1 border-0 rounded-lg text-sm focus:outline-none resize-none break-words"></textarea>
                                     <button type="submit" class="text-white mr-3">
@@ -145,8 +145,8 @@
                 <div v-else
                     class="text-center text-gray-500 py-4 border w-full h-full flex flex-col items-center justify-center">
                     <div class="space-y-2">
-                        <p class="font-semibold">No User Selected</p>
-                        <p class="text-sm">Please select a user to see their messages</p>
+                        <p class="font-semibold">{{ $t('No User Selected') }}</p>
+                        <p class="text-sm">{{ $t('Please select a user to see their messages') }}</p>
                     </div>
                 </div>
             </div>

@@ -67,7 +67,9 @@ class OrderRepository extends Repository
             if ($request->shipping_type ){
                 if($request->shipping_type  == 'courier'){
                     $driver = Driver::where('user_id', $request->shipping_company_id)->first();
-                    DriverRepository::assignOrder($order, $driver);
+                    if ($driver) {
+                        DriverRepository::assignOrder($order, $driver);
+                    }
                 }
             }
 
@@ -89,7 +91,7 @@ class OrderRepository extends Repository
                 
                 
                 $product = $cart->product;
-                $price = $product->discount_price > 0 ? $product->discount_price : $product->carton_price;
+                $price = $product->discount_price > 0 ? $product->discount_price : $product->sale_carton_price;
 
                 $flashSale = $product->activeFlashSale($cart->branch_id);
                 $quantity = 0;
@@ -265,7 +267,7 @@ class OrderRepository extends Repository
             }
 
             $product = $cart->product;
-            $price = $product->discount_price > 0 ? $product->discount_price : $product->carton_price;
+            $price = $product->discount_price > 0 ? $product->discount_price : $product->sale_carton_price;
 
             $flashSale = $product->activeFlashSale($cart->branch_id);
             $quantity = 0;

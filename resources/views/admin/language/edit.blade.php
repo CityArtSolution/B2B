@@ -22,7 +22,7 @@
                                 {{ __('Title') . ' for ' . $language->name . '' }}
                             </label>
                             <div class="input-group">
-                                <input type="text" name="title" class="form-control py-2.5" placeholder="title"
+                                <input type="text" name="title" class="form-control py-2.5" placeholder="{{ __('title') }}"
                                     value="{{ $language->title }}" />
                             </div>
                             @error('title')
@@ -68,7 +68,7 @@
                             {{ __('Select JSON File to Import') }}
                         </h4>
                         <p class="text-muted mb-3">
-                            Upload a JSON file to update your language settings.
+                            {{ __('Upload a JSON file to update your language settings.') }}
                         </p>
 
                         <form action="{{ route('admin.language.import', $language->id) }}" method="POST"
@@ -115,7 +115,7 @@
                             {{ __('Export JSON File') }}
                         </h4>
                         <p class="text-muted">
-                            Export your language files in JSON format with just one click!
+                            {{ __('Export your language files in JSON format with just one click!') }}
                         </p>
                         <form action="{{ route('admin.language.export', $language->id) }}" method="POST">
                             @csrf
@@ -138,7 +138,7 @@
             </div>
             <div class="card-body p-3">
                 <div class="mb-2">
-                    <input type="text" class="form-control" placeholder="Search in JSON" id="search" onkeyup="filterJSON()" />
+                    <input type="text" class="form-control" placeholder="{{ __('Search in JSON') }}" id="search" onkeyup="filterJSON()" />
                 </div>
                 <div class="json-view-container">
                     @foreach ($languageData as $key => $value)
@@ -288,7 +288,7 @@
         <script>
             Swal.fire({
                 icon: 'success',
-                title: 'Language Import Successful',
+                title: '{{ __("Language Import Successful") }}',
                 text: "{{ session('successAlert') }}"
             });
         </script>

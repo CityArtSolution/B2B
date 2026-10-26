@@ -58,9 +58,9 @@
                             <div class="input-group">
                                 <input type="search"
                                     class="form-control border-0 border-start border-top text-muted border-bottom"
-                                    placeholder="{{ __('Search by product name') }}" name="search" id="search" />
+                                    placeholder="{{ __('Search by name or scan the barcode') }}" name="search" id="search" autofocus autocomplete="off" />
                                 <button class="btn border-top border-bottom border-end text-muted pe-3" type="button">
-                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    <i class="bi bi-upc-scan"></i>
                                 </button>
                             </div>
                         </div>
@@ -515,7 +515,8 @@
         var callPagination = true;
 
         let timeout;
-        $('#search').on('keyup', function() {
+        $('#search').on('keyup', function(e) {
+            if (e.key === 'Enter') return;
             clearTimeout(timeout);
             timeout = setTimeout(function() {
                 currentPage = 1;
@@ -524,8 +525,25 @@
             }, 500);
         });
 
+        // a barcode scanner types the code then Enter: open that product directly
+        $('#search').on('keydown', function(e) {
+            if (e.key !== 'Enter') return;
+            e.preventDefault();
+            clearTimeout(timeout);
+            const code = $(this).val().trim();
+            currentPage = 1;
+            callPagination = true;
+            fetchProducts((products) => {
+                const match = products.find((product) => String(product.code) === code);
+                if (match) {
+                    openProductModal(match.id);
+                    $('#search').val('');
+                }
+            });
+        });
+
         // fetch products
-        function fetchProducts() {
+        function fetchProducts(onDone = null) {
             $.ajax({
                 url: "{{ route('shop.pos.product') }}",
                 method: 'POST',
@@ -543,6 +561,7 @@
                     currency = response.data.currency;
                     currencyPosition = response.data.currency_position;
                     appendProducts(response.data.products);
+                    if (onDone) onDone(response.data.products);
 
                     if (callPagination) {
                         setupPagination();

@@ -80,7 +80,7 @@
                             <div class="p-2 sm:px-4 sm:py-3 rounded-md sm:rounded-[10px] border text-base font-normal leading-normal hover:text-primary cursor-pointer transition duration-300"
                                 :class="!categoryId ? 'text-primary border-primary' : 'border-slate-200 text-slate-600'"
                                 @click="selectCategory('')">
-                                All
+                                {{ $t('All') }}
                             </div>
                         </swiper-slide>
 

@@ -236,13 +236,13 @@
                                                                             <label class="form-label mb-1">
                                                                                 {{ __('Short Text (AR)') }}
                                                                             </label>
-                                                                            <textarea name="title_ar" class="form-control form-control-sm" placeholder="short text" required>{{ $item->title['ar']}}</textarea>
+                                                                            <textarea name="title_ar" class="form-control form-control-sm" placeholder="{{ __('short text') }}" required>{{ $item->title['ar']}}</textarea>
                                                                         </div>
                                                                         <div class="col-12 mb-3">
                                                                             <label class="form-label mb-1">
                                                                                 {{ __('Short Text (EN)') }}
                                                                             </label>
-                                                                            <textarea name="title" class="form-control form-control-sm" placeholder="short text" required>{{ $item->title['en']}}</textarea>
+                                                                            <textarea name="title" class="form-control form-control-sm" placeholder="{{ __('short text') }}" required>{{ $item->title['en']}}</textarea>
                                                                         </div>
                                                                     @else
                                                                         <div class="col-12 mb-3">

@@ -42,7 +42,7 @@
                                     </td>
 
                                     <td class="text-center">
-                                        <label class="switch mb-0" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Status Toggle">
+                                        <label class="switch mb-0" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="{{ __('Status Toggle') }}">
                                             <a href="{{ route('admin.review.toggle', $review->id) }}">
                                                 <input type="checkbox" {{ $review->is_active ? 'checked' : '' }}>
                                                 <span class="slider round"></span>

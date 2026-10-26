@@ -256,7 +256,7 @@ const processOrderConfirm = () => {
     if (basketStore.checkoutProducts.length > 0) {
         isProcessing.value = true;
         axios.post('/place-order', {
-            shop_ids: [1],
+            shop_ids: basketStore.selectedShopIds.length ? basketStore.selectedShopIds : basketStore.checkoutProducts.map((shop) => shop.shop_id),
             address_id: basketStore.address.id,
             payment_method: props.paymentMethod,
             coupon_code: coupon.value,

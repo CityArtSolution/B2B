@@ -173,7 +173,7 @@
                                 <div id="chat-input-box" class="d-none d-flex align-items-center gap-2 p-3">
                                     <div class="border rounded-4 w-100 d-flex align-items-start gap-2 py-1">
                                         <textarea rows="1" id="chat-input" type="text" class="border-0 px-4 py-2 w-75 flex-grow-1"
-                                            placeholder="Type a message" name="message"
+                                            placeholder="{{ __('Type a message') }}" name="message"
                                             style="word-break: break-all; overflow-y: auto; resize: none; outline: none !important;"></textarea>
                                         <button class="btn" type="button" onclick="handleSubmit()">
                                             <img src="{{ asset('assets/icons/shop-chat/sent-chat.svg') }}" class="img-fluid"

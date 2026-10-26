@@ -16,73 +16,48 @@ foreach ($product->quantities as $q) {
             {{ __('Edit Product') }}
         </div>
     </div>
-    <form action="{{ route('shop.product.update', $product->id) }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('shop.product.update', $product->id) }}" method="POST" enctype="multipart/form-data" class="form-steps">
         @csrf
         @method('PUT')
         @if ($errors->any())
             <div class="alert alert-danger mt-3">
-                <ul class="mb-0">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+                {{ __('Please correct the errors shown under the fields below.') }}
             </div>
         @endif
         <div class="card mt-3">
             <div class="card-body">
+                <div class="form-step" data-title="{{ __('Product Information') }}" data-hint="{{ __('Write the product name and description in Arabic and English. Typing the Arabic name fills the English one automatically.') }}" data-icon="bi-card-text">
                 <div  class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                             <x-input label="Product Name (AR)" id="name_ar_input" name="name_ar" type="text"
-                            placeholder="Enter Product Name" value="{{ $product->translated_ar_name->name ?? $product->translated_name }}" />
+                            placeholder="Enter Product Name" required="true" value="{{ $product->translated_ar_name->name ?? $product->translated_name }}" />
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <x-input label="Product Name (EN)" name="name" id="product_name" type="text"
                             placeholder="Enter Product Name" required="true" value="{{ $product->name }}" />
-                    </div>
-                    <div class="col-md-3">
-                        <x-input label="Product Name (UR)" name="name_ur" id="name_ur_input" type="text"
-                            placeholder="Enter Product Name" required="true" value="{{ $product->transl('ur')->name ??  $product->name }}" />
-                    </div>
-                    <div class="col-md-3">
-                        <x-input label="Product Name (IN)" name="name_In" id="name_in_input" type="text"
-                            placeholder="Enter Product Name" required="true" value="{{ $product->transl('In')->name ??  $product->name  }}" />
                     </div>
                 </div>
 
                 <div  class="row mt-3">
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <label>
                             {{ __('Short Description (AR)') }}
                         </label>
-                        <textarea name="short_description_ar" id="short_description_ar" class="form-control" rows="2"placeholder="Short Description (AR)">{{ old('short_description_ar') ?? $product->translated_ar_name->short_description ?? $product->short_description }}</textarea>
+                        <textarea name="short_description_ar" id="short_description_ar" class="form-control @error('short_description_ar') is-invalid @enderror" rows="2" maxlength="191" placeholder="{{ __('Short Description (AR)') }}">{{ old('short_description_ar') ?? $product->translated_ar_name->short_description ?? $product->short_description }}</textarea>
+                        @error('short_description_ar')
+                            <p class="text text-danger m-0">{{ $message }}</p>
+                        @enderror
                     </div>
 
-                    
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <label>
                             {{ __('Short Description (EN)') }}
                             <span class="text-danger">*</span>
                         </label>
-                        <textarea name="short_description" class="form-control" id="short_description" rows="2" placeholder="Short Description (EN)">{{ old('short_description') ?? $product->short_description }}</textarea>
+                        <textarea name="short_description" class="form-control @error('short_description') is-invalid @enderror" id="short_description" rows="2" maxlength="191" required placeholder="{{ __('Short Description (EN)') }}">{{ old('short_description') ?? $product->short_description }}</textarea>
                         @error('short_description')
                             <p class="text text-danger m-0">{{ $message }}</p>
                         @enderror
-                    </div>
-                   
-                    <div class="col-md-3">
-                        <label>
-                            {{ __('Short Description (UR)') }}
-                            <span class="text-danger">*</span>
-                        </label>
-                        <textarea name="short_description_ur" class="form-control" id="short_description_ur" rows="2" placeholder="Short Description (UR)">{{ old('short_description_ur') ?? $product->transl('Ur')->short_description ?? $product->short_description }}</textarea>
-                    </div>
-                
-                    <div class="col-md-3">
-                        <label>
-                            {{ __('Short Description (IN)') }}
-                            <span class="text-danger">*</span>
-                        </label>
-                        <textarea name="short_description_In" class="form-control" id="short_description_In" rows="2" placeholder="Short Description (In)">{{ old('short_description_In') ?? $product->transl('In')->short_description ?? $product->short_description }}</textarea>
                     </div>
                 </div>
 
@@ -110,35 +85,12 @@ foreach ($product->quantities as $q) {
                             <p class="text text-danger m-0">{{ $message }}</p>
                         @enderror
                     </div>
-    
-                    <div class="col-md-6" style="margin: 23px 0 105px;">
-                        <label>{{ __('Description (UR)') }}</label>
-                        <div id="ur_editor" style="max-height: 750px; overflow-y: auto">
-                            {!! old('description_ur') ?? $product->transl('Ur')->description ??  $product->description !!}
-                        </div>
-                        <input type="hidden" id="description_ur" name="description_ur"
-                            value="{{ old('description_ur') ?? $product->transl('Ur')->description ??  $product->description }}">
-                        @error('description_ur')
-                            <p class="text text-danger m-0">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    
-                    <div class="col-md-6" style="margin: 23px 0 105px;">
-                        <label>
-                            {{ __('Description (IN)') }}
-                        </label>
-                        <div id="in_editor" style="max-height: 750px; overflow-y: auto">
-                            {!! old('description_in') ?? $product->transl('In')->description !!}
-                        </div>
-                        <input type="hidden" id="description_in" name="description_In"
-                            value="{{ old('description_in') ?? $product->transl('In')->description }}">
-                        @error('description_in')
-                            <p class="text text-danger m-0">{{ $message }}</p>
-                        @enderror
-                    </div>
+                </div>
+
                 </div>
 
                 <!--######## General Information ##########-->
+                <div class="form-step" data-title="{{ __('Category and Details') }}" data-hint="{{ __('Choose where the product is sold, its category and code. Colors are optional and you can add a new color here.') }}" data-icon="bi-tags">
                 <div class="card mt-4">
                     <div class="card-body">
                 
@@ -148,13 +100,13 @@ foreach ($product->quantities as $q) {
                                 {{ __('Generale Information') }}
                             </h5>
                         </div>
-                        <div class="row mt-3">
+                        <div class="row g-3 mt-1">
                             <div class="col-md-6 col-lg-4">
                                 <label class="form-label">
                                     {{ __('Select Branch') }}
                                     <span class="text-danger">*</span>
                                 </label>
-                                <select name="branch" multiple class="form-control select2 BranchSelect" style="width: 100%">
+                                <select name="branch" multiple class="form-control select2 BranchSelect" style="width: 100%" data-error-for="branches">
                                     <option value="" disabled>
                                         {{ __('Select Branch') }}
                                     </option>
@@ -190,12 +142,12 @@ foreach ($product->quantities as $q) {
                                 @enderror
                             </div>
                 
-                            <div class="col-md-6 col-lg-4 mt-3 mt-md-0">
+                            <div class="col-md-6 col-lg-4">
                                 <label class="form-label">
                                     {{ __('Select Sub Categories') }}
                                 </label>
                                 <select name="sub_category[]" class="form-control select2" multiple style="width: 100%"
-                                    data-placeholder="Select Sub Category">
+                                    data-placeholder="{{ __('Select Sub Category') }}">
                                     @foreach ($subCategories as $subCategory)
                                         <option value="{{ $subCategory->id }}"
                                             {{ in_array($subCategory->id, $product->subcategories?->pluck('id')->toArray()) ? 'selected' : '' }}>
@@ -208,7 +160,7 @@ foreach ($product->quantities as $q) {
                                 @enderror
                             </div>
                 
-                            <div class="col-md-6 col-lg-4 mt-4">
+                            <div class="col-md-6 col-lg-4">
                                 <x-select label="Select Brand" name="brand">
                                     <option value="">
                                         {{ __('Select Brand') }}
@@ -221,42 +173,11 @@ foreach ($product->quantities as $q) {
                                     @endforeach
                                 </x-select>
                             </div>
-                
+
                             @if ($product->is_digital == false)
-                                <div class="col-md-6 col-lg-4 mt-4">
-                                    <label class="form-label">{{ __('Select Color') }}</label>
-                                    <select name="colorIds[]" data-placeholder="Select Color" required="true"
-                                        class="form-control colorSelect" multiple style="width: 100%">
-                                        <option value="">
-                                            {{ __('Select Color') }}
-                                        </option>
-                                        @foreach ($colors as $color)
-                                            <option value="{{ $color->id }}" data-color="{{ $color->color_code }}"
-                                                data-name="{{ $color->name }}"
-                                                {{ in_array($color->id, $product->colors?->pluck('id')->toArray()) ? 'selected' : '' }}>
-                                                {{ $color->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                
-                                <div class="col-lg-4 col-md-6 mt-4">
-                                    <x-select label="Select Unit" name="unit" placeholder="Select Unit">
-                                        <option value="">
-                                            {{ __('Select Unit') }}
-                                        </option>
-                                        @foreach ($units as $unit)
-                                            <option value="{{ $unit->id }}"
-                                                {{ $unit->id == $product->unit_id ? 'selected' : '' }}>
-                                                {{ $unit->name }}
-                                            </option>
-                                        @endforeach
-                                    </x-select>
-                                </div>
-                
-                                <div class="col-md-6 col-lg-4 mt-4">
+                                <div class="col-md-6 col-lg-4">
                                     <label class="form-label">{{ __('Select Size') }}</label>
-                                    <select name="sizeIds[]" data-placeholder="Select Size" required="true"
+                                    <select name="sizeIds[]" data-placeholder="{{ __('Select Size') }}"
                                         class="form-control sizeSelector" multiple style="width: 100%">
                                         <option value="">
                                             {{ __('Select Size') }}
@@ -270,8 +191,8 @@ foreach ($product->quantities as $q) {
                                     </select>
                                 </div>
                             @endif
-                
-                            <div class="col-md-6 col-lg-4 mt-4">
+
+                            <div class="col-md-6 col-lg-4">
                                 <label class="form-label d-flex align-items-center gap-2 justify-content-between">
                                     <div class="d-flex align-items-center gap-2">
                                         <span>
@@ -287,16 +208,35 @@ foreach ($product->quantities as $q) {
                                         {{ __('Generate Code') }}
                                     </span>
                                 </label>
-                                <input type="text" id="barcode" name="code" placeholder="Ex: 134543"
-                                    class="form-control" value="{{ $product->code }}"
-                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" />
+                                <input type="text" id="barcode" name="code" placeholder="{{ __('Ex: ABC-1234') }}"
+                                    class="form-control @error('code') is-invalid @enderror" value="{{ old('code', $product->code) }}" maxlength="25"
+                                    oninput="this.value = this.value.replace(/[^A-Za-z0-9-]/g, '');" />
                                 @error('code')
                                     <p class="text text-danger m-0">{{ $message }}</p>
                                 @enderror
                             </div>
-                
-                            {{-- حقل وصف محتويات الكرتون المضاف --}}
-                            <div class="col-12 mt-4">
+
+                            @if ($product->is_digital == false)
+                                <div class="col-lg-6">
+                                    <label class="form-label">{{ __('Select Color') }}</label>
+                                    <select name="colorIds[]" data-placeholder="{{ __('Select Color') }}"
+                                        class="form-control colorSelect" multiple style="width: 100%">
+                                        <option value="">
+                                            {{ __('Select Color') }}
+                                        </option>
+                                        @foreach ($colors as $color)
+                                            <option value="{{ $color->id }}" data-color="{{ $color->color_code }}"
+                                                data-name="{{ $color->name }}"
+                                                {{ in_array($color->id, $product->colors?->pluck('id')->toArray()) ? 'selected' : '' }}>
+                                                {{ $color->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @include('shop.product.partials.custom-color')
+                                </div>
+                            @endif
+
+                            <div class="col-lg-6">
                                 <label class="form-label">
                                     {{ __('Carton Contents Description') }}
                                     <span class="info" data-bs-toggle="tooltip" data-bs-placement="top"
@@ -304,7 +244,7 @@ foreach ($product->quantities as $q) {
                                         <i class="bi bi-info"></i>
                                     </span>
                                 </label>
-                                <textarea name="carton_contents" class="form-control" rows="3" 
+                                <textarea name="carton_contents" class="form-control @error('carton_contents') is-invalid @enderror" rows="3" maxlength="1000"
                                     placeholder="{{ __('Example: 3 red, 3 black, 2 blue') }}">{{ old('carton_contents', $product->carton_contents) }}</textarea>
                                 @error('carton_contents')
                                     <p class="text text-danger m-0">{{ $message }}</p>
@@ -398,16 +338,16 @@ foreach ($product->quantities as $q) {
                                         @foreach ($product->licenses as $license)
                                             <div class="license-row">
                                                 <input name="previous_license_key[{{ $license->id }}]" type="text"
-                                                    placeholder="License Key" class="license-text"
+                                                    placeholder="{{ __('License Key') }}" class="license-text"
                                                     value="{{ $license->product_license }}" />
                                                 <div class="license-actions">
                                                     <button type="button" class="generate-btn"
-                                                        title="Generate">{{ __('Generate key') }}</button>
+                                                        title="{{ __('Generate') }}">{{ __('Generate key') }}</button>
                                                     <button type="button" class="copy-btn"
-                                                        title="Copy">{{ __('Copy key') }}</button>
+                                                        title="{{ __('Copy') }}">{{ __('Copy key') }}</button>
                                                     <a href="javascript::void(0)"
                                                         onclick="deleteAction('{{ route('shop.product.remove.license', ['product' => $product->id, 'license' => $license->id]) }}')"
-                                                        class="remove-show-license-btn" title="Remove">X</a>
+                                                        class="remove-show-license-btn" title="{{ __('Remove') }}">X</a>
                                                 </div>
                                             </div>
                                         @endforeach
@@ -415,13 +355,13 @@ foreach ($product->quantities as $q) {
                                 @else
                                     <div id="licenseList" class="license-list mb-2">
                                         <div class="license-row">
-                                            <input name="license_key[]" type="text" placeholder="License Key"
+                                            <input name="license_key[]" type="text" placeholder="{{ __('License Key') }}"
                                                 class="license-text" />
                                             <div class="license-actions">
                                                 <button type="button" class="generate-btn"
-                                                    title="Generate">{{ __('Generate key') }}</button>
+                                                    title="{{ __('Generate') }}">{{ __('Generate key') }}</button>
                                                 <button type="button" class="copy-btn"
-                                                    title="Copy">{{ __('Copy key') }}</button>
+                                                    title="{{ __('Copy') }}">{{ __('Copy key') }}</button>
                                             </div>
                                         </div>
                                     </div>
@@ -446,7 +386,10 @@ foreach ($product->quantities as $q) {
                     </div>
                 </div>
 
+                </div>
+
                 <!--######## Price Information ##########-->
+                <div class="form-step" data-title="{{ __('Price and Stock') }}" data-hint="{{ __('The selling price is per piece. The carton price is calculated from the piece price and the carton pack, and you can change it. Stock is counted in cartons.') }}" data-icon="bi-cash-stack">
                 <div class="card mt-4 mb-4">
                     <div class="card-body">
 
@@ -456,7 +399,7 @@ foreach ($product->quantities as $q) {
                                 {{ __('Price Information') }}
                             </h5>
                         </div>
-                        <div class="row mt-3">
+                        <div class="row g-3 mt-1 mb-3">
                             <div class="col-lg-4 col-md-6">
                                 <x-input type="text" name="buy_price" label="Buying Price" placeholder="Buying Price"
                                     required="true" onlyNumber="true" :value="$product->buy_price" />
@@ -467,39 +410,25 @@ foreach ($product->quantities as $q) {
                                     required="true" onlyNumber="true" :value="$product->price" />
                             </div>
 
-                            <div class="col-lg-4 col-md-6 mt-3 mt-md-0">
-                                <x-input type="text" name="discount_price" label="Discount Price"
-                                    placeholder="Discount Price" onlyNumber="true" :value="$product->discount_price" />
+                            <div class="col-lg-4 col-md-6">
+                                <x-input type="text" name="discount_price" label="Carton price after discount"
+                                    placeholder="Optional: discounted carton price" onlyNumber="true" :value="$product->discount_price" />
                             </div>
-                            <div class="col-lg-4 col-md-6 mt-3">
-                                <x-input 
-                                    type="text" 
-                                    name="carton_units_count" 
-                                    label="Units Per Carton" 
-                                    placeholder="Enter number of units per carton"
-                                    onlyNumber="true"
-                                    :value="$product->carton_units_count" 
-                                />
+
+                            <div class="col-lg-4 col-md-6">
+                                <x-input type="text" name="carton_units_count" label="Units Per Carton"
+                                    placeholder="Enter number of units per carton" onlyNumber="true"
+                                    :value="$product->carton_units_count" />
                             </div>
-                            
-                            <div class="col-lg-4 col-md-6 mt-3">
-                                <x-input 
-                                    type="text" 
-                                    name="carton_price" 
-                                    label="Carton Price" 
-                                    placeholder="Enter full carton price"
-                                    onlyNumber="true"
-                                    :value="$product->carton_price" 
-                                />
+
+                            <div class="col-lg-4 col-md-6">
+                                <x-input type="text" name="carton_price" label="Carton Price"
+                                    placeholder="Enter full carton price" onlyNumber="true"
+                                    :value="$product->carton_price" />
                             </div>
-                            <!--<div class="col-lg-4 col-md-6 mt-3 {{ $product->is_digital ? 'd-none' : 'd-block' }}">-->
-                            <!--    <x-input type="text" name="quantity" id="qty"-->
-                            <!--        label="Current Stock Quantity" placeholder="Current Stock Quantity" onlyNumber="true"-->
-                            <!--        :value="$product->quantity"/>-->
-                            <!--</div>-->
 
                             @if ($product->is_digital == false)
-                                <div class="col-lg-4 col-md-6 mt-3">
+                                <div class="col-lg-4 col-md-6">
                                     <x-input type="text" onlyNumber="true" name="min_order_quantity"
                                         label="Minimum Order Quantity" placeholder="Minimum Order Quantity"
                                         :value="$product->min_order_quantity" />
@@ -641,7 +570,7 @@ foreach ($product->quantities as $q) {
                                             {{ __('Branch') }}
                                         </th>
                                         <th>
-                                            {{ __('Quantity') }}
+                                            {{ __('Quantity (Cartons)') }}
                                         </th>
                                     </tr>
                                 </thead>
@@ -652,7 +581,10 @@ foreach ($product->quantities as $q) {
                     </div>
                 </div>
 
+                </div>
+
                 <!--######## Thumbnail Information ##########-->
+                <div class="form-step" data-title="{{ __('Images and Video') }}" data-hint="{{ __('Add a clear square main image (500 x 500). Extra images and a video are optional.') }}" data-icon="bi-images">
                 <div class="row mb-3">
                     <div class="col-md-5 col-xl-3">
                         <div class="card card-body h-100">
@@ -797,7 +729,7 @@ foreach ($product->quantities as $q) {
                                     {{ __('YouTube Video Link') }}
                                 </label>
                                 <textarea class="form-control" name="uploadVideo[youtube_url]" id="youtubeLink" rows="3"
-                                    placeholder='<iframe width="560" height="315" src="https://www.youtube.com/embed/MxcgrT_Kdxw?si=V63-aJ-4tPZUEKyk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>'>{{ $product->video?->type == 'youtube' ? $product->video->url : '' }}</textarea>
+                                    placeholder='<iframe width="560" height="315" src="https://www.youtube.com/embed/MxcgrT_Kdxw?si=V63-aJ-4tPZUEKyk" title="{{ __('YouTube video player') }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>'>{{ $product->video?->type == 'youtube' ? $product->video->url : '' }}</textarea>
                                 <small class="text-muted">{{ __('Paste a valid YouTube video embed code') }}</small>
                             </div>
 
@@ -825,7 +757,10 @@ foreach ($product->quantities as $q) {
                     </div>
                 </div>
 
+                </div>
+
                 <!--######## SEO section ##########-->
+                <div class="form-step" data-title="{{ __('Search Visibility (SEO)') }}" data-hint="{{ __('Optional: helps the product appear in Google search. You can skip this step.') }}" data-icon="bi-search">
                 <div class="card mt-4 mb-3">
                     <div class="card-body">
 
@@ -868,10 +803,15 @@ foreach ($product->quantities as $q) {
                     </div>
                 </div>
 
+                </div>
+
+                <div class="form-step" data-title="{{ __('Review and Save') }}" data-hint="{{ __('Check the product details before saving. Click Edit next to any section to change it.') }}" data-icon="bi-check2-circle">
+                    <div class="product-review" data-product-review></div>
+                </div>
             </div>
         </div>
 
-        <div class="d-flex gap-3 justify-content-end align-items-center my-3">
+        <div class="d-flex gap-3 justify-content-end align-items-center my-3 form-steps-actions">
             <button type="reset" class="btn btn-lg btn-outline-secondary rounded py-2">
                 {{ __('Reset') }}
             </button>
@@ -1068,6 +1008,7 @@ foreach ($product->quantities as $q) {
     </style>
 @endpush
 @push('scripts')
+    @include('shop.product.partials.form-helpers')
 <script>
     var productQuantities = @json($productQuantities);
 </script>
@@ -1089,8 +1030,6 @@ foreach ($product->quantities as $q) {
                 },
                 success: function(response) {
                     if (response.en) $('#product_name').val(response.en);
-                    if (response.ur) $('#name_ur_input').val(response.ur);
-                    if (response.in) $('#name_in_input').val(response.in);
                 }
             });
         }, 500);
@@ -1112,8 +1051,6 @@ foreach ($product->quantities as $q) {
                 },
                 success: function(response) {
                     if (response.en) $('#short_description').val(response.en);
-                    if (response.ur) $('#short_description_ur').val(response.ur);
-                    if (response.in) $('#short_description_In').val(response.in);
                 }
             });
         }, 500);
@@ -1247,8 +1184,8 @@ foreach ($product->quantities as $q) {
                 var mainPrice = productDiscountPrice > 0 ? productDiscountPrice : productPrice;
 
                 selectedOptions.each(function() {
-                    var colorName = $(this).data('name');
-                    var colorCode = $(this).data('color');
+                    var colorName = escapeHtml($(this).data('name'));
+                    var colorCode = escapeHtml($(this).data('color'));
                     var colorId = $(this).val();
 
                     // Check if the row already exists
@@ -1262,6 +1199,7 @@ foreach ($product->quantities as $q) {
                                     </h4>
                                     <input type="hidden" name="color[${colorId}][name]" value="${colorName}">
                                     <input type="hidden" name="color[${colorId}][id]" value="${colorId}">
+                                    <input type="hidden" name="color[${colorId}][code]" value="${colorCode}">
                                 </td>
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
@@ -1274,7 +1212,7 @@ foreach ($product->quantities as $q) {
                                 </td>
                                 <td>
                                     <button class="btn circleIcon btn-outline-danger btn-sm" type="button"
-                                        onclick="deleteColorRow(${colorId})">
+                                        onclick="deleteColorRow('${colorId}')">
                                         <i class="fa-solid fa-times"></i>
                                     </button>
                                 </td>
@@ -1366,7 +1304,7 @@ foreach ($product->quantities as $q) {
 
                 submitButton.html(`<div class="d-flex align-items-center gap-1">
                     <div class="spinner-border" role="status"></div>
-                    <span>Updating...</span>
+                    <span>{{ __('Updating...') }}</span>
                 </div>`)
             });
         });
@@ -1411,7 +1349,7 @@ foreach ($product->quantities as $q) {
                     priceInput.attr('type', 'hidden');
 
                     $('#defaultPriceColor').remove();
-                    $(`<span id="defaultPriceColor" class="defaultPrice fst-italic">Default Price</span>`)
+                    $(`<span id="defaultPriceColor" class="defaultPrice fst-italic">{{ __('Default Price') }}</span>`)
                         .insertAfter(priceInput);
                 }
             });
@@ -1426,7 +1364,7 @@ foreach ($product->quantities as $q) {
                     priceInput.attr('type', 'hidden');
 
                     $('#defaultPriceSize').remove();
-                    $(`<span id="defaultPriceSize" class="defaultPrice fst-italic">Default Price</span>`)
+                    $(`<span id="defaultPriceSize" class="defaultPrice fst-italic">{{ __('Default Price') }}</span>`)
                         .insertAfter(priceInput);
                 }
             });
@@ -1535,8 +1473,6 @@ foreach ($product->quantities as $q) {
         const editors = [
             { id: 'editor', input: 'description' },
             { id: 'ar_editor', input: 'description_ar' },
-            { id: 'ur_editor', input: 'description_ur' },
-            { id: 'in_editor', input: 'description_in' },
         ];
         
         editors.forEach(obj => {
@@ -1605,7 +1541,7 @@ foreach ($product->quantities as $q) {
                     } else if (error.responseJSON && error.responseJSON.message) {
                         toastr.error(error.responseJSON.message);
                     } else {
-                        toastr.error("Something went wrong");
+                        toastr.error("{{ __('Something went wrong') }}");
                     }
                     $('#description').val("");
                     quill.setText("");
@@ -1719,7 +1655,7 @@ foreach ($product->quantities as $q) {
                 input.type = 'text';
                 input.name = 'license_key[]';
                 input.className = 'license-text';
-                input.placeholder = 'License Key';
+                input.placeholder = '{{ __("License Key") }}';
                 input.value = initialValue;
 
 

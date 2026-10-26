@@ -78,7 +78,55 @@ class DashboardController extends Controller
         
         $products_addresses = (clone $productObject)->withCount('orders')->with(['orders.customer'])->orderBy('orders_count', 'desc')->limit(8)->get();
 
-        return view('admin.dashboard', compact('totalShop', 'totalOrder' , 'products_addresses' , 'totalCustomer', 'totalProduct', 'orderStatuses', 'orderStatuses2' , 'topCustomers', 'topSellingProducts' , 'lseeSellingProducts' , 'topReviewProducts', 'topShops', 'latestOrders', 'topFavorites', 'pendingWithdraw', 'alreadyWithdraw', 'deniedWithdraw', 'totalCommission', 'totalCategories', 'flashSale', 'totalRider'));
+        $overview = $this->overview($shop, $productObject);
+
+        return view('admin.dashboard', compact('overview','totalShop', 'totalOrder' , 'products_addresses' , 'totalCustomer', 'totalProduct', 'orderStatuses', 'orderStatuses2' , 'topCustomers', 'topSellingProducts' , 'lseeSellingProducts' , 'topReviewProducts', 'topShops', 'latestOrders', 'topFavorites', 'pendingWithdraw', 'alreadyWithdraw', 'deniedWithdraw', 'totalCommission', 'totalCategories', 'flashSale', 'totalRider'));
+    }
+
+    /**
+     * Today's numbers compared with yesterday, and what needs attention, for the top of the dashboard.
+     */
+    private function overview($shop, $productObject): array
+    {
+        $orders = fn () => Order::when($shop, fn ($query) => $query->where('shop_id', $shop?->id));
+        $sales = fn ($day) => $orders()->whereDate('created_at', $day)
+            ->where('order_status', '!=', OrderStatus::CANCELLED->value)->sum('payable_amount');
+
+        $trend = function ($today, $yesterday) {
+            if ($yesterday == 0) {
+                return $today > 0 ? 100 : 0;
+            }
+
+            return (int) round((($today - $yesterday) / $yesterday) * 100);
+        };
+
+        $todayOrders = $orders()->whereDate('created_at', today())->count();
+        $yesterdayOrders = $orders()->whereDate('created_at', today()->subDay())->count();
+        $todaySales = $sales(today());
+        $yesterdaySales = $sales(today()->subDay());
+
+        // products whose stock across all branches is at or under the threshold (stock is counted in cartons)
+        $lowStockLimit = 5;
+        $lowStockProducts = (clone $productObject)->withSum('productBranches as stock_total', 'qty')
+            ->havingRaw('COALESCE(stock_total, 0) <= ?', [$lowStockLimit])->orderBy('stock_total')->get();
+
+        return [
+            'todayOrders' => $todayOrders,
+            'ordersTrend' => $trend($todayOrders, $yesterdayOrders),
+            'todaySales' => $todaySales,
+            'salesTrend' => $trend($todaySales, $yesterdaySales),
+            'pendingOrders' => $orders()->where('order_status', OrderStatus::PENDING->value)->count(),
+            'stalePendingOrders' => $orders()->where('order_status', OrderStatus::PENDING->value)
+                ->where('created_at', '<', now()->subDay())->count(),
+            'unreadOrders' => $orders()->where('is_read', false)->count(),
+            'unpaidOrders' => $orders()->where('payment_status', 'Pending')
+                ->where('order_status', '!=', OrderStatus::CANCELLED->value)->count(),
+            'pendingReturns' => \App\Models\ReturnOrder::where('status', 'pending')->count(),
+            'lowStockLimit' => $lowStockLimit,
+            'lowStockCount' => $lowStockProducts->count(),
+            'outOfStockCount' => $lowStockProducts->where('stock_total', '<=', 0)->count(),
+            'lowStockProducts' => $lowStockProducts->take(6),
+        ];
     }
 
     public function orderStatistics()

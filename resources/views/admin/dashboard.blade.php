@@ -88,6 +88,8 @@ $products_data = $products_addresses->map(function ($product) {
         </div>
     @endif
 
+    @include('admin.partials.dashboard-overview')
+
     @php
         $text = 'Total ' . ($businessModel == 'single' ? 'Categories' : 'Shops');
     @endphp
@@ -124,7 +126,7 @@ $products_data = $products_addresses->map(function ($product) {
                 </div>
                 @hasPermission('shop.flashSale.show')
                     <a href="{{ route('shop.flashSale.show', $flashSale->id) }}" class="btn btn-primary py-2.5 addBtn">
-                        Add Product
+                        {{ __('Add Product') }}
                     </a>
                 @endhasPermission
             </div>
@@ -522,12 +524,12 @@ $products_data = $products_addresses->map(function ($product) {
                                 </td>
                                 <td class="tableAction">
                                     <a href="{{ route('admin.order.show', $order->id) }}" data-bs-toggle="tooltip"
-                                        data-bs-placement="left" data-bs-title="Order details"
+                                        data-bs-placement="left" data-bs-title="{{ __('Order details') }}"
                                         class="circleIcon btn-sm btn-outline-primary svg-bg">
                                         <img src="{{ asset('assets/icons-admin/eye.svg') }}" alt="icon" loading="lazy">
                                     </a>
                                     <a href="{{ route('shop.download-invoice', $order->id) }}" data-bs-toggle="tooltip"
-                                        data-bs-placement="left" data-bs-title="Download Invoice"
+                                        data-bs-placement="left" data-bs-title="{{ __('Download Invoice') }}"
                                         class="circleIcon btn-outline-secondary btn-sm">
                                         <img src="{{ asset('assets/icons-admin/download-alt.svg') }}" alt="icon" loading="lazy">
                                     </a>

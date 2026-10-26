@@ -127,7 +127,7 @@
                             </label>
                             <div class="position-relative passwordInput">
                                 <input type="password" name="password" id="password1" class="form-control" required="true"
-                                    placeholder="Enter Password">
+                                    placeholder="{{ __('Enter Password') }}">
                                 <span class="eye" onclick="showHidePassword(1)">
                                     <i class="fa fa-eye-slash" id="togglePassword1"></i>
                                 </span>
@@ -143,7 +143,7 @@
                             </label>
                             <div class="position-relative passwordInput">
                                 <input type="password" name="password_confirmation" id="password2" class="form-control"
-                                    required="true" placeholder="Enter Password again">
+                                    required="true" placeholder="{{ __('Enter Password again') }}">
                                 <span class="eye" onclick="showHidePassword(2)">
                                     <i class="fa fa-eye-slash" id="togglePassword2"></i>
                                 </span>
@@ -156,7 +156,7 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('Close') }}</button>
                         <button type="submit" id="submit" class="btn btn-primary">
                             {{ __('Save changes') }}
                         </button>

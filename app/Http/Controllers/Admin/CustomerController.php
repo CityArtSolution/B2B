@@ -17,11 +17,38 @@ use Illuminate\Support\Facades\Storage;
 
 class CustomerController extends Controller
 {
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $customers = User::role(Roles::CUSTOMER->value)->latest('id')->with('media')->paginate(20);
+        $search = trim((string) $request->search);
+        $inactiveSince = now()->subDays(60);
 
-        return view('admin.customer.index', compact('customers'));
+        $base = User::role(Roles::CUSTOMER->value);
+
+        $customers = (clone $base)->latest('id')
+            ->with(['media', 'customer' => fn ($query) => $query->withCount('orders')
+                ->withSum('orders as total_spent', 'payable_amount')
+                ->withMax('orders as last_order_at', 'created_at')])
+            ->when($search !== '', fn ($query) => $query->where(function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%")
+                    ->orWhere('Commercial_register', 'like', "%{$search}%");
+            }))
+            // new: no order yet, regular: 3 orders or more, inactive: ordered before but not in 60 days
+            ->when($request->segment === 'new', fn ($q) => $q->whereDoesntHave('customer.orders'))
+            ->when($request->segment === 'regular', fn ($q) => $q->whereHas('customer.orders', null, '>=', 3))
+            ->when($request->segment === 'inactive', fn ($q) => $q->whereHas('customer.orders')
+                ->whereDoesntHave('customer.orders', fn ($o) => $o->where('created_at', '>=', $inactiveSince)))
+            ->paginate(20)->withQueryString();
+
+        $segmentCounts = [
+            'all' => (clone $base)->count(),
+            'new' => (clone $base)->whereDoesntHave('customer.orders')->count(),
+            'regular' => (clone $base)->whereHas('customer.orders', null, '>=', 3)->count(),
+            'inactive' => (clone $base)->whereHas('customer.orders')
+                ->whereDoesntHave('customer.orders', fn ($o) => $o->where('created_at', '>=', $inactiveSince))->count(),
+        ];
+
+        return view('admin.customer.index', compact('customers', 'segmentCounts', 'inactiveSince'));
     }
 
     public function create()

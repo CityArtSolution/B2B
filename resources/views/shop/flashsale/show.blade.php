@@ -202,7 +202,7 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="number" class="form-control" id="updatePrice" name="price"
-                                placeholder="Enter Price" required />
+                                placeholder="{{ __('Enter Price') }}" required />
                             @error('price')
                                 <p class="text text-danger m-0">{{ $message }}</p>
                             @enderror
@@ -214,7 +214,7 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="number" class="form-control" id="updateQuantity" name="quantity"
-                                placeholder="Enter Quantity" required />
+                                placeholder="{{ __('Enter Quantity') }}" required />
                             @error('price')
                                 <p class="text text-danger m-0">{{ $message }}</p>
                             @enderror
@@ -335,33 +335,33 @@
                                     <img src="${product.thumbnail}" alt="Product">
                                 </div>
                                 <div>
-                                    <p class="mb-0"><small>Name</small></p>
+                                    <p class="mb-0"><small>{{ __('Name') }}</small></p>
                                     <p class="product-name">${product.name}</p>
                                 </div>
                             </div>
 
                             <div class="flex-grow-1">
-                                <p class="mb-1"><small>Price:</small></p>
+                                <p class="mb-1"><small>{{ __('Price:') }}</small></p>
                                 <p class="product-price">
                                     ${productPrice}
                                 </p>
                             </div>
 
                             <div class="flex-grow-1">
-                                <p class="mb-1"><small>Branch:</small></p>
+                                <p class="mb-1"><small>{{ __('Branch:') }}</small></p>
                                 <select class="product-input flash-sale-branch-select" name="products[${index}][branch_id]" data-product-id="${product.id}" required>
                                     ${branchOptions}
                                 </select>
                             </div>
 
                             <div class="flex-grow-1">
-                                <p class="mb-1"><small>Discount Price:</small></p>
-                                <input class="product-input" type="text" name="products[${index}][discount_price]" placeholder="Discount Price" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/^(\d*\.\d{0,2}|\d*)$/, '$1');" value="${discountPrice}"/>
+                                <p class="mb-1"><small>{{ __('Discount Price:') }}</small></p>
+                                <input class="product-input" type="text" name="products[${index}][discount_price]" placeholder="{{ __('Discount Price') }}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/^(\d*\.\d{0,2}|\d*)$/, '$1');" value="${discountPrice}"/>
                             </div>
 
                             <div class="flex-grow-1">
-                                <p class="mb-1"><small>Quantity:</small></p>
-                                <input class="product-input flash-sale-quantity-input" type="text" name="products[${index}][quantity]" placeholder="Quantity" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^(\d*\.\d{0,2}|\d*)$/, '$1');" value="${defaultQuantity}" max="${defaultQuantity}">
+                                <p class="mb-1"><small>{{ __('Quantity:') }}</small></p>
+                                <input class="product-input flash-sale-quantity-input" type="text" name="products[${index}][quantity]" placeholder="{{ __('Quantity') }}" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/^(\d*\.\d{0,2}|\d*)$/, '$1');" value="${defaultQuantity}" max="${defaultQuantity}">
                             </div>
                         </div>
                     `;

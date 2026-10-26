@@ -7,7 +7,7 @@
                 <p
                     class="justify-start text-slate-500 text-base font-normal leading-normal"
                 >
-                    Order ID
+                    {{ $t('Order ID') }}
                     <span class="text-blue-500">{{
                         props.order?.order_id
                     }}</span>
@@ -25,7 +25,7 @@
                 <p
                     class="justify-start text-slate-500 text-sm font-normal font-['Roboto'] leading-tight"
                 >
-                    Placed on
+                    {{ $t('Placed on') }}
                 </p>
                 <p
                     class="justify-start text-slate-950 text-sm font-normal font-['Roboto'] leading-tight"
@@ -40,7 +40,7 @@
             <p
                 class="justify-start text-slate-500 text-base font-normal leading-normal"
             >
-                QTY:
+                {{ $t('QTY:') }}
             </p>
             <p
                 class="justify-start text-slate-950 text-base font-normal leading-normal"
@@ -54,7 +54,7 @@
             <p
                 class="justify-start text-slate-500 text-base font-normal leading-normal"
             >
-                Amount:
+                {{ $t('Amount:') }}
             </p>
             <p
                 class="justify-start text-slate-950 text-base font-normal leading-normal"

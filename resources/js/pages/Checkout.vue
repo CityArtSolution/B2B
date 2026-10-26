@@ -358,6 +358,8 @@ onMounted(() => {
     }
     AuthStore.showAddressModal = false;
     AuthStore.showChangeAddressModal = false;
+    // load the cart and totals right away (e.g. after a refresh), without waiting for the basket to be opened
+    basketStore.loadCheckout();
     fetchRiders();
     fetchConfirmationData(); 
 });

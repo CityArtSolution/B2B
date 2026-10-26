@@ -94,7 +94,7 @@
                             <p
                                 class="self-stretch justify-start text-slate-600 text-base font-normal leading-tight"
                             >
-                                Return Status
+                                {{ $t('Return Status') }}
                             </p>
                             <div
                                 class="px-2 py-1 rounded-2xl inline-flex justify-start items-center gap-2"
@@ -126,7 +126,7 @@
                             <p
                                 class="self-stretch justify-start text-slate-600 text-base font-normal font-['Roboto'] leading-tight"
                             >
-                                Order ID
+                                {{ $t('Order ID') }}
                             </p>
                             <div
                                 class="self-stretch text-right justify-start text-zinc-800 text-base font-normal font-['Roboto'] leading-tight"
@@ -139,7 +139,7 @@
                             <p
                                 class="self-stretch justify-start text-slate-600 text-base font-normal font-['Roboto'] leading-tight"
                             >
-                                Return Date
+                                {{ $t('Return Date') }}
                             </p>
                             <div
                                 class="self-stretch text-right justify-start text-zinc-800 text-base font-normal font-['Roboto'] leading-tight"
@@ -152,7 +152,7 @@
                             <p
                                 class="self-stretch justify-start text-slate-600 text-base font-normal font-['Roboto'] leading-tight"
                             >
-                                Total Amount
+                                {{ $t('Total Amount') }}
                             </p>
                             <div
                                 class="self-stretch text-right justify-start text-zinc-800 text-base font-normal font-['Roboto'] leading-tight"
@@ -212,7 +212,7 @@
                                         <div
                                             class="text-center justify-center text-white text-sm font-normal leading-none"
                                         >
-                                            Collection Address
+                                            {{ $t('Collection Address') }}
                                         </div>
                                     </div>
                                 </div>
@@ -233,7 +233,7 @@
                     <p
                         class="text-slate-500 text-base font-normal leading-none"
                     >
-                        Reason for Return
+                        {{ $t('Reason for Return') }}
                     </p>
 
                     <p
@@ -250,7 +250,7 @@
                     <p
                         class="text-slate-500 text-base font-normal leading-none"
                     >
-                        Reason for Cancellation
+                        {{ $t('Reason for Cancellation') }}
                     </p>
 
                     <p
@@ -264,7 +264,7 @@
                 v-else
                 class="grid grid-cols-8 gap-2 lg:gap-4 xl:gap-8 p-3 md:p-4 xl:p-8 bg-white rounded-lg md:rounded-2xl"
             >
-                No Data Found
+                {{ $t('No Data Found') }}
             </div>
         </div>
     </div>

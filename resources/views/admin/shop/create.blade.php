@@ -139,7 +139,7 @@
                     <label for="">
                         {{ __('Description') }}
                     </label>
-                    <textarea name="description" class="form-control" id="description" rows="2" placeholder="Enter Description" onkeyup="checkDescription()">{{ old('description') }}</textarea>
+                    <textarea name="description" class="form-control" id="description" rows="2" placeholder="{{ __('Enter Description') }}" onkeyup="checkDescription()">{{ old('description') }}</textarea>
                     @error('description')
                         <p class="text text-danger m-0" id="errorDescription">{{ $message }}</p>
                     @enderror

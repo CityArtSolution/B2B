@@ -23,7 +23,7 @@
                     <div class="card-body">
 
                         <div>
-                            <strong>Note: </strong>Use <strong style="color: var(--theme-color) !important">
+                            <strong>{{ __('Note:') }} </strong>{{ __('Use') }} <strong style="color: var(--theme-color) !important">
                                 <i>{product_name}</i></strong> to insert the product’s name, and <strong
                                 style="color: var(--theme-color) !important"><i>{short_description}</i></strong> to insert
                             the product’s short description in the prompt.
@@ -33,7 +33,7 @@
                             {{ __('Product Description') }} <span class="text-danger">*</span>
                         </label>
                         <textarea name="product_description" id="product_description" class="form-control" rows="4" required
-                            placeholder="Enter Product Description">{{ $generaleSetting?->product_description }}</textarea>
+                            placeholder="{{ __('Enter Product Description') }}">{{ $generaleSetting?->product_description }}</textarea>
 
                         @error('product_description')
                             <p class="text text-danger m-0">{{ $message }}</p>
@@ -65,7 +65,7 @@
                     <div class="card-body">
 
                         <div class="mb-3">
-                            <strong>Note: </strong>If you use <strong style="color: var(--theme-color) !important">
+                            <strong>{{ __('Note:') }} </strong>{{ __('If you use') }} <strong style="color: var(--theme-color) !important">
                                 <i>{title}</i></strong>, the page title will be automatically retrieved and inserted into
                             the main prompt.
                         </div>
@@ -77,7 +77,7 @@
                             {{ __('Page  Description') }} <span class="text-danger">*</span>
                         </label>
                         <textarea name="page_description" id="page_description" class="form-control" rows="4" required
-                            placeholder="Enter Page Description">{{ $generaleSetting?->page_description }}</textarea>
+                            placeholder="{{ __('Enter Page Description') }}">{{ $generaleSetting?->page_description }}</textarea>
                         @error('page_description')
                             <p class="text text-danger m-0">{{ $message }}</p>
                         @enderror
@@ -105,7 +105,7 @@
                     <div class="card-body">
 
                         <div class="mb-3">
-                            <strong>Note: </strong>If you use <strong style="color: var(--theme-color) !important">
+                            <strong>{{ __('Note:') }} </strong>{{ __('If you use') }} <strong style="color: var(--theme-color) !important">
                                 <i>{title}</i></strong>, the blog title will be automatically retrieved and inserted into
                             the main prompt.
                         </div>
@@ -117,7 +117,7 @@
                             {{ __('Blog  Description') }} <span class="text-danger">*</span>
                         </label>
                         <textarea name="blog_description" id="blog_description" class="form-control" rows="4" required
-                            placeholder="Enter Page Description">{{ $generaleSetting?->blog_description }}</textarea>
+                            placeholder="{{ __('Enter Page Description') }}">{{ $generaleSetting?->blog_description }}</textarea>
 
                         @error('blog_description')
                             <p class="text text-danger m-0">{{ $message }}</p>

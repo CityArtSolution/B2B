@@ -397,7 +397,7 @@
                 $('.send-btn').html(`
                 <div class="d-flex align-items-center justify-content-center">
                     <div class="spinner-border spinner-border-sm" role="status">
-                        <span class="visually-hidden">Loading...</span>
+                        <span class="visually-hidden">{{ __('Loading...') }}</span>
                     </div>
                 </div>
                 `);

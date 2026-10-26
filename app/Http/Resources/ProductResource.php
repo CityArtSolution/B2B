@@ -45,7 +45,8 @@ class ProductResource extends JsonResource
             $favorite = $user->customer->favorites()->where('product_id', $this->id)->exists();
         }
 
-        $discountPercentage = $this->getDiscountPercentage($this->price, $this->discount_price);
+        // the discount price is the discounted carton price, so compare it with the carton price
+        $discountPercentage = $this->getDiscountPercentage($this->sale_carton_price, $this->discount_price);
 //        $totalSold = $this->orders->sum('pivot.quantity');
         $totalSold = $this->orders
             ->reject(fn($order) =>
@@ -70,7 +71,7 @@ class ProductResource extends JsonResource
         }
 
         $price = $this->price;
-        $carton_price=$this->carton_price;
+        $carton_price=$this->sale_carton_price;
         $discountPrice = $flashSale ? $flashSale->pivot->price : $this->discount_price;
 
         $translation = $this->translations->where('lang', $lang)->first();

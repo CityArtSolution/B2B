@@ -20,11 +20,11 @@
                         :class="hasStock ? '' : 'opacity-30'">
                         <div class="text-primary text-base font-bold leading-normal">
                             {{ masterStore.showCurrency(props.product?.discount_price > 0 ?
-                                props.product?.discount_price : props.product?.price) }}
+                                props.product?.discount_price : props.product?.carton_price) }}
                         </div>
                         <div v-if="props.product?.discount_price > 0"
                             class="text-slate-400 text-sm font-normal line-through leading-tight">
-                            {{ masterStore.showCurrency(props.product?.price) }}
+                            {{ masterStore.showCurrency(props.product?.carton_price) }}
                         </div>
                         <div v-if="props.product?.discount_percentage > 0"
                             class="px-1 py-0.5 bg-red-500 rounded-2xl text-white text-xs font-medium">
@@ -43,13 +43,7 @@
                             </div>
                         </div>
 
-                        <div class="h-3 w-[0px] border border-slate-200"></div>
-
-                        <div v-if="hasStock"
-                            class="text-right text-slate-500 text-sm font-normal leading-tight">
-                            {{ props.product?.total_sold }} {{ $t('Sold') }}
-                        </div>
-                        <div v-else class="text-right text-red-500 text-sm font-normal leading-tight">
+                        <div v-if="!hasStock" class="text-right text-red-500 text-sm font-normal leading-tight">
                             {{ $t('Stock Out') }}
                         </div>
                     </div>

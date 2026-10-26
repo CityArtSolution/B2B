@@ -123,7 +123,7 @@
                                         {{ __('Registration Phone Required') }}
                                     </label>
                                     <label class="switch mb-0" data-bs-toggle="tooltip" data-bs-placement="left"
-                                        data-bs-title="Optional/Required">
+                                        data-bs-title="{{ __('Optional/Required') }}">
                                         <input id="toggle" type="checkbox"
                                             {{ $verifyManage?->phone_required ? 'checked' : '' }} name="phone_required">
                                         <span class="slider round"></span>

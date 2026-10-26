@@ -95,13 +95,13 @@
                         <div class="overlay">
                             @hasPermission('admin.shop.edit')
                             <a class="icons btn-outline-info" href="{{ route('admin.shop.edit', $shop->id) }}" data-bs-toggle="tooltip"
-                                data-bs-placement="top" data-bs-title="Edit">
+                                data-bs-placement="top" data-bs-title="{{ __('Edit') }}">
                                 <img src="{{ asset('assets/icons-admin/edit.svg') }}" alt="edit" loading="lazy" />
                             </a>
                             @endhasPermission
                             @hasPermission('admin.shop.show')
                             <a class="icons svg-bg" href="{{ route('admin.shop.show', $shop->id) }}" data-bs-toggle="tooltip"
-                                data-bs-placement="top" data-bs-title="View">
+                                data-bs-placement="top" data-bs-title="{{ __('View') }}">
                                 <img src="{{ asset('assets/icons-admin/eye.svg') }}" alt="view" loading="lazy" />
                             </a>
                             @endhasPermission
@@ -174,14 +174,14 @@
                                     @hasPermission('admin.shop.show')
                                     <a class="svg-bg circleIcon"
                                         href="{{ route('admin.shop.show', $shop->id) }}" data-bs-toggle="tooltip"
-                                        data-bs-placement="top" title="View">
+                                        data-bs-placement="top" title="{{ __('View') }}">
                                         <img src="{{ asset('assets/icons-admin/eye.svg') }}" alt="edit" loading="lazy" />
                                     </a>
                                     @endhasPermission
                                     @hasPermission('admin.shop.edit')
                                     <a href="{{ route('admin.shop.edit', $shop->id) }}"
                                         class="btn-outline-info circleIcon" data-bs-toggle="tooltip"
-                                        data-bs-placement="top" title="Edit">
+                                        data-bs-placement="top" title="{{ __('Edit') }}">
                                         <img src="{{ asset('assets/icons-admin/edit.svg') }}" alt="edit" loading="lazy" />
                                     </a>
                                     @endhasPermission

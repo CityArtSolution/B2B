@@ -139,7 +139,7 @@
                     <p
                         class="text-zinc-800 text-base lg:text-lg font-medium leading-tight lg:leading-relaxed"
                     >
-                        Please fill out the form below to request a return or
+                        {{ $t('Please fill out the form below to request a return or') }}
                         replacement.
                     </p>
 
@@ -156,7 +156,7 @@
                                 id="account-number"
                                 name="account-number"
                                 class="p-2 md:p-4 placeholder:text-neutral-400 rounded-lg md:rounded-xl outline outline-1 outline-offset-[-1.09px] outline-gray-300 w-full"
-                                placeholder="Account No"
+                                :placeholder="$t('Account No')"
                             />
                             <p class="text-red-500 text-xs mt-1">
                                 {{
@@ -180,7 +180,7 @@
                                 id="location"
                                 name="location"
                                 class="p-2 md:p-4 placeholder:text-neutral-400 rounded-lg md:rounded-xl outline outline-1 outline-offset-[-1.09px] outline-gray-300 w-full"
-                                placeholder="Location"
+                                :placeholder="$t('Location')"
                             />
                             <p class="text-red-500 text-xs mt-1">
                                 {{ returnProductsErrorsData.return_address }}
@@ -192,7 +192,7 @@
                         <label
                             for="reason text-gray-900 text-sm md:text-base font-normal leading-tight md:leading-snug"
                         >
-                            Reason for Return
+                            {{ $t('Reason for Return') }}
 
                             <router-link
                                 to="/return-policy"
@@ -209,7 +209,7 @@
                                 id="reason"
                                 name="reason"
                                 class="p-2 md:p-4 placeholder:text-neutral-400 rounded-lg md:rounded-xl outline outline-1 outline-offset-[-1.09px] outline-gray-300 w-full"
-                                placeholder="Reason"
+                                :placeholder="$t('Reason')"
                                 rows="4"
                             />
                             <p class="text-red-500 text-xs">
@@ -226,7 +226,7 @@
                             <div
                                 class="justify-start text-white text-base font-medium font-['Roboto'] leading-normal"
                             >
-                                Submit
+                                {{ $t('Submit') }}
                             </div>
                         </div>
                     </button>

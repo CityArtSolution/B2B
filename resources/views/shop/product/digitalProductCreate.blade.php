@@ -3,15 +3,11 @@
 @section('header-title', __('Add New Digital Product'))
 
 @section('content')
-    <form action="{{ route('shop.product.store') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('shop.product.store') }}" method="POST" enctype="multipart/form-data" class="form-steps">
         @csrf
         @if ($errors->any())
             <div class="alert alert-danger">
-                <ul class="mb-0">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+                {{ __('Please correct the errors shown under the fields below.') }}
             </div>
         @endif
         <div class="page-title">
@@ -28,10 +24,7 @@
         </div>
         <div class="card">
             <div class="card-body">
-                <div class="pb-0 fz-18 mb-3">
-                    {{ __('Product Info') }}
-                    <hr class="text-muted">
-                </div>
+                <div class="form-step" data-title="{{ __('Product Information') }}" data-hint="{{ __('Write the product name and description in Arabic and English. Typing the Arabic name fills the English one automatically.') }}" data-icon="bi-card-text">
 
                 <div class="">
                     <x-input label="Product Name" name="name" id="product_name" type="text"
@@ -45,7 +38,7 @@
                     </label>
                     <textarea required name="short_description" id="short_description"
                         class="form-control @error('short_description') is-invalid @enderror" rows="2"
-                        placeholder="Enter short description">{{ old('short_description') }}</textarea>
+                        placeholder="{{ __('Enter short description') }}">{{ old('short_description') }}</textarea>
                     @error('short_description')
                         <p class="text text-danger m-0">{{ $message }}</p>
                     @enderror
@@ -69,10 +62,10 @@
                     @enderror
                 </div>
 
-                <!--######## General Information ##########-->
-                <div class="pb-2 fz-18 mt-4">
-                    {{ __('Generale Information') }}
                 </div>
+
+                <!--######## General Information ##########-->
+                <div class="form-step" data-title="{{ __('Category and Details') }}" data-hint="{{ __('Choose where the product is sold, its category and code. Colors are optional and you can add a new color here.') }}" data-icon="bi-tags">
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
@@ -98,7 +91,7 @@
                                 <label class="form-label">
                                     {{ __('Select Sub Categories') }}
                                 </label>
-                                <select name="sub_category[]" data-placeholder="Select Sub Category"
+                                <select name="sub_category[]" data-placeholder="{{ __('Select Sub Category') }}"
                                     class="form-control select2" multiple style="width: 100%">
                                     <option value="" disabled>{{ __('Select Sub Category') }}</option>
                                 </select>
@@ -134,7 +127,7 @@
                                         {{ __('Generate Code') }}
                                     </span>
                                 </label>
-                                <input type="text" id="barcode" name="code" placeholder="Ex: 134543"
+                                <input type="text" id="barcode" name="code" placeholder="{{ __('Ex: 134543') }}"
                                     class="form-control" value="{{ old('code') }}"
                                     oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" />
                                 @error('code')
@@ -199,15 +192,15 @@
                                 <!-- Container for license rows -->
                                 <div id="licenseList" class="license-list">
                                     <div class="license-row">
-                                        <input name="license_key[]" type="text" placeholder="License Key"
+                                        <input name="license_key[]" type="text" placeholder="{{ __('License Key') }}"
                                             class="license-text" />
                                         <div class="license-actions">
                                             <button type="button" class="generate-btn"
-                                                title="Generate">{{ __('Generate key') }}</button>
+                                                title="{{ __('Generate') }}">{{ __('Generate key') }}</button>
                                             <button type="button" class="copy-btn"
-                                                title="Copy">{{ __('Copy key') }}</button>
+                                                title="{{ __('Copy') }}">{{ __('Copy key') }}</button>
                                             {{-- <button type="button" class="btn btn-sm btn-outline-danger remove-btn"
-                                                title="Remove">X</button> --}}
+                                                title="{{ __('Remove') }}">X</button> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -230,10 +223,10 @@
                     </div>
                 </div>
 
-                <!--######## Price Information ##########-->
-                <div class="pb-2 fz-18 mt-4">
-                    {{ __('Price Information') }}
                 </div>
+
+                <!--######## Price Information ##########-->
+                <div class="form-step" data-title="{{ __('Price') }}" data-hint="{{ __('Set the buying, selling and discount price of the digital product.') }}" data-icon="bi-cash-stack">
                 <div class="card mb-4">
                     <div class="card-body">
                         <div class="row">
@@ -263,12 +256,10 @@
                     </div>
                 </div>
 
-                <!--######## Thumbnail Information ##########-->
-                <div>
-                    <div class="pb-2 fz-18 mt-4">
-                        {{ __('Images') }}
-                    </div>
                 </div>
+
+                <!--######## Thumbnail Information ##########-->
+                <div class="form-step" data-title="{{ __('Images and Video') }}" data-hint="{{ __('Add a clear square main image (500 x 500). Extra images and a video are optional.') }}" data-icon="bi-images">
                 <div class="row mb-3">
                     <div class="col-12">
                         <div class="card card-body h-100">
@@ -383,7 +374,7 @@
                                     {{ __('YouTube Video Link') }}
                                 </label>
                                 <textarea class="form-control" name="uploadVideo[youtube_url]" id="youtubeLink" rows="3"
-                                    placeholder='<iframe width="560" height="315" src="https://www.youtube.com/embed/MxcgrT_Kdxw?si=V63-aJ-4tPZUEKyk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>'></textarea>
+                                    placeholder='<iframe width="560" height="315" src="https://www.youtube.com/embed/MxcgrT_Kdxw?si=V63-aJ-4tPZUEKyk" title="{{ __('YouTube video player') }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>'></textarea>
                                 <small class="text-muted">{{ __('Paste a valid YouTube video embed code') }}</small>
                             </div>
 
@@ -393,7 +384,7 @@
                                     {{ __('Vimeo Video Link') }}
                                 </label>
                                 <textarea name="uploadVideo[vimeo_url]" id="vimeoLink" class="form-control" rows="3"
-                                    placeholder="please enter valid vimeo video embed code"></textarea>
+                                    placeholder="{{ __('please enter valid vimeo video embed code') }}"></textarea>
                                 <small class="text-muted">{{ __('Paste a valid Vimeo video embed code') }}</small>
                             </div>
 
@@ -403,7 +394,7 @@
                                     {{ __('Dailymotion Video Link') }}
                                 </label>
                                 <textarea name="uploadVideo[dailymotion_url]" id="dailymotionLink" class="form-control" rows="3"
-                                    placeholder="please enter valid dailymotion video embed code"></textarea>
+                                    placeholder="{{ __('please enter valid dailymotion video embed code') }}"></textarea>
                                 <small class="text-muted">{{ __('Paste a valid Dailymotion video embed code') }}</small>
                             </div>
                         </div>
@@ -413,7 +404,10 @@
                     </div>
                 </div>
 
+                </div>
+
                 <!--######## SEO section ##########-->
+                <div class="form-step" data-title="{{ __('Search Visibility (SEO)') }}" data-hint="{{ __('Optional: helps the product appear in Google search. You can skip this step.') }}" data-icon="bi-search">
                 <div class="card mt-4 mb-3">
                     <div class="card-body">
 
@@ -452,10 +446,11 @@
                     </div>
                 </div>
 
+                </div>
             </div>
         </div>
 
-        <div class="d-flex gap-3 justify-content-end align-items-center my-3">
+        <div class="d-flex gap-3 justify-content-end align-items-center my-3 form-steps-actions">
             <button type="reset" class="btn btn-lg btn-outline-secondary rounded py-2">
                 {{ __('Reset') }}
             </button>
@@ -851,7 +846,7 @@
 
                 submitButton.html(`<div class="d-flex align-items-center gap-1">
                     <div class="spinner-border" role="status"></div>
-                    <span>Submitting...</span>
+                    <span>{{ __('Submitting...') }}</span>
                 </div>`)
             });
         });
@@ -896,7 +891,7 @@
                     priceInput.attr('type', 'hidden');
 
                     $('#defaultPriceColor').remove();
-                    $(`<span id="defaultPriceColor" class="defaultPrice fst-italic">Default Price</span>`)
+                    $(`<span id="defaultPriceColor" class="defaultPrice fst-italic">{{ __('Default Price') }}</span>`)
                         .insertAfter(priceInput);
                 }
             });
@@ -911,7 +906,7 @@
                     priceInput.attr('type', 'hidden');
 
                     $('#defaultPriceSize').remove();
-                    $(`<span id="defaultPriceSize" class="defaultPrice fst-italic">Default Price</span>`)
+                    $(`<span id="defaultPriceSize" class="defaultPrice fst-italic">{{ __('Default Price') }}</span>`)
                         .insertAfter(priceInput);
                 }
             });
@@ -1109,7 +1104,7 @@
                     } else if (error.responseJSON && error.responseJSON.message) {
                         toastr.error(error.responseJSON.message);
                     } else {
-                        toastr.error("Something went wrong");
+                        toastr.error("{{ __('Something went wrong') }}");
                     }
                     $('#description').val("");
                     quill.setText("");
@@ -1244,7 +1239,7 @@
                 input.type = 'text';
                 input.name = 'license_key[]';
                 input.className = 'license-text';
-                input.placeholder = 'License Key';
+                input.placeholder = '{{ __("License Key") }}';
                 input.value = initialValue;
 
 

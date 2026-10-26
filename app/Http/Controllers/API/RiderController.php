@@ -19,6 +19,8 @@ public function index()
             $status = $status == 'approved';
             return $query->where('is_active', $status);
         })
+        // only riders with a driver record can be assigned to an order
+        ->whereHas('driver')
         ->select('id', 'name')
         ->get()
         ->map(function ($user) {

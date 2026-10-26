@@ -245,7 +245,7 @@
                         <div class="mb-3">
                             <label for="reject_note" class="form-label">{{ __('Cancellation Note') }} *</label>
                             <textarea type="text" class="form-control" id="reject_note" name="reject_note" rows="5"
-                                placeholder="Write cancel note here" required></textarea>
+                                placeholder="{{ __('Write cancel note here') }}" required></textarea>
                             @error('reject_note')
                                 <p class="text text-danger m-0">{{ $message }}</p>
                             @enderror

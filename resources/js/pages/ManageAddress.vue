@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col h-full">
         <!-- Header -->
-        <AuthPageHeader title="Manage Address" />
+        <AuthPageHeader :title="$t('Manage Address')" />
 
         <div class="p-3 md:p-4 xl:p-6 h-full flex flex-col justify-between gap-4">
             <!-- Selected Address -->

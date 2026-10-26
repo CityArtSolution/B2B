@@ -109,7 +109,7 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="text" class="form-control" id="name" name="name"
-                                placeholder="Enter Name" required />
+                                placeholder="{{ __('Enter Name') }}" required />
                             @error('name')
                                 <p class="text text-danger m-0">{{ $message }}</p>
                             @enderror
@@ -158,7 +158,7 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="text" class="form-control" id="updateName" name="name"
-                                placeholder="Enter Name" required value="" />
+                                placeholder="{{ __('Enter Name') }}" required value="" />
                             @error('name')
                                 <p class="text text-danger m-0">{{ $message }}</p>
                             @enderror

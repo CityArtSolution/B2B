@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Create Super Admin</title>
+    <title>{{ __('Create Super Admin') }}</title>
         <!-- App favicon -->
     <link rel="shortcut icon" type="image/png" href="{{ $generaleSetting?->favicon ?? asset('assets/favicon.png') }}" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -93,33 +93,33 @@
                 <div class="row px-5">
                     <div class="col-6 col-md-4 ms-auto d-flex align-items-center me-5" style="height: 100vh;" id="mainCard">
                         <div class="card w-100 pt-3" style="overflow: hidden;border-bottom: none;">
-                            <h2 class="text-center mt-3">Create Super Admin</h2>
+                            <h2 class="text-center mt-3">{{ __('Create Super Admin') }}</h2>
                             <p class="fs-7 text-center">
-                                <strong class="text-danger">You are about to create the Super Admin account.</strong>
+                                <strong class="text-danger">{{ __('You are about to create the Super Admin account.') }}</strong>
                             </p>
 
                             <div class="w-80 m-auto">
                                 <form method="POST" action="{{ route('create.superadmin') }}">
                                     @csrf
                                     <div class="mb-3">
-                                        <label for="">Email<strong class="text-danger">*</strong></label>
-                                        <input name="email" type="email" value="{{ old('email') }}" placeholder="e.g: superadmin@example.com" class="form-control @error('email') is-invalid @enderror"></input>
+                                        <label for="">{{ __('Email') }}<strong class="text-danger">*</strong></label>
+                                        <input name="email" type="email" value="{{ old('email') }}" placeholder="{{ __('e.g: superadmin@example.com') }}" class="form-control @error('email') is-invalid @enderror"></input>
                                         @error('email')
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="">Password<strong class="text-danger">*</strong></label>
-                                        <input name="password" type="password" placeholder="e.g: ********"  class="form-control @error('password') is-invalid @enderror"></input>
+                                        <label for="">{{ __('Password') }}<strong class="text-danger">*</strong></label>
+                                        <input name="password" type="password" placeholder="{{ __('e.g: ********') }}"  class="form-control @error('password') is-invalid @enderror"></input>
                                         @error('password')
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="">Password Confirmation<strong class="text-danger">*</strong></label>
-                                        <input name="password_confirmation" type="password" placeholder="e.g: ********" class="form-control"></input>
+                                        <label for="">{{ __('Password Confirmation') }}<strong class="text-danger">*</strong></label>
+                                        <input name="password_confirmation" type="password" placeholder="{{ __('e.g: ********') }}" class="form-control"></input>
                                     </div>
 
                                     <div class="d-flex mt-3">
@@ -156,12 +156,12 @@
                                             </svg>
                                         </div>
                                         <p class="ml-2 mb-0 fs-7 fw-500" style="color: #666; line-height: 18px;">
-                                            <strong>Note:</strong> Please remember this information — you will need it to access your application after installation. You can update it later from the settings.
+                                            <strong>{{ __('Note:') }}</strong> Please remember this information — you will need it to access your application after installation. You can update it later from the settings.
                                         </p>
                                     </div>
 
                                     <div class="my-4 py-4 absolute-bottom-left right-0 d-flex justify-content-center">
-                                        <button type="submit" class="btn btn-install text-uppercase">Create Super Admin</button>
+                                        <button type="submit" class="btn btn-install text-uppercase">{{ __('Create Super Admin') }}</button>
                                     </div>
                                 </form>
                             </div>

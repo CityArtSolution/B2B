@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Roboto&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -19,7 +19,7 @@
 }
 
 body {
-    font-family: "MochaYemen Sugar", "Roboto", sans-serif;
+    font-family: "IBM Plex Sans Arabic", "Roboto", sans-serif;
 }
 
 html {

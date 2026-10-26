@@ -310,7 +310,7 @@
                           v-model="message"
                           rows="1"
                           class="flex-grow border border-slate-200 rounded-xl px-3 py-2.5 text-sm resize-none focus:outline-none focus:border-primary placeholder:text-slate-400"
-                          :placeholder="masterStore.langDirection === 'rtl' ? 'اكتب رسالتك هنا...' : 'Type your message...'"
+                          :placeholder="$t('Type your message...')"
                           @keydown.enter.exact.prevent="sendMessage"
                         ></textarea>
                         <button

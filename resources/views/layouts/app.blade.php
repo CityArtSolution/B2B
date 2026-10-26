@@ -23,7 +23,7 @@
     <!-- Google fonts - Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@100..900&display=swap" rel="stylesheet">
 
     <!-- Font-Awesome--Min-Css-Link -->
     <link rel="stylesheet" href="{{ asset('assets/css/arabic-font.css') }}">
@@ -47,6 +47,10 @@
     <!--Responsive--Css-Link -->
     <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
 
+    <!-- Friendlier form fields -->
+    <link rel="stylesheet" href="{{ asset('assets/css/form-friendly.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/dashboard-ui.css') }}">
+
     <!-- Toastr Css -->
     <link rel="stylesheet" href="{{ asset('assets/css/toastr.min.css') }}">
 
@@ -60,7 +64,7 @@
 
     <style>
         :root {
-            --bs-body-font-family: "MochaYemen Sugar", var(--bs-font-sans-serif);
+            --bs-body-font-family: "IBM Plex Sans Arabic", var(--bs-font-sans-serif);
         }
 
         .has-passport.fixed-header .app-header {
@@ -151,7 +155,7 @@
                     <!-- search bar -->
                     <div class="searchingBox">
                         <div class="d-flex position-relative">
-                            <input type="text" id="searchInput" class="form-control" placeholder="Search Menu"
+                            <input type="text" id="searchInput" class="form-control" placeholder="{{ __('Search Menu') }}"
                                 autocomplete="off">
                             <span class="searchIcon"><i class="fa fa-search"></i></span>
                         </div>
@@ -366,7 +370,7 @@
                                 <strong><i class="fa fa-exclamation-circle" data-toggle="tooltip"
                                         data-placement="bottom"
                                         title='If you do not run this seeder, you will not be able to use the system.'></i>
-                                    Seeder dose not run.</strong> Please run <code class="text-danger">php artisan
+                                    Seeder dose not run.</strong> {{ __('Please run') }} <code class="text-danger">php artisan
                                     migrate:fresh
                                     --seed</code> or <a href="{{ route('seeder.run.index') }}"
                                     class="btn btn-sm common-btn"> Click
@@ -383,7 +387,7 @@
                                 <strong><i class="fa fa-exclamation-circle" data-toggle="tooltip"
                                         data-placement="bottom"
                                         title='If you can not install storage link, then image not found.'></i>
-                                    Storage link dose not exist or image not found then</strong> please run <code
+                                    Storage link dose not exist or image not found then</strong> {{ __('please run') }} <code
                                     class="text-danger">php artisan
                                     storage:link</code> or <a href="{{ route('storage.install.index') }}"
                                     class="btn btn-sm common-btn">
@@ -402,11 +406,11 @@
                                         <i class="fa fa-exclamation-circle" data-toggle="tooltip"
                                             data-placement="bottom"
                                             title='If you do not have subscription, you will not be able to sell your products.'></i>
-                                        You currently do not have an active subscription. Please purchase a plan to
+                                        {{ __('You currently do not have an active subscription. Please purchase a plan to') }}
                                         start selling.
                                     </strong>
                                     <a href="{{ route('shop.subscription.index') }}" class="btn btn-sm common-btn">
-                                        Choose Plan
+                                        {{ __('Choose Plan') }}
                                     </a>
                                     <button type="button" class="btn-close" data-bs-dismiss="alert"
                                         aria-label="Close" id="closeAlert"></button>
@@ -422,10 +426,10 @@
                                         <i class="fa fa-exclamation-circle" data-toggle="tooltip"
                                             data-placement="bottom"
                                             title='If you do not have subscription, you will not be able to sell your products.'></i>
-                                        You have reached the maximum number of sales for your current subscription.
+                                        {{ __('You have reached the maximum number of sales for your current subscription.') }}
                                     </strong>
                                     <a href="{{ route('shop.subscription.index') }}" class="btn btn-sm common-btn">
-                                        Renew Subscription
+                                        {{ __('Renew Subscription') }}
                                     </a>
                                     <button type="button" class="btn-close" data-bs-dismiss="alert"
                                         aria-label="Close" id="closeAlert"></button>
@@ -442,7 +446,7 @@
                                         Your subscription will expire in {{ request()->subscription_time_left }}.
                                     </strong>
                                     <a href="{{ route('shop.subscription.index') }}" class="btn btn-sm common-btn">
-                                        Renew Subscription
+                                        {{ __('Renew Subscription') }}
                                     </a>
                                     <button type="button" class="btn-close" data-bs-dismiss="alert"
                                         aria-label="Close" id="closeAlert"></button>
@@ -456,10 +460,10 @@
                                         <i class="fa fa-exclamation-circle" data-toggle="tooltip"
                                             data-placement="bottom"
                                             title='If you do not have subscription, you will not be able to sell your products.'></i>
-                                        Your subscription has expired.
+                                        {{ __('Your subscription has expired.') }}
                                     </strong>
                                     <a href="{{ route('shop.subscription.index') }}" class="btn btn-sm common-btn">
-                                        Renew Subscription
+                                        {{ __('Renew Subscription') }}
                                     </a>
                                     <button type="button" class="btn-close" data-bs-dismiss="alert"
                                         aria-label="Close" id="closeAlert"></button>
@@ -788,6 +792,9 @@
         });
     </script>
 
+    @include('layouts.partials.form-errors')
+    @include('layouts.partials.form-steps')
+
     @stack('scripts')
 
     @if (session('success'))
@@ -812,7 +819,7 @@
         <script>
             Swal.fire({
                 icon: "error",
-                title: "Oops...",
+                title: "{{ __('Oops...') }}",
                 text: "{{ session('demoMode') }}",
             });
         </script>
@@ -822,7 +829,7 @@
         <script>
             Swal.fire({
                 icon: "error",
-                title: "Oops...",
+                title: "{{ __('Oops...') }}",
                 html: `{{ session('alertError')['message'] }} <br><br> {{ isset(session('alertError')['message2']) ? session('alertError')['message2'] : '' }}`,
             });
         </script>
@@ -879,7 +886,7 @@
 
                 submitButton.html(`<div class="d-flex align-items-center gap-1">
                     <div class="spinner-border spinner-border-sm" role="status"></div>
-                    <span>Loading...</span>
+                    <span>{{ __('Loading...') }}</span>
                 </div>`)
             });
         });
@@ -996,7 +1003,7 @@
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
                 cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, delete it!"
+                confirmButtonText: "{{ __('Yes, delete it!') }}"
             }).then((result) => {
                 if (result.isConfirmed) {
                     window.location.replace(deleteUrl);

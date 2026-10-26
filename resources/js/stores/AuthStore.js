@@ -68,7 +68,7 @@ export const useAuth = defineStore("authStore", {
         },
 
         fetchAddresses() {
-            axios
+            return axios
                 .get("/addresses", {
                     headers: {
                         Authorization: this.token,
@@ -77,17 +77,16 @@ export const useAuth = defineStore("authStore", {
                 .then((response) => {
                     this.addresses = response.data.data.addresses;
                     const basketStore = useBasketStore();
-                    this.addresses.forEach((address) => {
-                        if (address.is_default) {
-                            basketStore.address = address;
-                            return true;
-                        } else {
-                            basketStore.address = this.addresses[0];
-                        }
-                    });
+                    // keep the address the customer picked if it still exists (fresh copy),
+                    // otherwise the default address, otherwise the first one
+                    const picked = this.addresses.find((address) => address.id === basketStore.address?.id);
+                    basketStore.address = picked
+                        ?? this.addresses.find((address) => address.is_default)
+                        ?? this.addresses[0]
+                        ?? null;
                 })
                 .catch((error) => {
-                    if (error.response.status === 401) {
+                    if (error.response?.status === 401) {
                         this.token = null;
                         this.user = null;
                         this.addresses = [];

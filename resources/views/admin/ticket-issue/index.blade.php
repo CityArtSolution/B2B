@@ -143,7 +143,7 @@
                                 <span class="text-danger">*</span>
                             </label>
                             <input type="text" class="form-control" id="editName" name="name" maxlength="50" max="50"
-                                placeholder="Enter Name" value="" required />
+                                placeholder="{{ __('Enter Name') }}" value="" required />
                             @error('name')
                                 <p class="text text-danger m-0">{{ $message }}</p>
                             @enderror

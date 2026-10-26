@@ -51,7 +51,7 @@
                                 @hasPermission('admin.banner.toggle')
                                     <td class="text-center">
                                         <label class="switch mb-0" data-bs-toggle="tooltip" data-bs-placement="left"
-                                            data-bs-title="Status Toggle">
+                                            data-bs-title="{{ __('Status Toggle') }}">
                                             <a href="{{ route('admin.banner.toggle', $banner->id) }}">
                                                 <input type="checkbox" {{ $banner->status ? 'checked' : '' }}>
                                                 <span class="slider round"></span>

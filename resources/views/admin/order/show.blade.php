@@ -26,6 +26,7 @@
     }
 
 </style>
+    @include('admin.order.partials.progress')
     <div class="row my-3">
         <div class="col-lg-8">
             <div class="card">
@@ -109,7 +110,7 @@
                                                 <span>{{ $product->name }}</span>
                                             </div>
                                         </td>
-                                        <td>RN{{ $product->code }}</td>
+                                        <td> {{ $product->code }}</td>
                                         @if ($businessModel == 'multi')
                                             <td>{{ $product->shop?->name }}</td>
                                         @endif
@@ -456,7 +457,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('Close') }}</button>
                         <button type="submit" class="btn btn-primary">
                             {{ __('Assign Now') }}
                         </button>

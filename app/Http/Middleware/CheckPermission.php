@@ -81,6 +81,9 @@ class CheckPermission
                 $requestName = str_replace('.store', '.create', $requestName);
             } elseif (str_ends_with($requestName, '.update')) {
                 $requestName = str_replace('.update', '.edit', $requestName);
+            } elseif (preg_match('/\.(quickUpdate|bulkUpdate)$/', $requestName)) {
+                // quick edits from a list need the same permission as the edit page
+                $requestName = preg_replace('/\.(quickUpdate|bulkUpdate)$/', '.edit', $requestName);
             }
 
             if (str_ends_with($requestName, '.gallery.create')) {
