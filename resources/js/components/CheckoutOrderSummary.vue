@@ -270,23 +270,26 @@ const processOrderConfirm = () => {
                 Authorization: authStore.token,
             }
         }).then((response) => {
-            basketStore.checkoutProducts = [];
-            basketStore.selectedShopIds = [];
-            basketStore.coupon_code = '';
-            basketStore.total_amount = 0;
-            basketStore.delivery_charge = 0;
-            basketStore.coupon_discount = 0;
-            basketStore.payable_amount = 0;
             isProcessing.value = false;
-
-            basketStore.fetchCart();
 
             let paymentUrl = response.data.data.order_payment_url;
 
+            // Online payment: keep the cart and the checkout as they are. The server empties the cart
+            // only once the payment is confirmed, so a failed or cancelled payment loses nothing.
             if (paymentUrl != null) {
                 openPaymentPopupWindow(paymentUrl);
                 return;
             } else {
+                // offline order (offer price / previous client): it is complete, the cart is emptied now
+                basketStore.checkoutProducts = [];
+                basketStore.selectedShopIds = [];
+                basketStore.coupon_code = '';
+                basketStore.total_amount = 0;
+                basketStore.delivery_charge = 0;
+                basketStore.coupon_discount = 0;
+                basketStore.payable_amount = 0;
+                basketStore.fetchCart();
+
                 toast(content, {
                     type: "default",
                     hideProgressBar: true,
@@ -345,9 +348,10 @@ const openPaymentPopupWindow = (url) => {
     var intervalID = setInterval(trackURLChanges, 1000);
     function trackURLChanges() {
         try {
-            // check if the window is closed
+            // the customer closed the payment window: reload the cart from the server (it is kept until paid)
             if (!win || win.closed) {
                 clearInterval(intervalID);
+                basketStore.loadCheckout();
                 return;
             }
 
@@ -359,6 +363,8 @@ const openPaymentPopupWindow = (url) => {
                 clearInterval(intervalID);
                 setTimeout(() => {
                     try { win.close(); } catch (e) {}
+                    // the payment failed: the cart is untouched on the server, show it again
+                    basketStore.loadCheckout();
                     basketStore.orderPaymentCancelModal = true;
                     toast.error(t('Payment Canceled'), {
                         position: master.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
@@ -371,6 +377,12 @@ const openPaymentPopupWindow = (url) => {
                 try { win.close(); } catch (e) {}
                 clearInterval(intervalID);
                 // The server empties the cart only once the payment is confirmed
+                basketStore.checkoutProducts = [];
+                basketStore.coupon_code = '';
+                basketStore.total_amount = 0;
+                basketStore.delivery_charge = 0;
+                basketStore.coupon_discount = 0;
+                basketStore.payable_amount = 0;
                 basketStore.fetchCart();
                 basketStore.showOrderConfirmModal = true;
                 return;

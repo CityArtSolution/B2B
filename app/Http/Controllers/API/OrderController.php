@@ -117,7 +117,12 @@ class OrderController extends Controller
         $paymentMethod = $paymentMethods[array_search($toUpper, array_column(PaymentMethod::cases(), 'name'))];
 
         // Store the order in one transaction: if any step fails (e.g. assigning the rider) nothing is half saved
-        $payment = \Illuminate\Support\Facades\DB::transaction(fn () => OrderRepository::storeByRequestFromCart($request, $paymentMethod, $carts));
+        $payment = \Illuminate\Support\Facades\DB::transaction(function () use ($request, $paymentMethod, $carts, $user) {
+            // earlier unpaid online attempts for this cart are replaced by this order
+            OrderStockService::cancelAbandonedAttempts($user->customer->id, $request->shop_ids);
+
+            return OrderRepository::storeByRequestFromCart($request, $paymentMethod, $carts);
+        });
 
         $paymentUrl = null;
         if ($paymentMethod->name != 'OFFER_PRICE' && $paymentMethod->name != 'PREVIOUS_CLIENT') {

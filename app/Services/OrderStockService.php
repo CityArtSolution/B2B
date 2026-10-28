@@ -125,6 +125,35 @@ class OrderStockService
     }
 
     /**
+     * Cancel the customer's earlier online orders for these shops that were never paid.
+     * Each failed or abandoned online payment left a Pending order behind, so retrying the
+     * payment piled up duplicate orders. Placing a new order from the same cart replaces them.
+     * They took no stock (online orders take it when paid), so nothing has to be given back;
+     * a payment that still arrives for one of them is logged by the Order model.
+     */
+    public static function cancelAbandonedAttempts(int $customerId, array $shopIds): int
+    {
+        $onlineMethods = collect(PaymentMethod::cases())
+            ->reject(fn ($method) => in_array($method, self::OFFLINE_METHODS, true))
+            ->map(fn ($method) => $method->value)
+            ->all();
+
+        $orders = Order::withoutGlobalScopes()
+            ->where('customer_id', $customerId)
+            ->whereIn('shop_id', $shopIds)
+            ->whereIn('payment_method', $onlineMethods)
+            ->where('payment_status', PaymentStatus::PENDING->value)
+            ->where('order_status', OrderStatus::PENDING->value)
+            ->get();
+
+        foreach ($orders as $order) {
+            $order->update(['order_status' => OrderStatus::CANCELLED->value]);
+        }
+
+        return $orders->count();
+    }
+
+    /**
      * Give back the stock an order took, when it is cancelled.
      */
     public static function release(Order $order): void
