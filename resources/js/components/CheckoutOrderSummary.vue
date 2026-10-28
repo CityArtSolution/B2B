@@ -391,7 +391,7 @@ const openPaymentPopupWindow = (url) => {
 
 const fetchCouponApply = () => {
     axios.post("/cart/checkout",
-        { shop_ids: [1], coupon_code: coupon.value },
+        { shop_ids: basketStore.selectedShopIds, coupon_code: coupon.value },
         {
             headers: {
                 Authorization: authStore.token,

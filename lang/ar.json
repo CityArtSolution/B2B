@@ -2490,5 +2490,6 @@
     "The discounted carton price must be less than the carton price.": "يجب أن يكون سعر الكرتون بعد الخصم أقل من سعر الكرتون.",
     "The selected rider is not available. Please choose another one.": "المندوب المختار غير متاح. يرجى اختيار مندوب آخر.",
     "Today": "اليوم",
-    "piece": "حبة"
+    "piece": "حبة",
+    "Could not load your cart, please try again.": "تعذر تحميل السلة، يرجى المحاولة مرة أخرى."
 }

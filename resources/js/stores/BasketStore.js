@@ -414,13 +414,13 @@ export const useBasketStore = defineStore("basketStore", {
                         this.selectedShopIds = [];
                     }
                 }).catch((error) => {
-                    if (error.response.status == 401) {
+                    if (error.response?.status == 401) {
                         authStore.token = null;
                         authStore.user = null;
                         authStore.addresses = [];
                         authStore.favoriteProducts = 0;
                     }
-                    toast.error(error.response.data.message, {
+                    toast.error(error.response?.data?.message || "Could not load your cart, please try again.", {
                         position: masterStore.langDirection === 'rtl' ? "bottom-right" : "bottom-left",
                     });
                 });
@@ -454,6 +454,11 @@ export const useBasketStore = defineStore("basketStore", {
                 if (error.response?.status === 401) {
                     authStore.token = null;
                     authStore.user = null;
+                } else {
+                    // do not fail silently: an empty checkout with no message looks like an empty cart
+                    toast.error(error.response?.data?.message || "Could not load your cart, please try again.", {
+                        position: useMaster().langDirection === "rtl" ? "bottom-right" : "bottom-left",
+                    });
                 }
             } finally {
                 this.isLoadingCart = false;

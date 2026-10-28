@@ -30,7 +30,7 @@
                         <div class="flex items-center gap-2 cursor-pointer"
                             @click="showProductItems = !showProductItems">
                             <div class="text-primary-600 text-lg font-medium leading-normal tracking-tight">
-                                ({{ basketStore.checkoutTotalItems }} {{ $t('items') }})
+                                <template v-if="basketStore.isLoadingCart">({{ $t('Loading...') }})</template><template v-else>({{ basketStore.checkoutTotalItems }} {{ $t('items') }})</template>
                             </div>
                             <ChevronDownIcon class="w-5 h-5 text-primary-600 transition duration-300"
                                 :class="showProductItems ? 'rotate-180' : ''" />
