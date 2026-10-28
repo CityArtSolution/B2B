@@ -195,7 +195,7 @@
             <div class="row float-left">
                 <div class="clearfix">
                     <div class="logo">
-                        <img src="{{ $generaleSetting?->logo ?? asset('assets/logo.png') }}" alt="logo" />
+                        <img src="{{ pdfImagePath($generaleSetting?->logo ?? asset('assets/logo.png')) }}" alt="logo" />
                     </div>
                     <p class="pt-2">{{ config('app.url') }}</p>
                 </div>

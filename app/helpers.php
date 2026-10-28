@@ -291,3 +291,40 @@ if (! function_exists('generateLicenseKey')) {
             return implode('-', $licenseParts);
         }
 }
+
+if (! function_exists('pdfImagePath')) {
+    /**
+     * The local file of an image URL of this site, for PDFs (mPDF).
+     * Loading the site's own images over HTTP is slow, and hangs on a server that serves one
+     * request at a time (php artisan serve): the PDF request waits for an image request that
+     * cannot start. URLs with no local file (other hosts, cloud disks) are returned unchanged.
+     */
+    function pdfImagePath(?string $url): ?string
+    {
+        if (! $url || str_starts_with($url, 'data:')) {
+            return $url;
+        }
+
+        $path = ltrim(rawurldecode((string) parse_url($url, PHP_URL_PATH)), '/');
+        if ($path === '' || str_contains($path, '..')) {
+            return $url;
+        }
+
+        if (is_file(public_path($path))) {
+            return public_path($path);
+        }
+
+        if (str_starts_with($path, 'storage/') && is_file(storage_path('app/public/'.substr($path, 8)))) {
+            return storage_path('app/public/'.substr($path, 8));
+        }
+
+        // a missing file on this site: do not request it over HTTP (that request is what hangs)
+        $host = parse_url($url, PHP_URL_HOST);
+        $ownHosts = [parse_url(url('/'), PHP_URL_HOST), parse_url(config('app.url'), PHP_URL_HOST)];
+        if ($host === null || in_array($host, $ownHosts, true)) {
+            return null;
+        }
+
+        return $url;
+    }
+}

@@ -8,7 +8,6 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&amp;display=swap" rel="stylesheet">
     <title>Invoice</title>
     <style>
         body {
@@ -297,7 +296,7 @@
                 </td>
     
                 <td style="width: 30%; text-align: center; vertical-align: middle; padding: 5px;">
-                    <img src="{{ $generaleSetting?->favicon ?? asset('assets/favicon.png') }}" alt="logo" style="width: 90px; height: 90px; object-fit: contain;">
+                    <img src="{{ pdfImagePath($generaleSetting?->favicon ?? asset('assets/favicon.png')) ?? pdfImagePath(asset('assets/logo.png')) }}" alt="logo" style="width: 90px; height: 90px; object-fit: contain;">
                 </td>
     
                 <td style="width: 35%; text-align: left; vertical-align: top; font-size: 10px; padding: 5px;line-height: 2;">
@@ -504,7 +503,7 @@
                                 <table>
                                     <tr>
                                         <td style="width: 40px !important; padding: 0 !important">
-                                            <img src="{{ $product->thumbnail }}" alt=""
+                                            <img src="{{ pdfImagePath($product->thumbnail) }}" alt=""
                                                 style="width: 40px; height: 40px">
                                         </td>
                                         <td style="padding: 3px">
