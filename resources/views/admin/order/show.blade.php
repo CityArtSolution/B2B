@@ -41,7 +41,7 @@
                         <a href="{{ route('shop.download-invoice', $order->id) }}" target="_blank" class="btn btn-primary py-2.5">
                             <img src="{{ asset('assets/icons-admin/download-alt.svg') }}" alt="icon" loading="lazy"
                                 width="20" />
-                            {{ __('Download Invoice') }}
+                            {{ $order->isPriceQuote() ? __('Download Price Quote') : __('Download Invoice') }}
                         </a>
                     </div>
                 </div>

@@ -153,7 +153,9 @@ class OrderController extends Controller
         $mPdf->WriteHTML($view);
 
         // Output the PDF as a download
-        return $mPdf->Output('invoice-'.$order->prefix.$order->order_code.'.pdf', 'D');
+        $fileName = ($order->isPriceQuote() ? 'quote-' : 'invoice-').$order->prefix.$order->order_code.'.pdf';
+
+        return $mPdf->Output($fileName, 'D');
 
         // Output the PDF as a stream
         // return $mPdf->Output('invoice-' . $order->prefix . $order->order_code . '.pdf', 'I');

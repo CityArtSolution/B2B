@@ -52,6 +52,8 @@ class OrderDetailsResource extends JsonResource
             'shop' => ShopResource::make($this->shop),
             'products' => OrderProductResource::collection($this->products),
             'invoice_url' => route('shop.download-invoice', $this->id),
+            // a price-quote request not accepted yet downloads a price quote instead of a tax invoice
+            'is_price_quote' => $this->resource->isPriceQuote(),
             'payment_receipt_url' => route('shop.payment-slip', $this->id),
             'address' => AddressResource::make($this->address),
             'all_vat_taxes' => $this->vatTaxes,

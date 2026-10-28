@@ -161,7 +161,7 @@
                     <span
                         class="text-center text-primary text-xs md:text-sm font-normal underline leading-tight"
                     >
-                        {{ $t("Download Invoice") }}
+                        {{ $t(props.order?.is_price_quote ? "Download Price Quote" : "Download Invoice") }}
                     </span>
                 </button>
             </div>

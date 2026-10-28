@@ -149,6 +149,16 @@ class Order extends Model
         }
     }
 
+    /**
+     * A price-quote request (Offer Price) that the shop has not accepted yet: it is not a sale,
+     * so its document is a price quote, not a tax invoice.
+     */
+    public function isPriceQuote(): bool
+    {
+        return $this->payment_method === PaymentMethod::OFFER_PRICE
+            && $this->order_status === OrderStatus::PENDING;
+    }
+
     public function getInvoiceTotalAttribute(): float
     {
         $subtotal = $this->products_subtotal > 0 ? $this->products_subtotal : (float) ($this->total_amount ?? 0);

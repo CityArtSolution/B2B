@@ -1,5 +1,7 @@
 @php
     $directory = app()->getLocale() == 'ar' ? 'rtl' : 'ltr';
+    // a price-quote request not accepted yet is not a sale: it gets a price quote, not a tax invoice
+    $isQuote = $order->isPriceQuote();
 @endphp
 <!DOCTYPE html>
 <html lang="en">
@@ -8,7 +10,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice</title>
+    <title>{{ $isQuote ? __('Price Quote') : __('Tax invoice') }}</title>
     <style>
         body {
             position: relative;
@@ -319,8 +321,8 @@
         <table style="width:100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px;">
             <tr>
                 <td style="width:33%; padding:4px;color:#0d0da5;">{{ __('Date') }}: <b style="color: darkred;">{{ now()->format('d-m-Y') }}</b></td>
-                <td style="width:33%; padding:4px;color:darkblue;"><h1>{{ __('Tax invoice') }}</h1></td>
-                <td style="width:33%; padding:4px;color:#0d0da5;">{{ __('Invoice Number') }}: <b style="color: darkred;">#{{ $order->prefix . $order->order_code }}</b></td>
+                <td style="width:33%; padding:4px;color:darkblue;"><h1>{{ $isQuote ? __('Price Quote') : __('Tax invoice') }}</h1></td>
+                <td style="width:33%; padding:4px;color:#0d0da5;">{{ $isQuote ? __('Quote Number') : __('Invoice Number') }}: <b style="color: darkred;">#{{ $order->prefix . $order->order_code }}</b></td>
             </tr>
         </table>
 
@@ -613,6 +615,12 @@
                     <td style="border:1px solid #000; padding:6px;text-align: left;">{{ showCurrency($order->invoice_total) ?? ''}}</td>
                 </tr>
             </table>
+        @endif
+
+        @if ($isQuote)
+            <p style="margin-top: 16px; padding: 10px; border: 1px dashed #b45309; color: #92400e; font-size: 13px; text-align: center;">
+                {{ __('This is a price quote, not a tax invoice. Prices and availability are confirmed when the order is accepted.') }}
+            </p>
         @endif
     </div>
 

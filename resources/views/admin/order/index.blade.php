@@ -181,7 +181,7 @@
                                         </a>
                                     @endhasPermission
                                     <a href="{{ route('shop.download-invoice', $order->id) }}" class="btn btn-sm btn-outline-secondary"
-                                        data-bs-toggle="tooltip" data-bs-title="{{ __('Download Invoice') }}">
+                                        data-bs-toggle="tooltip" data-bs-title="{{ $order->isPriceQuote() ? __('Download Price Quote') : __('Download Invoice') }}">
                                         <i class="bi bi-download"></i>
                                     </a>
                                 </td>

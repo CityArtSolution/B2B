@@ -2491,5 +2491,9 @@
     "The selected rider is not available. Please choose another one.": "المندوب المختار غير متاح. يرجى اختيار مندوب آخر.",
     "Today": "اليوم",
     "piece": "حبة",
-    "Could not load your cart, please try again.": "تعذر تحميل السلة، يرجى المحاولة مرة أخرى."
+    "Could not load your cart, please try again.": "تعذر تحميل السلة، يرجى المحاولة مرة أخرى.",
+    "Price Quote": "عرض سعر",
+    "Quote Number": "رقم عرض السعر",
+    "Download Price Quote": "تحميل عرض السعر",
+    "This is a price quote, not a tax invoice. Prices and availability are confirmed when the order is accepted.": "هذا عرض سعر وليس فاتورة ضريبية. تُعتمد الأسعار والتوفر عند قبول الطلب."
 }
