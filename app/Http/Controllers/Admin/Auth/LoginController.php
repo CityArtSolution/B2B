@@ -48,13 +48,13 @@ class LoginController extends Controller
             $shop = generaleSetting('shop', $user);
 
             if (! $shop) {
-                return to_route('admin.dashboard.index')->withSuccess('Login successfully');
+                return redirect()->intended(route('admin.dashboard.index'))->withSuccess('Login successfully');
             }
 
             $rootShop = generaleSetting('rootShop');
 
             if ($shop->id == $rootShop->id) {
-                return to_route('admin.dashboard.index')->withSuccess('Login successfully');
+                return redirect()->intended(route('admin.dashboard.index'))->withSuccess('Login successfully');
             }
 
             $generalSetting = generaleSetting('setting');
@@ -74,7 +74,7 @@ class LoginController extends Controller
             }
 
             // redirect to dashboard
-            return to_route('admin.dashboard.index')->withSuccess('Login successfully');
+            return redirect()->intended(route('admin.dashboard.index'))->withSuccess('Login successfully');
         }
 
         // redirect back with error
