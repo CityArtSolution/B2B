@@ -243,6 +243,7 @@
 
                         <!-- Tamara instalments widget (below the price, above add to cart) -->
                         <TamaraWidget :amount="productPrice" />
+                        <TabbyWidget :amount="productPrice" source="product" />
 
                         <!-- Size -->
                         <div v-if="product.sizes?.length > 0 && product.is_digital == false" class="flex items-center gap-3 py-4">
@@ -498,6 +499,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { useRoute, useRouter } from "vue-router";
 import { useMaster } from "../stores/MasterStore";
 import TamaraWidget from "../components/TamaraWidget.vue";
+import TabbyWidget from "../components/TabbyWidget.vue";
 
 import { HeartIcon, HomeIcon, MinusIcon, PlusIcon, ShareIcon } from "@heroicons/vue/24/outline";
 import { HeartIcon as HeartIconFill, StarIcon } from "@heroicons/vue/24/solid";

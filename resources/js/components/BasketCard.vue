@@ -77,6 +77,7 @@
                                         <!-- Tamara instalments widget for the cart total -->
                                         <div v-if="BasketStore.total > 0" class="px-6">
                                             <TamaraWidget :amount="BasketStore.totalAmount" />
+                                            <TabbyWidget :amount="BasketStore.totalAmount" source="cart" />
                                         </div>
 
                                         <!-- Proceed to Checkout -->
@@ -122,6 +123,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import Basket from './Basket.vue';
 import TamaraWidget from './TamaraWidget.vue';
+import TabbyWidget from './TabbyWidget.vue';
 
 import { useBasketStore } from '../stores/BasketStore';
 import { useMaster } from '../stores/MasterStore';

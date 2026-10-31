@@ -7,6 +7,7 @@ use App\Http\Resources\FooterResource;
 use App\Http\Resources\LanguageResource;
 use App\Http\Resources\MenuResource;
 use App\Http\Controllers\Gateway\Tamara\ProcessController as TamaraProcessController;
+use App\Http\Controllers\Gateway\Tabby\ProcessController as TabbyProcessController;
 use App\Http\Resources\PaymentGatewayResource;
 use App\Http\Resources\SocialLinkResource;
 use App\Models\ContactUs;
@@ -126,6 +127,7 @@ class MasterController extends Controller
             'app_store_link' => $generaleSetting?->app_store_url ?? null,
             'payment_gateways' => PaymentGatewayResource::collection($paymentGateways),
             'tamara_widget' => $this->tamaraWidget($paymentGateways),
+            'tabby_widget' => $this->tabbyWidget($paymentGateways),
             'multi_vendor' => (bool) ($shopType == 'multi' ? true : false),
             'mobile' => $generaleSetting?->footer_phone ?? '0550136556',
             'whatsapp' => ContactUs::first()?->whatsapp ?? $generaleSetting?->footer_phone ?? '0550136556',
@@ -178,6 +180,30 @@ class MasterController extends Controller
             'public_key' => $config->public_key,
             'country' => $config->country,
             'sandbox' => ! $config->live,
+        ];
+    }
+
+    /**
+     * Settings used by Tabby's browser-only promo/card snippets.  Deliberately
+     * expose only the public key and merchant code; the secret key is used by
+     * the server-side checkout and payment calls only.
+     */
+    private function tabbyWidget($paymentGateways): ?array
+    {
+        $gateway = collect($paymentGateways)->firstWhere('alias', 'Tabby');
+        if (! $gateway) {
+            return null;
+        }
+
+        $config = TabbyProcessController::config($gateway);
+        if (empty($config->public_key) || empty($config->merchant_code)) {
+            return null;
+        }
+
+        return [
+            'public_key' => $config->public_key,
+            'merchant_code' => $config->merchant_code,
+            'currency' => TabbyProcessController::currency($config),
         ];
     }
 }

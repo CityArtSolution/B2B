@@ -217,6 +217,7 @@
                                     </div>
                                 </label>
                             </div>
+                            <TabbyWidget v-if="paymentGateway === 'tabby'" :amount="basketStore.payable_amount" card />
                         </div>
                     </Transition>
 
@@ -241,6 +242,7 @@ import { onMounted, computed , ref, watch } from 'vue';
 import CheckoutOrderSummary from '../components/CheckoutOrderSummary.vue';
 import checkoutProducts from '../components/checkoutProducts.vue';
 import ShippingAddress from '../components/CheckoutShippingAddress.vue';
+import TabbyWidget from '../components/TabbyWidget.vue';
 
 import axios from 'axios';
 

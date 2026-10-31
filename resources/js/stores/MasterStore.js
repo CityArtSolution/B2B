@@ -23,6 +23,7 @@ export const useMaster = defineStore("masterStore", {
         multiVendor: true,
         paymentGateways: [],
         tamaraWidget: null,
+        tabbyWidget: null,
         mobile: null,
         whatsapp: null,
         showFooter: true,
@@ -104,6 +105,7 @@ export const useMaster = defineStore("masterStore", {
                 this.address = data.address;
                 this.paymentGateways = data.payment_gateways;
                 this.tamaraWidget = data.tamara_widget ?? null;
+                this.tabbyWidget = data.tabby_widget ?? null;
                 this.footerText = data.web_footer_text;
                 this.footerDescription = data.web_footer_description;
                 this.footerLogo = data.web_footer_logo;

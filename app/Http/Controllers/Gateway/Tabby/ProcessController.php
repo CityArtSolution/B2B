@@ -490,6 +490,11 @@ class ProcessController extends Controller
         return json_decode($gateway?->config ?? '{}') ?: (object) [];
     }
 
+    public static function config(PaymentGateway $gateway): object
+    {
+        return json_decode($gateway->config ?? '{}') ?: (object) [];
+    }
+
     /**
      * Tabby API client. Saudi merchants (SAR) use api.tabby.sa, UAE merchants (AED) api.tabby.ai.
      * Test or live is decided by the key itself (sk_test_ or sk_).
@@ -505,7 +510,7 @@ class ProcessController extends Controller
     /**
      * Payment currency: the gateway config `currency`, defaulting to SAR
      */
-    private static function currency(object $config): string
+    public static function currency(object $config): string
     {
         return strtoupper($config->currency ?? 'SAR');
     }
